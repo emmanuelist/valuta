@@ -9,26 +9,22 @@ related_targets: []
 
 Mode: Operate. Audience: employers running a payroll, workers checking a payslip, and judges verifying the claim from Arc mainnet in about four minutes. Every value is a contract or Chainlink read; no demo mode. Light is the default (builder's commitment).
 
-Approved comp: `.impeccable/mocks/comp-4-combined.png` (comp-3's top band plus comp-2's ledger and inspector, approved by the builder in chat on 2026-10-25).
+Approved comp: `.impeccable/mocks/redesign-a-specimen.png` (redesign comp A, Specimen, approved by the builder in chat on 2026-10-25; D-017). It supersedes comp-4. Measured spec: `.impeccable/build/spec.json`. Studio brief: `prompts/08-redesign-spec.md`.
 
 Stated deviations from the comp:
-- The eyebrow "PROOF INSPECTOR · PAYDAY 01" becomes a payday stepper control in the same box (the craft floor bans eyebrows).
-- The selected row's thick left bar becomes a tint plus a 1px petrol ring.
-- Comp figures in rows 02–08 and the chart are image-model placeholders; the build renders real reads.
+- The comp's values are image-model samples. The build renders real reads: payroll 1, payslip 01 on load.
+- The RATE HELD seal is generated for each payslip from its round id and payday, so no two match the comp's rosette.
+- The timeline spaces its events by log(1 + gap), with a 120px minimum, instead of the comp's even ticks, because real rounds arrive 7 to 24 h apart.
 
 ## Direction contract
-THESIS: The page owns one idea: a payday's amount is fixed by the rate live at its value date, and lateness only moves the booking. It refuses the category default, a dashboard of tiles and status pills where the rate is just a cell.
+THESIS: One payslip proves the claim. Its amount was fixed by the rate live at its value date, and lateness only moves the booking. It refuses the category default: a dashboard of KPI tiles and tables where the rate is just a cell.
 
-OWN-WORLD: A premium value-date statement. Cool white #F7F8F9 ground, white surfaces with 1px #E3E6EA rules, ink #0F1720, and one committed petrol #0B4F6C for brand, selection and the as-of ring. Vermilion #D93F2B is reserved for lateness, amber #B7791F for due. Radio Canada Big carries every word; Geist Mono only rates, rounds, amounts and ids, with tabular figures. Small-caps value stamps read "VALUE 15 OCT 14:00". Payslips are numbered in sequence (No. 07 of 20).
+OWN-WORLD: Security printing. White paper sits on a cool-white desk, with 1px rules and ink #0E1B26. Petrol #0B4F6C marks stamps, the seal and the held state; carbon blue #1F3886 marks paid figures; amber appears only for due, and red only for VOID. Lateness is grey text. Words are set in Hanken Grotesk and figures in Spline Sans Mono. The slip has a perforated edge, a faint guilloché ground, a rotated value stamp and a number.
 
-STORY: The visitor reads the claim as a number (MXN 1.00 → 0.053897 USDC) and sees that the totals are live from mainnet. They open payday 01, watch the payday lock onto round 292 while settlement lands 10 days later, and click through to the explorer. An employer settles a due payday whose amount is already shown, fixed.
+STORY: The visitor reads the claim, then the slip: MXN 1.00 paid 0.053897 USDC at round 292, the settle-day amount struck through, settled by a stranger nearly ten days late. The facts and the timeline show why that round; the tx proves it on Arc. A due coupon shows its amount already fixed, Settle now, and a cheat that the chain voids.
 
-FIRST VIEWPORT: 1344×890.
-- Top bar: wordmark, three links, petrol Connect wallet.
-- Claim band: the headline at left (cap 33px), three live totals at right.
-- Ledger card (left, 55%): rows 01–08 with value stamps and late tags, then due row 11 with Settle.
-- Proof inspector card (right, 45%): payday stepper, "Why 0.053897 USDC", the value axis (rounds 291, 292 ringed, 293, payday line), the settlement axis with its break, ids and the explorer link.
+FIRST VIEWPORT: 1344×760. The top bar carries the live block and Connect wallet. On the left, the claim and the amber countdown. On the right, the payslip (846×474), with the amount as its largest figure. Below: the timeline, a hairline and the coupon row.
 
-FORM: Statement of Account (IMPECCABLE'S PICK; my #1 grounded candidate), raised to premium per the builder's see.md. Signature interaction, "the lock": selecting a payday draws its payday line, rings the as-of round, and slides the settlement marker to its date while the amount stays still. A payday settled while you watch stays marked until seen (raised from the boarding pass). Seed key cb9c1bd0.
+FORM: Specimen, comp A, the first of three (A Specimen, B Statement, C Timeline). The signature move is "stamp, travel, hold": the stamp presses, the seal draws, the settlement dot travels, and the amount holds still. seed:8b3f35a7b6f163db
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

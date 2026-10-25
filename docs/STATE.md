@@ -33,7 +33,7 @@ _Last verified: 2026-10-25 ~23:15 UTC at e761986 (branch 6-app)_
 - Higgsfield: 4 credits left on the builder's new workspace.
 
 ## Broken or unverified
-- The app does not exist yet. Studio turn 7 is running detached; recover with `arc-studio attach --session asof --output json`.
+- The current app (Studio turn 7) runs and reads mainnet (E-020), but scored 19/40. It will be replaced by the redesign turns 08–10. It runs locally (`bunx vite --port 5173`) and is not deployed yet.
 - The keeper runs only while this session and laptop are up.
 - Studio streams can drop mid-turn. Always use `--detach` and then `attach`.
 

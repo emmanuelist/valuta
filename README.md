@@ -1,26 +1,27 @@
 # Valuta
 
-Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday — however late it settles and whoever settles it.
+Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 
 Built with [Arc Studio](https://studio.arc.io)
 
 ## What it does
 
-An employer creates a payroll in a local currency (MXN, BRL, EUR, JPY, CAD, AUD, KRW, or ARS) and funds a USDC reserve. Each payday is converted at the Chainlink rate that was live at that exact payday timestamp. Settling late — or having a third party settle — cannot change the rate. If the reserve is short, the shortfall becomes public arrears, not a silent skip. The employer cannot reclaim the reserve while any payday is unsettled or arrears are outstanding.
+An employer creates a payroll denominated in a local currency (MXN, BRL, EUR, JPY, CAD, AUD, KRW or ARS) and funds a USDC reserve. On each payday, anyone can settle by supplying the Chainlink round that was live at that exact timestamp. The rate is locked to that moment — settling late, or settling it yourself, cannot change the amount. Shortfalls become public arrears rather than silent skips. Every settled payday is stored on-chain as a `Payslip`, so the app can read a full payroll ledger in one call without scanning logs.
 
 ## Tech stack
 
-- Solidity `^0.8.30`, Foundry (`forge build`, `forge test`)
-- Arc chain: USDC is the native gas token (18-decimal `msg.value`)
-- Chainlink AggregatorV3 price feeds
-- No owner, no admin, no pause, no upgradeability
+- **Solidity ^0.8.30** — `contracts/Valuta.sol`
+- **Foundry** — build, test, deploy
+- **Chainlink AggregatorV3** — oracle feeds (real proxies on Arc mainnet; TestFeed mock for testnet/tests)
+- **Arc Testnet / Arc Mainnet** — USDC is the native gas token (18-decimal)
+- **React + Vite + TypeScript + Tailwind** — frontend (coming soon)
 
 ## Development
 
 ### Prerequisites
 
-- [Foundry](https://book.getfoundry.sh/getting-started/installation)
-- Bun (for the frontend build)
+- [Foundry](https://getfoundry.sh/) (`forge`, `cast`, `anvil`)
+- [Bun](https://bun.sh/)
 
 ### Install
 
@@ -28,66 +29,67 @@ An employer creates a payroll in a local currency (MXN, BRL, EUR, JPY, CAD, AUD,
 bun install
 ```
 
+### Environment variables
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `RPC_PROXY_BASE_URL` | Arc Studio RPC proxy base URL | Optional outside Arc Studio |
+| `RPC_PROXY_TOKEN` | Arc Studio RPC proxy token | Optional outside Arc Studio |
+| `RPC_PROXY_CHAINS` | Comma-separated chain keys | Optional outside Arc Studio |
+| `ARC_RPC_URL` | Arc mainnet RPC URL for fork tests | Optional (fork tests skip without it) |
+
+### Run the frontend dev server
+
+```bash
+bun run dev
+```
+
 ### Build contracts
 
 ```bash
-bun run contracts:build   # forge build
+forge build
 ```
 
-### Test contracts
+### Run unit tests
 
 ```bash
-bun run contracts:test    # forge test --match-path "contracts/test/*.t.sol"
+forge test --match-path "contracts/test/*.t.sol"
 ```
 
-Fork tests (Arc mainnet) require a live RPC:
+### Run fork tests (requires Arc mainnet RPC)
 
 ```bash
 ARC_RPC_URL=<arc-mainnet-rpc> forge test --match-path contracts/test-integration/ValutaFork.t.sol -vv
 ```
 
-### Deploy (testnet)
+### Deploy to Arc Testnet
 
 ```bash
-DEPLOY_MODE=testnet forge script contracts/script/Deploy.s.sol \
-  --rpc-url <ARC_TESTNET_RPC> --private-key $PRIVATE_KEY --broadcast
+DEPLOY_MODE=testnet forge script contracts/script/Deploy.s.sol --broadcast
 ```
 
-### Deploy (mainnet — run yourself)
+### Deploy to Arc Mainnet (run yourself with your own key)
 
 ```bash
-DEPLOY_MODE=mainnet forge script contracts/script/Deploy.s.sol \
-  --rpc-url <ARC_MAINNET_RPC> --private-key $PRIVATE_KEY --broadcast
+DEPLOY_MODE=mainnet forge script contracts/script/Deploy.s.sol --rpc-url $ARC_MAINNET_RPC --broadcast --private-key $PRIVATE_KEY
 ```
 
-### Operational scripts
+## Contracts
 
-```bash
-# Create a payroll
-forge script contracts/script/Ops.s.sol:Ops \
-  --sig "create(address,address,bytes3,uint256,uint256,uint256,uint256,uint256)" \
-  <valuta> <worker> <currency> <salary> <start> <period> <count> <reserve> \
-  --rpc-url $ARC_MAINNET_RPC --private-key $PRIVATE_KEY --broadcast
+| File | Description |
+|------|-------------|
+| `contracts/Valuta.sol` | Main payroll contract |
+| `contracts/TestFeed.sol` | Chainlink mock for testnet and tests |
+| `contracts/script/Deploy.s.sol` | Two-mode deploy script (testnet / mainnet) |
+| `contracts/script/Ops.s.sol` | Operational scripts: create, fund, settleDue |
+| `contracts/test/Valuta.t.sol` | Core unit tests |
+| `contracts/test/Valuta.Extra.t.sol` | Additional unit tests |
+| `contracts/test/Valuta.Payslip.t.sol` | Payslip storage and batch view tests |
+| `contracts/test-integration/ValutaFork.t.sol` | Fork tests against Arc mainnet feeds |
 
-# Settle all due paydays for a payroll
-forge script contracts/script/Ops.s.sol:Ops \
-  --sig "settleDue(address,uint256)" <valuta> <id> \
-  --rpc-url $ARC_MAINNET_RPC --private-key $PRIVATE_KEY --broadcast
-```
-
-## Environment variables
-
-| Variable | Purpose | Required outside Arc Studio? |
-|----------|---------|------------------------------|
-| `RPC_PROXY_BASE_URL` | Arc Studio RPC proxy base URL | No (Arc Studio only) |
-| `RPC_PROXY_TOKEN` | Arc Studio RPC proxy token | No (Arc Studio only) |
-| `RPC_PROXY_CHAINS` | Comma-separated proxy chain keys | No (Arc Studio only) |
-| `ARC_RPC_URL` | Arc mainnet RPC for fork tests and mainnet ops | Yes (for fork tests / mainnet) |
-| `PRIVATE_KEY` | Deployer/operator private key | Yes (for mainnet scripts) |
-
-## Arc Testnet addresses
+## Arc Testnet deployment
 
 | Contract | Address |
 |----------|---------|
-| Valuta | `0x807aecf42b356ee43abf95a83343e4bf3bd08516` |
-| TestFeed (shared mock) | `0xd69e04323082945455defd0f1b8712186a5488d2` |
+| Valuta (current) | `0x3a95e355464b7bccbafd5a18fd608bd48558d647` |
+| TestFeed (mock) | `0xd69e04323082945455defd0f1b8712186a5488d2` |

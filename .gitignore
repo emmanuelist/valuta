@@ -22,3 +22,6 @@ broadcast/*/dry-run/
 
 # forge script records: only real mainnet runs are kept, and they are committed on purpose
 broadcast/**/31337/
+
+# Impeccable decision-page state (local)
+.impeccable/questions/

@@ -54,6 +54,9 @@ error ReentrantCall();
 error LengthMismatch();
 error NoPayroll();
 error ZeroFeed();
+error NotSettled();
+error SalaryTooLarge();
+error CastOverflow();
 
 // ---------------------------------------------------------------------------
 // Main contract
@@ -84,6 +87,42 @@ contract Valuta {
         uint256 arrears;   // USDC owed but unpaid
     }
 
+    /// @dev On-chain record for a single settled payday. Packed into exactly 4 storage slots.
+    ///
+    /// Slot 0 (256 bits): payday (uint64) | roundUpdatedAt (uint64) | settledAt (uint64) | settledBlock (uint64)
+    /// Slot 1 (256 bits): roundId (uint80) | settler (address = 160 bits)   [16 bits padding]
+    /// Slot 2 (256 bits): answer (uint128) | usdc (uint128)
+    /// Slot 3 (256 bits): paid (uint128)   | credited (uint128)
+    ///
+    /// Overflow safety: salary is bounded to <= 1e33 by create(), so usdc, paid and credited
+    /// all fit in uint128. Timestamps fit in uint64 until year 584 billion. settledBlock fits
+    /// in uint64 for any foreseeable block number. roundId fits in uint80 by Chainlink's design.
+    struct Payslip {
+        // slot 0
+        uint64  payday;          // payday timestamp (unix seconds)
+        uint64  roundUpdatedAt;  // oracle round's updatedAt
+        uint64  settledAt;       // block.timestamp of settlement
+        uint64  settledBlock;    // block.number of settlement
+        // slot 1
+        uint80  roundId;         // Chainlink round used
+        address settler;         // msg.sender who settled (160 bits; 16 bits padding)
+        // slot 2
+        uint128 answer;          // oracle answer (validated > 0; fits uint128 for 8-dec feeds)
+        uint128 usdc;            // USDC owed (18-decimal, floored to micro-USDC)
+        // slot 3
+        uint128 paid;            // USDC pushed to worker
+        uint128 credited;        // USDC credited (withdrawable)
+    }
+
+    /// @dev Preview of a due-but-unsettled payday at the current oracle rate.
+    struct DueQuote {
+        uint256 payday;
+        uint80  roundId;
+        int256  answer;
+        uint256 roundUpdatedAt;
+        uint256 usdc;
+    }
+
     // -----------------------------------------------------------------------
     // State
     // -----------------------------------------------------------------------
@@ -96,6 +135,9 @@ contract Valuta {
 
     uint256 private _nextId = 1;
     mapping(uint256 => Payroll) private _payrolls;
+
+    /// @dev _payslips[id][i] – on-chain payslip for settled payday i of payroll id.
+    mapping(uint256 => mapping(uint256 => Payslip)) private _payslips;
 
     /// @dev credited[addr] – native USDC credited on failed payout.
     mapping(address => uint256) private _credited;
@@ -195,6 +237,8 @@ contract Valuta {
         if (worker == address(0))                          revert ZeroWorker();
         if (!_currencies[currency].exists)                 revert UnknownCurrency();
         if (salary == 0)                                   revert ZeroSalary();
+        // Keeps realistic payslip values far inside uint128; casts revert rather than truncate if not.
+        if (salary > 1e33)                                 revert SalaryTooLarge();
         if (period < 60)                                   revert PeriodTooShort();
         if (count == 0 || count > 10_000)                  revert BadCount();
         // back pay up to 90 days is allowed
@@ -298,6 +342,22 @@ contract Valuta {
                 creditedAmt = toPay;
             }
         }
+
+        // Store on-chain payslip. _u64/_u128 revert CastOverflow() rather than truncate.
+        // The salary <= 1e33 guard keeps realistic payslip values far inside uint128,
+        // and the helpers revert rather than truncate if a value ever does not fit.
+        _payslips[id][index] = Payslip({
+            payday:         _u64(pdTime),
+            roundUpdatedAt: _u64(updatedAt),
+            settledAt:      _u64(block.timestamp),
+            settledBlock:   _u64(block.number),
+            roundId:        rid,
+            settler:        msg.sender,
+            answer:         _u128(uint256(answer)),
+            usdc:           _u128(usdc),
+            paid:           _u128(paidAmt),
+            credited:       _u128(creditedAmt)
+        });
 
         emit PaydaySettled(id, index, pdTime, rid, answer, updatedAt, usdc, paidAmt, creditedAmt, shortfall, msg.sender);
     }
@@ -411,6 +471,97 @@ contract Valuta {
     /// @notice Number of payrolls created so far (ids are 1-based, so the last id == payrollCount()).
     function payrollCount() external view returns (uint256) {
         return _nextId - 1;
+    }
+
+    /// @notice On-chain payslip for settled payday i of payroll id.
+    ///         Reverts NotSettled if i >= settled.
+    function payslip(uint256 id, uint256 i) external view returns (Payslip memory) {
+        Payroll storage p = _payrolls[id];
+        if (i >= p.settled) revert NotSettled();
+        return _payslips[id][i];
+    }
+
+    /// @notice Up to n consecutive payslips starting at index from.
+    ///         n is capped at 64 and the result is shortened at settled.
+    function payslips(uint256 id, uint256 from, uint256 n)
+        external
+        view
+        returns (Payslip[] memory result)
+    {
+        if (n > 64) n = 64;
+        Payroll storage p = _payrolls[id];
+        uint256 last = from + n;
+        if (last > p.settled) last = p.settled;
+        if (from >= last) return result;
+        uint256 len = last - from;
+        result = new Payslip[](len);
+        for (uint256 k = 0; k < len; k++) {
+            result[k] = _payslips[id][from + k];
+        }
+    }
+
+    /// @notice Up to n payrolls starting at id fromId (1-based).
+    ///         fromId == 0 is treated as 1 (ids start at 1; 0 would be an empty record).
+    ///         n is capped at 64 and the result is shortened at payrollCount().
+    function payrolls(uint256 fromId, uint256 n)
+        external
+        view
+        returns (Payroll[] memory result)
+    {
+        if (fromId == 0) fromId = 1;
+        if (n > 64) n = 64;
+        uint256 total = _nextId - 1;
+        uint256 last = fromId + n - 1;
+        if (last > total) last = total;
+        if (fromId > last) return result;
+        uint256 len = last - fromId + 1;
+        result = new Payroll[](len);
+        for (uint256 k = 0; k < len; k++) {
+            result[k] = _payrolls[fromId + k];
+        }
+    }
+
+    /// @notice Preview up to n due-but-unsettled paydays at the current oracle rate.
+    ///         n is capped at 32. Returns DueQuote[] ordered by payday index.
+    ///         This is a view — no state changes.
+    function duePreview(uint256 id, uint256 n)
+        external
+        view
+        returns (DueQuote[] memory result)
+    {
+        if (n > 32) n = 32;
+        Payroll storage p = _payrolls[id];
+        if (p.employer == address(0)) return result;
+        CurrencyInfo storage ci = _currencies[p.currency];
+
+        // Count how many due paydays we can preview (up to n).
+        uint256 count = 0;
+        for (uint256 i = p.settled; i < p.count && count < n; i++) {
+            if (_isDue(p, i)) count++;
+            else break;
+        }
+        if (count == 0) return result;
+
+        result = new DueQuote[](count);
+        uint256 k = 0;
+        for (uint256 i = p.settled; i < p.count && k < count; i++) {
+            if (!_isDue(p, i)) break;
+            uint256 pdTime = p.start + i * p.period;
+            (uint80 rid, int256 ans, uint256 updAt) = _findAsOf(ci, pdTime);
+            // Compute USDC using the same conversion and flooring as settle.
+            uint256 usdc = 0;
+            if (ans > 0) {
+                usdc = (_toUsdc(p.salary, ans, ci.decimals, ci.inverse) / 1e12) * 1e12;
+            }
+            result[k] = DueQuote({
+                payday:        pdTime,
+                roundId:       rid,
+                answer:        ans,
+                roundUpdatedAt: updAt,
+                usdc:          usdc
+            });
+            k++;
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -723,6 +874,19 @@ contract Valuta {
         if (!_tryTransferCapped(to, amount)) {
             _credited[to] += amount;
         }
+    }
+
+    /// @dev Downcast uint256 → uint64; revert CastOverflow() instead of truncating silently.
+    ///      Solidity 0.8 explicit casts like uint64(x) truncate without reverting on overflow.
+    function _u64(uint256 x) internal pure returns (uint64) {
+        if (x > type(uint64).max) revert CastOverflow();
+        return uint64(x);
+    }
+
+    /// @dev Downcast uint256 → uint128; revert CastOverflow() instead of truncating silently.
+    function _u128(uint256 x) internal pure returns (uint128) {
+        if (x > type(uint128).max) revert CastOverflow();
+        return uint128(x);
     }
 
     /// @dev Encode a phase-scoped Chainlink round id.

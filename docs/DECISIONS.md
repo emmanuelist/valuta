@@ -75,3 +75,16 @@ Append-only. To change a decision, add a new entry that supersedes it.
 **Consequences:**
 - When the laptop is off (from 2026-10-28), paydays simply wait. Anyone can settle them later at the payday's own rate, which is the thesis, so judges can do it themselves from the app.
 - Keeper gas comes from EMPLOYER, about 0.003 USDC per settlement.
+
+## D-015 · Valuta v2 keeps payslips on-chain; v1 retired · 2026-10-25 · accepted
+**Context:** measured on 2026-10-25:
+- `eth_getLogs` on rpc.mainnet.arc.io and QuickNode fails at 50,000 blocks per request (9,999 works).
+- Blockdaemon allows 50,000 but answers "pruned history unavailable" at 500,000.
+- Arc makes about 170,000 blocks a day (0.507 s blocks).
+
+An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests per day of history, so it would be slow for a judge looking days later, and could break where history is pruned.
+**Decision:** v2 stores a `Payslip` per settled payday (round, rate, owed, paid, credited, settler, settledAt, settledBlock). It adds bounded batch views (`payslips`, `payrolls`, `duePreview`), so the app reads a whole ledger in one call and fetches only the single settlement block for a tx hash. The settlement logic, errors and events are unchanged. Written by Studio turn 4 (`prompts/04-onchain-payslips.md`).
+**Consequences:**
+- About 110k more gas per payday (~0.002 USDC at 20 gwei).
+- v1 (`0x2bDF…76e9`) stays on mainnet as history (E-011 to E-014). Both its payrolls were ended and their reserves reclaimed to EMPLOYER (E-015).
+- The payrolls and the stranger's back-pay settlement are recreated on v2.

@@ -1,0 +1,7 @@
+{
+  "prompt": "COMPOSITE (approved by the builder in chat, 2026-10-25): top band (nav + claim figure + live totals) = comp-3-thesis.png rows 0\u2013222; body (payroll ledger + proof inspector) = comp-2-inspector.png rows 84\u2013752. Prompts: see comp-3-thesis.json and comp-2-inspector.json.",
+  "model": "composite of two gpt_image_2 comps",
+  "source": "comp round: builder chose 'combine 3's top band with 2'",
+  "approved": true,
+  "notes": "Figures in rows 02\u201308 and the chart are image-model placeholders; the build renders real contract data."
+}

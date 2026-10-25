@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Scaffold reference: comp-4-combined.png</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400&family=Edu+VIC+WA+NT+Beginner:wght@700&display=swap">
+  <link rel="stylesheet" href="layout.css">
+  <style>html,body{margin:0}body{background:#f7f7f7}.region{box-sizing:border-box}.region.text p{white-space:pre-wrap}</style>
+</head>
+<body>
+<!-- Reference only. Every region sits at its measured box inside a comp-aspect frame. Take the boxes (layout.css), keep your own semantic structure. -->
+<main class="comp-frame" style="max-width:1344px">
+  <div class="r-topbar region chrome" data-region="topbar"><!-- white top bar with a hairline bottom rule --></div>
+  <div class="r-brand region text" data-region="brand"><!-- wordmark Valuta, refined grotesk, ink --><p style="font-size:var(--r-brand-font);line-height:1.05;margin:0">brand</p></div>
+  <div class="r-nav-links region text" data-region="nav-links"><!-- nav links Payrolls, New payroll, Rate lookup --><p style="font-size:var(--r-nav-links-font);line-height:1.05;margin:0">nav-links</p></div>
+  <div class="r-connect region control" data-region="connect"><!-- petrol filled button Connect wallet: rebuild the control's chrome from the crop (comp-spec.mjs --crop connect); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <div class="r-hero-band region chrome" data-region="hero-band"><!-- pale cool band with hairline bottom rule --></div>
+  <div class="r-claim region text" data-region="claim"><!-- lead headline MXN 1.00 -> 0.053897 USDC, mono tabular, very large --><p style="font-size:var(--r-claim-font);font-family:var(--r-claim-family),sans-serif;font-weight:var(--r-claim-weight);line-height:1.05;margin:0">claim</p></div>
+  <div class="r-claim-sub region text" data-region="claim-sub"><!-- Paid at the Chainlink rate live on 15 Oct, 14:00 UTC. Settled 10 days later. The rate did not move. --><p style="font-size:var(--r-claim-sub-font);font-family:var(--r-claim-sub-family),sans-serif;font-weight:var(--r-claim-sub-weight);line-height:1.05;margin:0">claim-sub</p></div>
+  <div class="r-stat-payrolls region text" data-region="stat-payrolls"><!-- live number 2 over label payrolls --><p style="font-size:var(--r-stat-payrolls-font);line-height:1.05;margin:0">stat-payrolls</p></div>
+  <div class="r-stat-paydays region text" data-region="stat-paydays"><!-- live number 10 over label paydays settled --><p style="line-height:1.05;margin:0">stat-paydays</p></div>
+  <div class="r-stat-paid region text" data-region="stat-paid"><!-- live number 0.539189 over label USDC paid --><p style="font-size:var(--r-stat-paid-font);line-height:1.05;margin:0">stat-paid</p></div>
+  <div class="r-ledger-card region chrome" data-region="ledger-card"><!-- white card with hairline border holding the payroll statement --></div>
+  <div class="r-ledger-header region text" data-region="ledger-header"><!-- Payroll No. 1 · MXN 1.00 per day · Reserve 0.560811 USDC --><p style="font-size:var(--r-ledger-header-font);line-height:1.05;margin:0">ledger-header</p></div>
+  <div class="r-row-01 region text" data-region="row-01"><!-- selected row: tint, number 01, VALUE 15 OCT 14:00, rate, round, amount, vermilion settled 10d late tag --><p style="font-size:var(--r-row-01-font);line-height:1.05;margin:0">row-01</p></div>
+  <div class="r-row-02 region text" data-region="row-02"><!-- row 02 with settled 9d late tag --><p style="font-size:var(--r-row-02-font);line-height:1.05;margin:0">row-02</p></div>
+  <div class="r-row-03 region text" data-region="row-03"><!-- row 03 with settled 8d late tag --><p style="font-size:var(--r-row-03-font);line-height:1.05;margin:0">row-03</p></div>
+  <div class="r-row-04 region text" data-region="row-04"><!-- row 04 with settled 7d late tag --><p style="font-size:var(--r-row-04-font);line-height:1.05;margin:0">row-04</p></div>
+  <div class="r-row-05 region text" data-region="row-05"><!-- row 05 with settled 6d late tag --><p style="font-size:var(--r-row-05-font);line-height:1.05;margin:0">row-05</p></div>
+  <div class="r-row-06 region text" data-region="row-06"><!-- row 06 with settled 5d late tag --><p style="font-size:var(--r-row-06-font);line-height:1.05;margin:0">row-06</p></div>
+  <div class="r-row-07 region text" data-region="row-07"><!-- row 07 with settled 4d late tag --><p style="font-size:var(--r-row-07-font);line-height:1.05;margin:0">row-07</p></div>
+  <div class="r-row-08 region text" data-region="row-08"><!-- row 08 with settled 3d late tag --><p style="font-size:var(--r-row-08-font);line-height:1.05;margin:0">row-08</p></div>
+  <div class="r-row-11 region text" data-region="row-11"><!-- due row 11 VALUE 25 OCT 14:00 due, rate already fixed --><p style="font-size:var(--r-row-11-font);line-height:1.05;margin:0">row-11</p></div>
+  <div class="r-settle region control" data-region="settle"><!-- petrol filled button Settle: rebuild the control's chrome from the crop (comp-spec.mjs --crop settle); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <div class="r-inspector-card region chrome" data-region="inspector-card"><!-- white card with hairline border holding the proof inspector --></div>
+  <div class="r-inspector-nav region control" data-region="inspector-nav"><!-- comp shows a petrol caps eyebrow PROOF INSPECTOR · PAYDAY 01; build renders a petrol payday stepper in this box (eyebrow banned by craft floor): rebuild the control's chrome from the crop (comp-spec.mjs --crop inspector-nav); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <div class="r-inspector-title region text" data-region="inspector-title"><!-- heading Why 0.053897 USDC --><p style="font-size:var(--r-inspector-title-font);line-height:1.05;margin:0">inspector-title</p></div>
+  <div class="r-value-axis-label region text" data-region="value-axis-label"><!-- small caps 15 OCT · VALUE TIME AXIS --><p style="font-size:var(--r-value-axis-label-font);line-height:1.05;margin:0">value-axis-label</p></div>
+  <div class="r-value-axis region chrome" data-region="value-axis"><!-- data chart drawn at runtime: time axis 12:00-15:00, rounds 291 292 293 as markers with labels, 292 ringed petrol, bold payday line at 14:00 --></div>
+  <div class="r-settle-axis-label region text" data-region="settle-axis-label"><!-- small caps SETTLEMENT TIME AXIS --><p style="font-size:var(--r-settle-axis-label-font);line-height:1.05;margin:0">settle-axis-label</p></div>
+  <div class="r-settle-axis region chrome" data-region="settle-axis"><!-- data chart drawn at runtime: axis with a break and a vermilion settlement dot labelled settled 25 Oct 13:59, 10 days later --></div>
+  <div class="r-settle-caption region text" data-region="settle-caption"><!-- vermilion line Settled 10 days late. The rate did not move. --><p style="font-size:var(--r-settle-caption-font);line-height:1.05;margin:0">settle-caption</p></div>
+  <div class="r-proof-ids region text" data-region="proof-ids"><!-- monospace lines round id 18446744073709551908 and tx 0x82ff…38b7 --><p style="font-size:var(--r-proof-ids-font);line-height:1.05;margin:0">proof-ids</p></div>
+  <div class="r-explorer-link region control" data-region="explorer-link"><!-- petrol link View on explorer with external icon: rebuild the control's chrome from the crop (comp-spec.mjs --crop explorer-link); its ink box, border, fill, radius, and label size are the comp's --></div>
+</main>
+</body>
+</html>

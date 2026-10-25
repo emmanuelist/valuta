@@ -1,0 +1,2300 @@
+{
+  "tool": "comp-spec",
+  "version": 1,
+  "createdAt": "2026-10-25T14:23:59.146Z",
+  "comp": ".impeccable/mocks/comp-4-combined.png",
+  "warnings": [
+    "region topbar: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region topbar: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region brand: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region nav-links: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region connect: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region hero-band: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region hero-band: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region claim: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region claim-sub: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region stat-payrolls: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region stat-paydays: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region stat-paid: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region ledger-card: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region ledger-card: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region ledger-header: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-01: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-02: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-03: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-04: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-05: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-06: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-07: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-08: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region row-11: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region settle: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region inspector-card: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region inspector-card: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region inspector-nav: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region inspector-title: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region value-axis-label: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region value-axis: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region settle-axis-label: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region settle-axis: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region settle-caption: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region proof-ids: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region explorer-link: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+  ],
+  "uncoveredInkCells": [],
+  "compSize": {
+    "width": 1344,
+    "height": 890
+  },
+  "aspect": 1.5101,
+  "orientation": "landscape",
+  "palette": [
+    {
+      "hex": "#f7f7f7",
+      "coverage": 0.9696
+    },
+    {
+      "hex": "#0f0f13",
+      "coverage": 0.0099
+    },
+    {
+      "hex": "#515152",
+      "coverage": 0.008
+    },
+    {
+      "hex": "#084666",
+      "coverage": 0.0066
+    },
+    {
+      "hex": "#b6b6b6",
+      "coverage": 0.0059
+    }
+  ],
+  "bands": [
+    {
+      "y": 0.0235,
+      "strength": 0.2171
+    },
+    {
+      "y": 0.0588,
+      "strength": 0.2392
+    },
+    {
+      "y": 0.1294,
+      "strength": 0.5358
+    },
+    {
+      "y": 0.1647,
+      "strength": 0.6965
+    },
+    {
+      "y": 0.1882,
+      "strength": 0.2389
+    },
+    {
+      "y": 0.2118,
+      "strength": 0.2962
+    },
+    {
+      "y": 0.2941,
+      "strength": 0.3222
+    },
+    {
+      "y": 0.3294,
+      "strength": 0.2564
+    },
+    {
+      "y": 0.3529,
+      "strength": 0.2133
+    },
+    {
+      "y": 0.4353,
+      "strength": 0.4165
+    },
+    {
+      "y": 0.5059,
+      "strength": 0.2285
+    },
+    {
+      "y": 0.5765,
+      "strength": 0.2779
+    },
+    {
+      "y": 0.6471,
+      "strength": 0.3428
+    },
+    {
+      "y": 0.8353,
+      "strength": 0.2367
+    },
+    {
+      "y": 0.8941,
+      "strength": 0.2255
+    },
+    {
+      "y": 0.9176,
+      "strength": 0.2146
+    }
+  ],
+  "regions": [
+    {
+      "id": "topbar",
+      "kind": "chrome",
+      "note": "white top bar with a hairline bottom rule",
+      "grid": "A0:J0",
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1344,
+        "h": 89
+      },
+      "aspect": 15.1011,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9393
+        },
+        {
+          "hex": "#084665",
+          "coverage": 0.0448
+        },
+        {
+          "hex": "#0f1015",
+          "coverage": 0.0092
+        },
+        {
+          "hex": "#6e96a2",
+          "coverage": 0.0043
+        },
+        {
+          "hex": "#bbbbbb",
+          "coverage": 0.0023
+        }
+      ],
+      "detail": {
+        "energy": 19.8487
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "brand",
+      "kind": "text",
+      "note": "wordmark Valuta, refined grotesk, ink",
+      "grid": "A0:A0",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 0.1,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 134,
+        "h": 89
+      },
+      "aspect": 1.5056,
+      "palette": [
+        {
+          "hex": "#f6f6f6",
+          "coverage": 0.913
+        },
+        {
+          "hex": "#0a0b12",
+          "coverage": 0.055
+        },
+        {
+          "hex": "#72727a",
+          "coverage": 0.0149
+        },
+        {
+          "hex": "#484b51",
+          "coverage": 0.0089
+        },
+        {
+          "hex": "#c4c5cb",
+          "coverage": 0.0082
+        }
+      ],
+      "detail": {
+        "energy": 13.8095
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 6,
+          "capHeightPx": 24.1,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5799,
+          "advTall": 0.5178,
+          "advX": 0.6006,
+          "gap": 0.0828,
+          "xRatio": 0.719,
+          "stemW": 0.1773,
+          "contrast": 1.2296,
+          "serif": null,
+          "densTall": 0.5149,
+          "densX": 0.65,
+          "weight": 0.5149
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "nav-links",
+      "kind": "text",
+      "note": "nav links Payrolls, New payroll, Rate lookup",
+      "grid": "B0:D0",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.1,
+        "y": 0,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "px": {
+        "x": 134,
+        "y": 0,
+        "w": 403,
+        "h": 89
+      },
+      "aspect": 4.5281,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9692
+        },
+        {
+          "hex": "#121518",
+          "coverage": 0.0129
+        },
+        {
+          "hex": "#7b7c7e",
+          "coverage": 0.0097
+        },
+        {
+          "hex": "#4a4a4d",
+          "coverage": 0.0062
+        },
+        {
+          "hex": "#c0c0c0",
+          "coverage": 0.002
+        }
+      ],
+      "detail": {
+        "energy": 15.6075
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 25,
+          "capHeightPx": 13.5,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.556,
+          "advTall": 0.1853,
+          "advX": 0.556,
+          "gap": 0.0741,
+          "xRatio": 0.6957,
+          "stemW": 0.161,
+          "contrast": 1.0074,
+          "serif": 0.4642,
+          "densTall": 0.7768,
+          "densX": 0.581,
+          "weight": 0.7768
+        },
+        "widthClass": "condensed",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "connect",
+      "kind": "control",
+      "note": "petrol filled button Connect wallet",
+      "grid": "I0:J0",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.8,
+        "y": 0,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "px": {
+        "x": 1075,
+        "y": 0,
+        "w": 269,
+        "h": 89
+      },
+      "aspect": 3.0225,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.7357
+        },
+        {
+          "hex": "#084664",
+          "coverage": 0.2348
+        },
+        {
+          "hex": "#69929e",
+          "coverage": 0.0189
+        },
+        {
+          "hex": "#355f74",
+          "coverage": 0.006
+        },
+        {
+          "hex": "#083563",
+          "coverage": 0.0045
+        }
+      ],
+      "detail": {
+        "energy": 17.9269
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": null,
+        "measuredAt": "2026-10-25T14:25:24.919Z",
+        "note": "no separable lettering in the crop; size by the region box"
+      }
+    },
+    {
+      "id": "hero-band",
+      "kind": "chrome",
+      "note": "pale cool band with hairline bottom rule",
+      "grid": "A0:J2",
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.3
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 1344,
+        "h": 267
+      },
+      "aspect": 5.0337,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9468
+        },
+        {
+          "hex": "#0b0c11",
+          "coverage": 0.0227
+        },
+        {
+          "hex": "#084665",
+          "coverage": 0.0146
+        },
+        {
+          "hex": "#898c90",
+          "coverage": 0.0084
+        },
+        {
+          "hex": "#58595e",
+          "coverage": 0.0074
+        }
+      ],
+      "detail": {
+        "energy": 24.8501
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "claim",
+      "kind": "text",
+      "note": "lead headline MXN 1.00 -> 0.053897 USDC, mono tabular, very large",
+      "grid": "A1:E1",
+      "codeDrawn": true,
+      "coverBox": {
+        "x": 0,
+        "y": 0.1,
+        "w": 0.5,
+        "h": 0.1
+      },
+      "box": {
+        "x": 0.2321,
+        "y": 0.1135,
+        "w": 0.2411,
+        "h": 0.0607
+      },
+      "px": {
+        "x": 312,
+        "y": 101,
+        "w": 324,
+        "h": 54
+      },
+      "aspect": 6,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.7374
+        },
+        {
+          "hex": "#0a0b10",
+          "coverage": 0.2097
+        },
+        {
+          "hex": "#333538",
+          "coverage": 0.023
+        },
+        {
+          "hex": "#c5c7cd",
+          "coverage": 0.0173
+        },
+        {
+          "hex": "#575b63",
+          "coverage": 0.0126
+        }
+      ],
+      "detail": {
+        "energy": 72.0673
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 33,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6674,
+          "advTall": 0.6674,
+          "advX": null,
+          "gap": 0.1213,
+          "xRatio": 0.8453,
+          "stemW": 0.1724,
+          "contrast": 1.0353,
+          "serif": null,
+          "densTall": 0.5138,
+          "densX": null,
+          "weight": 0.5138
+        },
+        "widthClass": "normal",
+        "weightClass": "medium",
+        "chosen": {
+          "family": "Radio Canada Big",
+          "weight": 400,
+          "fontSizePx": 47,
+          "source": "index",
+          "fp": {
+            "lines": 1,
+            "glyphs": 21,
+            "capHeightPx": 32.9,
+            "inkIsDark": true,
+            "allCaps": false,
+            "advance": 0.7291,
+            "advTall": 0.7291,
+            "advX": null,
+            "gap": 0.1215,
+            "xRatio": 0.5902,
+            "stemW": 0.1756,
+            "contrast": 1.037,
+            "serif": 0.9819,
+            "densTall": 0.523,
+            "densX": null,
+            "weight": 0.523
+          },
+          "stamp": "b2d1cdf10559"
+        }
+      }
+    },
+    {
+      "id": "claim-sub",
+      "kind": "text",
+      "note": "Paid at the Chainlink rate live on 15 Oct, 14:00 UTC. Settled 10 days later. The rate did not move.",
+      "grid": "A1:F2",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.1,
+        "w": 0.6,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 89,
+        "w": 806,
+        "h": 178
+      },
+      "aspect": 4.5281,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9266
+        },
+        {
+          "hex": "#0a0b10",
+          "coverage": 0.0435
+        },
+        {
+          "hex": "#8f9195",
+          "coverage": 0.0136
+        },
+        {
+          "hex": "#5b5d61",
+          "coverage": 0.0104
+        },
+        {
+          "hex": "#c6c6ce",
+          "coverage": 0.0058
+        }
+      ],
+      "detail": {
+        "energy": 34.9328
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 22,
+          "capHeightPx": 33.5,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.6418,
+          "advTall": 0.6567,
+          "advX": null,
+          "gap": 0.1194,
+          "xRatio": null,
+          "stemW": 0.1752,
+          "contrast": 1.0451,
+          "serif": null,
+          "densTall": 0.54,
+          "densX": null,
+          "weight": 0.54
+        },
+        "widthClass": "normal",
+        "weightClass": "medium",
+        "chosen": {
+          "family": "Edu VIC WA NT Beginner",
+          "weight": 700,
+          "fontSizePx": 43,
+          "source": "index",
+          "fp": {
+            "lines": 1,
+            "glyphs": 35,
+            "capHeightPx": 33.5,
+            "inkIsDark": true,
+            "allCaps": true,
+            "advance": 0.6567,
+            "advTall": 0.6567,
+            "advX": null,
+            "gap": 0.1194,
+            "xRatio": null,
+            "stemW": 0.1735,
+            "contrast": 1.1389,
+            "serif": 0.5643,
+            "densTall": 0.5065,
+            "densX": null,
+            "weight": 0.5065
+          },
+          "stamp": "9263ea5ed910"
+        }
+      }
+    },
+    {
+      "id": "stat-payrolls",
+      "kind": "text",
+      "note": "live number 2 over label payrolls",
+      "grid": "F1:G2",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.1,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 89,
+        "w": 269,
+        "h": 178
+      },
+      "aspect": 1.5112,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9873
+        },
+        {
+          "hex": "#9aa2a4",
+          "coverage": 0.0051
+        },
+        {
+          "hex": "#696d6f",
+          "coverage": 0.0047
+        },
+        {
+          "hex": "#0c0f13",
+          "coverage": 0.0024
+        },
+        {
+          "hex": "#484858",
+          "coverage": 0.0006
+        }
+      ],
+      "detail": {
+        "energy": 6.4513
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 12.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.3832,
+          "advTall": 0.1412,
+          "advX": 0.484,
+          "gap": 0.0807,
+          "xRatio": 0.7134,
+          "stemW": 0.1497,
+          "contrast": 1.0695,
+          "serif": null,
+          "densTall": 0.8434,
+          "densX": 0.5444,
+          "weight": 0.8434
+        },
+        "widthClass": "condensed",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "stat-paydays",
+      "kind": "text",
+      "note": "live number 10 over label paydays settled",
+      "grid": "H1:H2",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.7,
+        "y": 0.1,
+        "w": 0.1,
+        "h": 0.2
+      },
+      "px": {
+        "x": 941,
+        "y": 89,
+        "w": 134,
+        "h": 178
+      },
+      "aspect": 0.7528,
+      "palette": [
+        {
+          "hex": "#f7f7f8",
+          "coverage": 0.9565
+        },
+        {
+          "hex": "#6b6d71",
+          "coverage": 0.0134
+        },
+        {
+          "hex": "#aeb1b3",
+          "coverage": 0.0134
+        },
+        {
+          "hex": "#0c0c16",
+          "coverage": 0.0123
+        },
+        {
+          "hex": "#3c3c3c",
+          "coverage": 0.0045
+        }
+      ],
+      "detail": {
+        "energy": 8.0121
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": null,
+        "measuredAt": "2026-10-25T14:25:24.273Z",
+        "note": "no separable lettering in the crop; size by the region box"
+      }
+    },
+    {
+      "id": "stat-paid",
+      "kind": "text",
+      "note": "live number 0.539189 over label USDC paid",
+      "grid": "I1:J2",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.8,
+        "y": 0.1,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "px": {
+        "x": 1075,
+        "y": 89,
+        "w": 269,
+        "h": 178
+      },
+      "aspect": 1.5112,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.9643
+        },
+        {
+          "hex": "#0b0c11",
+          "coverage": 0.0154
+        },
+        {
+          "hex": "#8b8c8f",
+          "coverage": 0.0112
+        },
+        {
+          "hex": "#59595f",
+          "coverage": 0.0048
+        },
+        {
+          "hex": "#c5c5cb",
+          "coverage": 0.0043
+        }
+      ],
+      "detail": {
+        "energy": 14.7227
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 7,
+          "capHeightPx": 25.9,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.579,
+          "advTall": 0.579,
+          "advX": null,
+          "gap": 0.193,
+          "xRatio": null,
+          "stemW": 0.1259,
+          "contrast": 1.0437,
+          "serif": null,
+          "densTall": 0.4788,
+          "densX": null,
+          "weight": 0.4788
+        },
+        "widthClass": "condensed",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "ledger-card",
+      "kind": "chrome",
+      "note": "white card with hairline border holding the payroll statement",
+      "grid": "A2:F9",
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0,
+        "y": 0.2,
+        "w": 0.6,
+        "h": 0.8
+      },
+      "px": {
+        "x": 0,
+        "y": 178,
+        "w": 806,
+        "h": 712
+      },
+      "aspect": 1.132,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9697
+        },
+        {
+          "hex": "#505253",
+          "coverage": 0.0106
+        },
+        {
+          "hex": "#919191",
+          "coverage": 0.0085
+        },
+        {
+          "hex": "#c1c2c7",
+          "coverage": 0.0068
+        },
+        {
+          "hex": "#084868",
+          "coverage": 0.0044
+        }
+      ],
+      "detail": {
+        "energy": 17.0637
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "ledger-header",
+      "kind": "text",
+      "note": "Payroll No. 1 · MXN 1.00 per day · Reserve 0.560811 USDC",
+      "grid": "A2:D3",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.2,
+        "w": 0.4,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 178,
+        "w": 538,
+        "h": 178
+      },
+      "aspect": 3.0225,
+      "palette": [
+        {
+          "hex": "#f6f7f7",
+          "coverage": 0.9465
+        },
+        {
+          "hex": "#b0b2b6",
+          "coverage": 0.0165
+        },
+        {
+          "hex": "#484c50",
+          "coverage": 0.0151
+        },
+        {
+          "hex": "#747a7f",
+          "coverage": 0.0125
+        },
+        {
+          "hex": "#18191d",
+          "coverage": 0.0094
+        }
+      ],
+      "detail": {
+        "energy": 19.4127
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 41,
+          "capHeightPx": 13.1,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6113,
+          "advTall": 0.6113,
+          "advX": 0.5731,
+          "gap": 0.0764,
+          "xRatio": 0.7493,
+          "stemW": 0.17,
+          "contrast": 0.9785,
+          "serif": 0.362,
+          "densTall": 0.5666,
+          "densX": 0.6133,
+          "weight": 0.5666
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "row-01",
+      "kind": "text",
+      "note": "selected row: tint, number 01, VALUE 15 OCT 14:00, rate, round, amount, vermilion settled 10d late tag",
+      "grid": "A3:F4",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.3,
+        "w": 0.6,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 267,
+        "w": 806,
+        "h": 178
+      },
+      "aspect": 4.5281,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9621
+        },
+        {
+          "hex": "#c2bdc1",
+          "coverage": 0.0132
+        },
+        {
+          "hex": "#888c8d",
+          "coverage": 0.0097
+        },
+        {
+          "hex": "#515153",
+          "coverage": 0.0093
+        },
+        {
+          "hex": "#161818",
+          "coverage": 0.0057
+        }
+      ],
+      "detail": {
+        "energy": 18.23
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 107,
+          "capHeightPx": 12.4,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5585,
+          "advTall": 0.6324,
+          "advX": null,
+          "gap": 0.1396,
+          "xRatio": null,
+          "stemW": 0.1398,
+          "contrast": 0.9721,
+          "serif": 1.314,
+          "densTall": 0.5073,
+          "densX": null,
+          "weight": 0.5073
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-02",
+      "kind": "text",
+      "note": "row 02 with settled 9d late tag",
+      "grid": "A4:F4",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.4,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 356,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9773
+        },
+        {
+          "hex": "#959597",
+          "coverage": 0.0075
+        },
+        {
+          "hex": "#c8c8c8",
+          "coverage": 0.0057
+        },
+        {
+          "hex": "#676767",
+          "coverage": 0.0053
+        },
+        {
+          "hex": "#3a3a3a",
+          "coverage": 0.0043
+        }
+      ],
+      "detail": {
+        "energy": 12.848
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 54,
+          "capHeightPx": 14.5,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.4813,
+          "advTall": null,
+          "advX": 0.4813,
+          "gap": 0.1031,
+          "xRatio": 0.7507,
+          "stemW": 0.1414,
+          "contrast": 0.9212,
+          "serif": 1.0425,
+          "densTall": null,
+          "densX": 0.5773,
+          "weight": 0.5773
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "row-03",
+      "kind": "text",
+      "note": "row 03 with settled 8d late tag",
+      "grid": "A4:F5",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.4,
+        "w": 0.6,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 356,
+        "w": 806,
+        "h": 178
+      },
+      "aspect": 4.5281,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9659
+        },
+        {
+          "hex": "#949596",
+          "coverage": 0.0104
+        },
+        {
+          "hex": "#d0c4c5",
+          "coverage": 0.0083
+        },
+        {
+          "hex": "#38383a",
+          "coverage": 0.008
+        },
+        {
+          "hex": "#676767",
+          "coverage": 0.0074
+        }
+      ],
+      "detail": {
+        "energy": 18.041
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 3,
+          "glyphs": 156,
+          "capHeightPx": 13.2,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5166,
+          "advTall": 0.5946,
+          "advX": null,
+          "gap": 0.1195,
+          "xRatio": null,
+          "stemW": 0.1605,
+          "contrast": 0.9565,
+          "serif": 1.1569,
+          "densTall": 0.5445,
+          "densX": null,
+          "weight": 0.5445
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-04",
+      "kind": "text",
+      "note": "row 04 with settled 7d late tag",
+      "grid": "A5:F5",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.5,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 445,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.957
+        },
+        {
+          "hex": "#3e4040",
+          "coverage": 0.0166
+        },
+        {
+          "hex": "#afafb1",
+          "coverage": 0.0154
+        },
+        {
+          "hex": "#727575",
+          "coverage": 0.0088
+        },
+        {
+          "hex": "#111111",
+          "coverage": 0.0023
+        }
+      ],
+      "detail": {
+        "energy": 24.3722
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 103,
+          "capHeightPx": 12.6,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5575,
+          "advTall": 0.5945,
+          "advX": null,
+          "gap": 0.1195,
+          "xRatio": null,
+          "stemW": 0.1695,
+          "contrast": 0.9761,
+          "serif": 1.6051,
+          "densTall": 0.5453,
+          "densX": null,
+          "weight": 0.5453
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-05",
+      "kind": "text",
+      "note": "row 05 with settled 6d late tag",
+      "grid": "A6:F6",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.6,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 534,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9763
+        },
+        {
+          "hex": "#4e4f50",
+          "coverage": 0.0108
+        },
+        {
+          "hex": "#b9b9be",
+          "coverage": 0.0057
+        },
+        {
+          "hex": "#8b8b8b",
+          "coverage": 0.0045
+        },
+        {
+          "hex": "#1f1f1f",
+          "coverage": 0.0026
+        }
+      ],
+      "detail": {
+        "energy": 13.0645
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 57,
+          "capHeightPx": 13.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5162,
+          "advTall": null,
+          "advX": 0.5162,
+          "gap": 0.1106,
+          "xRatio": 0.8278,
+          "stemW": 0.154,
+          "contrast": 0.9615,
+          "serif": 1.0289,
+          "densTall": null,
+          "densX": 0.5483,
+          "weight": 0.5483
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-06",
+      "kind": "text",
+      "note": "row 06 with settled 5d late tag",
+      "grid": "A7:F7",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.7,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 623,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9499
+        },
+        {
+          "hex": "#f1d0c8",
+          "coverage": 0.0162
+        },
+        {
+          "hex": "#565757",
+          "coverage": 0.0146
+        },
+        {
+          "hex": "#848585",
+          "coverage": 0.0104
+        },
+        {
+          "hex": "#2c2d30",
+          "coverage": 0.0089
+        }
+      ],
+      "detail": {
+        "energy": 24.0407
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 105,
+          "capHeightPx": 11.5,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5965,
+          "advTall": 0.5965,
+          "advX": null,
+          "gap": 0.145,
+          "xRatio": null,
+          "stemW": 0.1723,
+          "contrast": 1.0017,
+          "serif": 1.0407,
+          "densTall": 0.5461,
+          "densX": null,
+          "weight": 0.5461
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-07",
+      "kind": "text",
+      "note": "row 07 with settled 4d late tag",
+      "grid": "A7:F7",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.7,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 623,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9499
+        },
+        {
+          "hex": "#f1d0c8",
+          "coverage": 0.0162
+        },
+        {
+          "hex": "#565757",
+          "coverage": 0.0146
+        },
+        {
+          "hex": "#848585",
+          "coverage": 0.0104
+        },
+        {
+          "hex": "#2c2d30",
+          "coverage": 0.0089
+        }
+      ],
+      "detail": {
+        "energy": 24.0407
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 105,
+          "capHeightPx": 11.5,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5965,
+          "advTall": 0.5965,
+          "advX": null,
+          "gap": 0.145,
+          "xRatio": null,
+          "stemW": 0.1723,
+          "contrast": 1.0017,
+          "serif": 1.0407,
+          "densTall": 0.5461,
+          "densX": null,
+          "weight": 0.5461
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-08",
+      "kind": "text",
+      "note": "row 08 with settled 3d late tag",
+      "grid": "A8:F8",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.8,
+        "w": 0.6,
+        "h": 0.1
+      },
+      "px": {
+        "x": 0,
+        "y": 712,
+        "w": 806,
+        "h": 89
+      },
+      "aspect": 9.0562,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9653
+        },
+        {
+          "hex": "#818383",
+          "coverage": 0.0123
+        },
+        {
+          "hex": "#084868",
+          "coverage": 0.0121
+        },
+        {
+          "hex": "#434547",
+          "coverage": 0.0052
+        },
+        {
+          "hex": "#d4d0d0",
+          "coverage": 0.0051
+        }
+      ],
+      "detail": {
+        "energy": 15.7594
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 51,
+          "capHeightPx": 10.2,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.6186,
+          "advTall": 0.6186,
+          "advX": null,
+          "gap": 0.1473,
+          "xRatio": null,
+          "stemW": 0.15,
+          "contrast": 0.941,
+          "serif": 2.0008,
+          "densTall": 0.4971,
+          "densX": null,
+          "weight": 0.4971
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "row-11",
+      "kind": "text",
+      "note": "due row 11 VALUE 25 OCT 14:00 due, rate already fixed",
+      "grid": "A8:E9",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0,
+        "y": 0.8,
+        "w": 0.5,
+        "h": 0.2
+      },
+      "px": {
+        "x": 0,
+        "y": 712,
+        "w": 672,
+        "h": 178
+      },
+      "aspect": 3.7753,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.9671
+        },
+        {
+          "hex": "#0b4866",
+          "coverage": 0.0182
+        },
+        {
+          "hex": "#949494",
+          "coverage": 0.0054
+        },
+        {
+          "hex": "#696b6b",
+          "coverage": 0.0049
+        },
+        {
+          "hex": "#cbcbcb",
+          "coverage": 0.0044
+        }
+      ],
+      "detail": {
+        "energy": 13.7228
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 86,
+          "capHeightPx": 12.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5891,
+          "advTall": 0.6344,
+          "advX": 0.463,
+          "gap": 0.1359,
+          "xRatio": 0.6155,
+          "stemW": 0.1416,
+          "contrast": 0.943,
+          "serif": 1.7435,
+          "densTall": 0.4849,
+          "densX": 0.6139,
+          "weight": 0.4849
+        },
+        "widthClass": "condensed",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "settle",
+      "kind": "control",
+      "note": "petrol filled button Settle",
+      "grid": "E8:F9",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.4,
+        "y": 0.8,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "px": {
+        "x": 538,
+        "y": 712,
+        "w": 269,
+        "h": 178
+      },
+      "aspect": 1.5112,
+      "palette": [
+        {
+          "hex": "#f8f8f7",
+          "coverage": 0.9238
+        },
+        {
+          "hex": "#0b4867",
+          "coverage": 0.0654
+        },
+        {
+          "hex": "#f4dbd6",
+          "coverage": 0.0044
+        },
+        {
+          "hex": "#898989",
+          "coverage": 0.0034
+        },
+        {
+          "hex": "#585858",
+          "coverage": 0.0031
+        }
+      ],
+      "detail": {
+        "energy": 14.9234
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 6,
+          "capHeightPx": 31.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 3.2961,
+          "advTall": 3.2961,
+          "advX": null,
+          "gap": 0.0634,
+          "xRatio": 0.6909,
+          "stemW": 0.0685,
+          "contrast": 1.023,
+          "serif": null,
+          "densTall": 0.938,
+          "densX": null,
+          "weight": 0.938
+        },
+        "widthClass": "wide",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "inspector-card",
+      "kind": "chrome",
+      "note": "white card with hairline border holding the proof inspector",
+      "grid": "F2:J9",
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0.5,
+        "y": 0.2,
+        "w": 0.5,
+        "h": 0.8
+      },
+      "px": {
+        "x": 672,
+        "y": 178,
+        "w": 672,
+        "h": 712
+      },
+      "aspect": 0.9438,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9784
+        },
+        {
+          "hex": "#c8c8c8",
+          "coverage": 0.0074
+        },
+        {
+          "hex": "#999999",
+          "coverage": 0.0066
+        },
+        {
+          "hex": "#676767",
+          "coverage": 0.0047
+        },
+        {
+          "hex": "#393939",
+          "coverage": 0.0029
+        }
+      ],
+      "detail": {
+        "energy": 12.3654
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "inspector-nav",
+      "kind": "control",
+      "note": "comp shows a petrol caps eyebrow PROOF INSPECTOR · PAYDAY 01; build renders a petrol payday stepper in this box (eyebrow banned by craft floor)",
+      "grid": "F2:H3",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.2,
+        "w": 0.3,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 178,
+        "w": 403,
+        "h": 178
+      },
+      "aspect": 2.264,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9624
+        },
+        {
+          "hex": "#0c0c0c",
+          "coverage": 0.016
+        },
+        {
+          "hex": "#686b6b",
+          "coverage": 0.0086
+        },
+        {
+          "hex": "#c7c7c7",
+          "coverage": 0.0066
+        },
+        {
+          "hex": "#353535",
+          "coverage": 0.0064
+        }
+      ],
+      "detail": {
+        "energy": 22.1856
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 14,
+          "capHeightPx": 19.7,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6592,
+          "advTall": 0.6592,
+          "advX": null,
+          "gap": 0.1014,
+          "xRatio": 0.7316,
+          "stemW": 0.176,
+          "contrast": 0.986,
+          "serif": 1.9398,
+          "densTall": 0.5541,
+          "densX": null,
+          "weight": 0.5541
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "inspector-title",
+      "kind": "text",
+      "note": "heading Why 0.053897 USDC",
+      "grid": "F3:H3",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.3,
+        "w": 0.3,
+        "h": 0.1
+      },
+      "px": {
+        "x": 672,
+        "y": 267,
+        "w": 403,
+        "h": 89
+      },
+      "aspect": 4.5281,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9274
+        },
+        {
+          "hex": "#0f0f0f",
+          "coverage": 0.0361
+        },
+        {
+          "hex": "#6f7174",
+          "coverage": 0.017
+        },
+        {
+          "hex": "#b4b5b6",
+          "coverage": 0.0122
+        },
+        {
+          "hex": "#3d3d3d",
+          "coverage": 0.0074
+        }
+      ],
+      "detail": {
+        "energy": 38.0037
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 48,
+          "capHeightPx": 7,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.3817,
+          "advTall": 0.3817,
+          "advX": null,
+          "gap": 0.3206,
+          "xRatio": null,
+          "stemW": 0.1917,
+          "contrast": 1.0431,
+          "serif": 0.669,
+          "densTall": 0.5641,
+          "densX": null,
+          "weight": 0.5641
+        },
+        "widthClass": "compressed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "value-axis-label",
+      "kind": "text",
+      "note": "small caps 15 OCT · VALUE TIME AXIS",
+      "grid": "F3:G4",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.3,
+        "w": 0.2,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 267,
+        "w": 269,
+        "h": 178
+      },
+      "aspect": 1.5112,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9397
+        },
+        {
+          "hex": "#0c0c0c",
+          "coverage": 0.0189
+        },
+        {
+          "hex": "#ccc8c9",
+          "coverage": 0.0166
+        },
+        {
+          "hex": "#353537",
+          "coverage": 0.0134
+        },
+        {
+          "hex": "#6a6a6b",
+          "coverage": 0.0113
+        }
+      ],
+      "detail": {
+        "energy": 29.4208
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 19.7,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6464,
+          "advTall": 0.6464,
+          "advX": null,
+          "gap": 0.1267,
+          "xRatio": 0.7318,
+          "stemW": 0.1764,
+          "contrast": 1.0015,
+          "serif": 1.9329,
+          "densTall": 0.5621,
+          "densX": null,
+          "weight": 0.5621
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "value-axis",
+      "kind": "chrome",
+      "note": "data chart drawn at runtime: time axis 12:00-15:00, rounds 291 292 293 as markers with labels, 292 ringed petrol, bold payday line at 14:00",
+      "grid": "F4:J6",
+      "codeDrawn": true,
+      "box": {
+        "x": 0.5,
+        "y": 0.4,
+        "w": 0.5,
+        "h": 0.3
+      },
+      "px": {
+        "x": 672,
+        "y": 356,
+        "w": 672,
+        "h": 267
+      },
+      "aspect": 2.5169,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9806
+        },
+        {
+          "hex": "#c1c1c1",
+          "coverage": 0.0062
+        },
+        {
+          "hex": "#838383",
+          "coverage": 0.0059
+        },
+        {
+          "hex": "#404040",
+          "coverage": 0.0053
+        },
+        {
+          "hex": "#111111",
+          "coverage": 0.0018
+        }
+      ],
+      "detail": {
+        "energy": 13.0942
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "settle-axis-label",
+      "kind": "text",
+      "note": "small caps SETTLEMENT TIME AXIS",
+      "grid": "F6:G6",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.6,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "px": {
+        "x": 672,
+        "y": 534,
+        "w": 269,
+        "h": 89
+      },
+      "aspect": 3.0225,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9651
+        },
+        {
+          "hex": "#3c3d3e",
+          "coverage": 0.0184
+        },
+        {
+          "hex": "#c7c9c9",
+          "coverage": 0.0071
+        },
+        {
+          "hex": "#8e9092",
+          "coverage": 0.0064
+        },
+        {
+          "hex": "#1e1e2e",
+          "coverage": 0.003
+        }
+      ],
+      "detail": {
+        "energy": 13.7497
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 21,
+          "capHeightPx": 12.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5774,
+          "advTall": null,
+          "advX": 0.5774,
+          "gap": 0.1195,
+          "xRatio": 0.8387,
+          "stemW": 0.1776,
+          "contrast": 1.1698,
+          "serif": 0.9739,
+          "densTall": null,
+          "densX": 0.5943,
+          "weight": 0.5943
+        },
+        "widthClass": "condensed",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "settle-axis",
+      "kind": "chrome",
+      "note": "data chart drawn at runtime: axis with a break and a vermilion settlement dot labelled settled 25 Oct 13:59, 10 days later",
+      "grid": "F6:J7",
+      "codeDrawn": true,
+      "box": {
+        "x": 0.5,
+        "y": 0.6,
+        "w": 0.5,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 534,
+        "w": 672,
+        "h": 178
+      },
+      "aspect": 3.7753,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9804
+        },
+        {
+          "hex": "#f8d8d0",
+          "coverage": 0.0058
+        },
+        {
+          "hex": "#414141",
+          "coverage": 0.005
+        },
+        {
+          "hex": "#c4c4c4",
+          "coverage": 0.0044
+        },
+        {
+          "hex": "#818181",
+          "coverage": 0.0044
+        }
+      ],
+      "detail": {
+        "energy": 11.6999
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "settle-caption",
+      "kind": "text",
+      "note": "vermilion line Settled 10 days late. The rate did not move.",
+      "grid": "F7:H8",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.7,
+        "w": 0.3,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 623,
+        "w": 403,
+        "h": 178
+      },
+      "aspect": 2.264,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.96
+        },
+        {
+          "hex": "#7f7f7f",
+          "coverage": 0.0205
+        },
+        {
+          "hex": "#f7dcd4",
+          "coverage": 0.0085
+        },
+        {
+          "hex": "#beb5b7",
+          "coverage": 0.0079
+        },
+        {
+          "hex": "#eebdb9",
+          "coverage": 0.0031
+        }
+      ],
+      "detail": {
+        "energy": 16.495
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 3,
+          "glyphs": 81,
+          "capHeightPx": 11.1,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6152,
+          "advTall": 0.6218,
+          "advX": 0.6085,
+          "gap": 0.0937,
+          "xRatio": 0.7655,
+          "stemW": 0.1802,
+          "contrast": 1.028,
+          "serif": 0.2492,
+          "densTall": 0.5721,
+          "densX": 0.6582,
+          "weight": 0.5721
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "proof-ids",
+      "kind": "text",
+      "note": "monospace lines round id 18446744073709551908 and tx 0x82ff…38b7",
+      "grid": "F8:H9",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.8,
+        "w": 0.3,
+        "h": 0.2
+      },
+      "px": {
+        "x": 672,
+        "y": 712,
+        "w": 403,
+        "h": 178
+      },
+      "aspect": 2.264,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9689
+        },
+        {
+          "hex": "#094868",
+          "coverage": 0.0103
+        },
+        {
+          "hex": "#b0afaf",
+          "coverage": 0.009
+        },
+        {
+          "hex": "#6c6c6c",
+          "coverage": 0.008
+        },
+        {
+          "hex": "#f8d5d0",
+          "coverage": 0.0037
+        }
+      ],
+      "detail": {
+        "energy": 13.7218
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 40,
+          "capHeightPx": 10.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6138,
+          "advTall": 0.6138,
+          "advX": 0.632,
+          "gap": 0.1626,
+          "xRatio": 0.7288,
+          "stemW": 0.1745,
+          "contrast": 1.0892,
+          "serif": 1.6082,
+          "densTall": 0.5078,
+          "densX": 0.6131,
+          "weight": 0.5078
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "explorer-link",
+      "kind": "control",
+      "note": "petrol link View on explorer with external icon",
+      "grid": "F9:G9",
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.5,
+        "y": 0.9,
+        "w": 0.2,
+        "h": 0.1
+      },
+      "px": {
+        "x": 672,
+        "y": 801,
+        "w": 269,
+        "h": 89
+      },
+      "aspect": 3.0225,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9543
+        },
+        {
+          "hex": "#084666",
+          "coverage": 0.0244
+        },
+        {
+          "hex": "#cce1ec",
+          "coverage": 0.011
+        },
+        {
+          "hex": "#9e9e9e",
+          "coverage": 0.0053
+        },
+        {
+          "hex": "#575757",
+          "coverage": 0.0049
+        }
+      ],
+      "detail": {
+        "energy": 15.6797
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 12,
+          "capHeightPx": 8.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.7227,
+          "advTall": 0.7227,
+          "advX": null,
+          "gap": 0.2007,
+          "xRatio": 0.7156,
+          "stemW": 0.179,
+          "contrast": 1.1668,
+          "serif": null,
+          "densTall": 0.538,
+          "densX": null,
+          "weight": 0.538
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    }
+  ]
+}

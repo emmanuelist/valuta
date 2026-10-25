@@ -1,0 +1,449 @@
+{
+ "regions": [
+  {
+   "id": "topbar",
+   "kind": "chrome",
+   "box": [
+    0,
+    0,
+    1344,
+    72
+   ],
+   "note": "white top bar with a hairline bottom rule",
+   "grid": "A0:J0",
+   "container": true,
+   "codeDrawn": true
+  },
+  {
+   "id": "brand",
+   "kind": "text",
+   "box": [
+    28,
+    23,
+    87,
+    26
+   ],
+   "note": "wordmark Valuta, refined grotesk, ink",
+   "grid": "A0:A0",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "nav-links",
+   "kind": "text",
+   "box": [
+    194,
+    31,
+    320,
+    17
+   ],
+   "note": "nav links Payrolls, New payroll, Rate lookup",
+   "grid": "B0:D0",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "connect",
+   "kind": "control",
+   "box": [
+    1158,
+    15,
+    157,
+    44
+   ],
+   "note": "petrol filled button Connect wallet",
+   "grid": "I0:J0",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "hero-band",
+   "kind": "chrome",
+   "box": [
+    0,
+    72,
+    1344,
+    148
+   ],
+   "note": "pale cool band with hairline bottom rule",
+   "grid": "A0:J2",
+   "container": true,
+   "codeDrawn": true
+  },
+  {
+   "id": "claim",
+   "kind": "text",
+   "box": [
+    35,
+    111,
+    593,
+    35
+   ],
+   "note": "lead headline MXN 1.00 -> 0.053897 USDC, mono tabular, very large",
+   "grid": "A1:E1",
+   "codeDrawn": true
+  },
+  {
+   "id": "claim-sub",
+   "kind": "text",
+   "box": [
+    35,
+    172,
+    657,
+    16
+   ],
+   "note": "Paid at the Chainlink rate live on 15 Oct, 14:00 UTC. Settled 10 days later. The rate did not move.",
+   "grid": "A1:F2",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "stat-payrolls",
+   "kind": "text",
+   "box": [
+    794,
+    118,
+    54,
+    66
+   ],
+   "note": "live number 2 over label payrolls",
+   "grid": "F1:G2",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "stat-paydays",
+   "kind": "text",
+   "box": [
+    950,
+    118,
+    110,
+    66
+   ],
+   "note": "live number 10 over label paydays settled",
+   "grid": "H1:H2",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "stat-paid",
+   "kind": "text",
+   "box": [
+    1143,
+    119,
+    158,
+    65
+   ],
+   "note": "live number 0.539189 over label USDC paid",
+   "grid": "I1:J2",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "ledger-card",
+   "kind": "chrome",
+   "container": true,
+   "box": [
+    18,
+    237,
+    700,
+    624
+   ],
+   "note": "white card with hairline border holding the payroll statement",
+   "grid": "A2:F9",
+   "codeDrawn": true
+  },
+  {
+   "id": "ledger-header",
+   "kind": "text",
+   "box": [
+    40,
+    263,
+    428,
+    18
+   ],
+   "note": "Payroll No. 1 \u00b7 MXN 1.00 per day \u00b7 Reserve 0.560811 USDC",
+   "grid": "A2:D3",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-01",
+   "kind": "text",
+   "box": [
+    24,
+    304,
+    693,
+    58
+   ],
+   "note": "selected row: tint, number 01, VALUE 15 OCT 14:00, rate, round, amount, vermilion settled 10d late tag",
+   "grid": "A3:F4",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-02",
+   "kind": "text",
+   "box": [
+    40,
+    381,
+    657,
+    26
+   ],
+   "note": "row 02 with settled 9d late tag",
+   "grid": "A4:F4",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-03",
+   "kind": "text",
+   "box": [
+    40,
+    444,
+    657,
+    25
+   ],
+   "note": "row 03 with settled 8d late tag",
+   "grid": "A4:F5",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-04",
+   "kind": "text",
+   "box": [
+    40,
+    506,
+    657,
+    25
+   ],
+   "note": "row 04 with settled 7d late tag",
+   "grid": "A5:F5",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-05",
+   "kind": "text",
+   "box": [
+    40,
+    568,
+    657,
+    25
+   ],
+   "note": "row 05 with settled 6d late tag",
+   "grid": "A6:F6",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-06",
+   "kind": "text",
+   "box": [
+    40,
+    627,
+    657,
+    25
+   ],
+   "note": "row 06 with settled 5d late tag",
+   "grid": "A7:F7",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-07",
+   "kind": "text",
+   "box": [
+    40,
+    682,
+    657,
+    26
+   ],
+   "note": "row 07 with settled 4d late tag",
+   "grid": "A7:F7",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-08",
+   "kind": "text",
+   "box": [
+    40,
+    737,
+    657,
+    26
+   ],
+   "note": "row 08 with settled 3d late tag",
+   "grid": "A8:F8",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "row-11",
+   "kind": "text",
+   "box": [
+    41,
+    792,
+    540,
+    32
+   ],
+   "note": "due row 11 VALUE 25 OCT 14:00 due, rate already fixed",
+   "grid": "A8:E9",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "settle",
+   "kind": "control",
+   "box": [
+    593,
+    792,
+    104,
+    32
+   ],
+   "note": "petrol filled button Settle",
+   "grid": "E8:F9",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "inspector-card",
+   "kind": "chrome",
+   "container": true,
+   "box": [
+    733,
+    237,
+    589,
+    624
+   ],
+   "note": "white card with hairline border holding the proof inspector",
+   "grid": "F2:J9",
+   "codeDrawn": true
+  },
+  {
+   "id": "inspector-nav",
+   "kind": "control",
+   "box": [
+    753,
+    263,
+    201,
+    11
+   ],
+   "note": "comp shows a petrol caps eyebrow PROOF INSPECTOR \u00b7 PAYDAY 01; build renders a petrol payday stepper in this box (eyebrow banned by craft floor)",
+   "grid": "F2:H3",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "inspector-title",
+   "kind": "text",
+   "box": [
+    753,
+    293,
+    237,
+    26
+   ],
+   "note": "heading Why 0.053897 USDC",
+   "grid": "F3:H3",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "value-axis-label",
+   "kind": "text",
+   "box": [
+    753,
+    348,
+    175,
+    11
+   ],
+   "note": "small caps 15 OCT \u00b7 VALUE TIME AXIS",
+   "grid": "F3:G4",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "value-axis",
+   "kind": "chrome",
+   "box": [
+    753,
+    385,
+    549,
+    159
+   ],
+   "note": "data chart drawn at runtime: time axis 12:00-15:00, rounds 291 292 293 as markers with labels, 292 ringed petrol, bold payday line at 14:00",
+   "grid": "F4:J6",
+   "codeDrawn": true
+  },
+  {
+   "id": "settle-axis-label",
+   "kind": "text",
+   "box": [
+    753,
+    579,
+    160,
+    11
+   ],
+   "note": "small caps SETTLEMENT TIME AXIS",
+   "grid": "F6:G6",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "settle-axis",
+   "kind": "chrome",
+   "box": [
+    753,
+    592,
+    549,
+    92
+   ],
+   "note": "data chart drawn at runtime: axis with a break and a vermilion settlement dot labelled settled 25 Oct 13:59, 10 days later",
+   "grid": "F6:J7",
+   "codeDrawn": true
+  },
+  {
+   "id": "settle-caption",
+   "kind": "text",
+   "box": [
+    753,
+    706,
+    285,
+    16
+   ],
+   "note": "vermilion line Settled 10 days late. The rate did not move.",
+   "grid": "F7:H8",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "proof-ids",
+   "kind": "text",
+   "box": [
+    753,
+    771,
+    238,
+    39
+   ],
+   "note": "monospace lines round id 18446744073709551908 and tx 0x82ff\u202638b7",
+   "grid": "F8:H9",
+   "codeDrawn": true,
+   "snap": false
+  },
+  {
+   "id": "explorer-link",
+   "kind": "control",
+   "box": [
+    753,
+    825,
+    143,
+    18
+   ],
+   "note": "petrol link View on explorer with external icon",
+   "grid": "F9:G9",
+   "codeDrawn": true,
+   "snap": false
+  }
+ ]
+}

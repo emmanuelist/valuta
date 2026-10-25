@@ -18,7 +18,7 @@ _Last verified: 2026-10-25 ~12:00 UTC, before the first commit_
 | nothing yet | | | |
 
 ## Broken or unverified
-- Studio turn 1 (`prompts/01-contracts.md`) is running in session `asof`. Output **unverified**. Raw result: `internal/studio/01-result.json`.
+- Studio turn 1 (`prompts/01-contracts.md`) is running in session `asof`. Output **unverified**. Raw result: `internal/studio/01-result.json`. If this session dies, recover with `arc-studio attach --session asof`, inspect with `arc-studio ls --session asof`, and get the project URL with `arc-studio apps`.
 - Whether Studio's sandbox runs tests under Arc semantics is **unverified** (#2 covers it with local arc-forge).
 
 ## Open questions

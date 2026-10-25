@@ -56,3 +56,15 @@ Append-only. To change a decision, add a new entry that supersedes it.
 **Context:** Studio's sandbox ships a Vite app: React 18.3, Vite 6, wagmi 2.19, viem 2.57.5 (pinned through overrides), ConnectKit, Tailwind 3, oxlint, TypeScript ~7.0, bun 1.3.14. Foundry: solc 0.8.30, `via_ir = true` (Studio enabled it after stack-too-deep), `evm_version = cancun`.
 **Decision:** keep it. Swapping frameworks would break the "built in Arc Studio" line (D-002) and cost a day. The visual layer is ours to restyle through Studio round-trips.
 **Consequences:** UI work happens inside this stack. Locally, bun 1.2.21 installs the 1.3.14 lockfile fine (`bun install --frozen-lockfile`, 832 packages).
+
+## D-012 · The product is named Valuta · 2026-10-25 · supersedes D-008
+**Context:** the builder asked for a more professional name than "Asof".
+**Decision:** **Valuta**. It is a banking word meaning both *currency* and *value date* (the date whose value applies to a payment, whenever the money actually moves), which is the product's claim. Checked 2026-10-25: no fintech or crypto brand by that name in search results, no Arc entry, and the GitHub name was free. The thesis is unchanged.
+**Consequences:**
+- The contract is renamed `Valuta` by Studio (turn 3) **before** the mainnet deploy, so the verified contract carries the final name. The `asOf()` view keeps its name, because it describes what the function does.
+- The repo is renamed to `emmanuelist/valuta`; GitHub redirects the old URL.
+- prompts/01 and prompts/02 still say Asof, because they are the verbatim record of what was sent.
+
+## D-013 · Funded from the Setoff leftovers · 2026-10-25 · resolves the pending part of D-006
+**Decision:** the builder chose to fund from the Setoff wallets rather than Binance. Six transfers moved 2.76 USDC: EMPLOYER 2.30, STRANGER 0.25, DEPLOYER 0.15, WORKER_MX 0.03, WORKER_BR 0.03 (E-008). About 2.15 USDC stays in the Setoff wallets for the builder's own withdrawal to Binance.
+**Consequences:** after judging, the payroll is ended, the reserve reclaimed, and every wallet swept back to the builder's Binance deposit address. That needs this laptop, because the keys exist only in `.env`.

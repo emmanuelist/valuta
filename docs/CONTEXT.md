@@ -64,7 +64,7 @@ Arc Studio facts (agent guide, 2026-10-25):
 ## Wallets (addresses only; keys in `.env`, mode 600)
 | Role | Address | Purpose |
 |---|---|---|
-| DEPLOYER | `0x4c5FF78aea285dC6243624524E107A2121E98771` | deploys Asof |
+| DEPLOYER | `0x4c5FF78aea285dC6243624524E107A2121E98771` | deploys Valuta |
 | EMPLOYER | `0x248A4E26013A1085b71009C6b052e987cE7500e2` | creates and funds payrolls |
 | WORKER_MX | `0xCF280b429E3b6a52cC11794fb0789C5227d182Dc` | paid in MXN-indexed USDC |
 | WORKER_BR | `0x7fC019E5dae40F5430f6F991f80C1a1ec31347C2` | paid in BRL-indexed USDC |

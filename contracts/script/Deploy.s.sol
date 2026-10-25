@@ -2,11 +2,11 @@
 pragma solidity ^0.8.30;
 
 import "forge-std/Script.sol";
-import "../Asof.sol";
+import "../Valuta.sol";
 import "../TestFeed.sol";
 
 // ---------------------------------------------------------------------------
-// Deploy script for Asof.
+// Deploy script for Valuta.
 //
 // TWO MODES, selected via the environment variable DEPLOY_MODE:
 //
@@ -15,10 +15,10 @@ import "../TestFeed.sol";
 //     • Seeds each with ~10 days of realistic history, two rounds per day,
 //       small daily moves, and one gap longer than 25 hours so stale-fallback
 //       paydays can be exercised.
-//     • Deploys Asof with those three currencies and maxAge = 90_000 (25 h).
+//     • Deploys Valuta with those three currencies and maxAge = 90_000 (25 h).
 //
 //   DEPLOY_MODE=mainnet
-//     • Broadcasts a real deployment of Asof on Arc mainnet (chain 5042) using
+//     • Broadcasts a real deployment of Valuta on Arc mainnet (chain 5042) using
 //       the 8 real Chainlink proxy addresses hard-coded below.
 //     • This mode is intended to be run by the project owner with their own key:
 //         DEPLOY_MODE=mainnet forge script contracts/script/Deploy.s.sol \
@@ -76,17 +76,17 @@ contract Deploy is Script {
         codes[7] = "ARS"; feeds[7] = MAINNET_USD_ARS; inv[7] = true;
 
         vm.startBroadcast();
-        Asof asof = new Asof(codes, feeds, inv, MAX_AGE);
+        Valuta asof = new Valuta(codes, feeds, inv, MAX_AGE);
         vm.stopBroadcast();
 
-        console.log("=== Asof Mainnet Deploy ===");
-        console.log("Asof:", address(asof));
+        console.log("=== Valuta Mainnet Deploy ===");
+        console.log("Valuta:", address(asof));
         console.log("maxAge:", MAX_AGE);
     }
 
     // ── Testnet deploy ─────────────────────────────────────────────────────
     // Deploys one TestFeed per currency for MXN, BRL and EUR only.
-    // Registers only those three currencies in Asof (sufficient for testnet demos).
+    // Registers only those three currencies in Valuta (sufficient for testnet demos).
     function _deployTestnet() internal {
         vm.startBroadcast();
 
@@ -119,12 +119,12 @@ contract Deploy is Script {
         codes[1] = "BRL"; feeds[1] = address(feedBRL); inv[1] = false;
         codes[2] = "EUR"; feeds[2] = address(feedEUR); inv[2] = false;
 
-        Asof asof = new Asof(codes, feeds, inv, MAX_AGE);
+        Valuta asof = new Valuta(codes, feeds, inv, MAX_AGE);
 
         vm.stopBroadcast();
 
-        console.log("=== Asof Testnet Deploy ===");
-        console.log("Asof:        ", address(asof));
+        console.log("=== Valuta Testnet Deploy ===");
+        console.log("Valuta:        ", address(asof));
         console.log("TestFeed MXN:", address(feedMXN));
         console.log("TestFeed BRL:", address(feedBRL));
         console.log("TestFeed EUR:", address(feedEUR));

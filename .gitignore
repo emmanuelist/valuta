@@ -1,0 +1,21 @@
+# strategy, research and raw Studio results
+internal/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# dependencies and build output
+node_modules/
+dist/
+out/
+cache/
+coverage/
+broadcast/*/dry-run/
+
+# tool scratch
+.playwright-mcp/
+.arc-studio/
+.vercel/
+.DS_Store

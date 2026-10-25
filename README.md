@@ -53,14 +53,16 @@ Round 293 was published at 14:06 on 15 Oct, six minutes after payday 1. Settling
 
 **The ledger is one read.** `payslips(1, 0, 64)` returns every payslip, with its round, rate, amount, settler and settlement block, in a single `eth_call`. The settlement transaction comes from one single-block log query, never a scan.
 
-**Refusals, by name**, run against the live contract as read-only calls:
+**Refusals, by name**, captured from the live contract as read-only calls while payroll 2's 16:00 payday was due ([E-021](docs/EVIDENCE.md)):
 
 | Attempt | Refused with |
 |---|---|
-| Price payday 1 at round 291 or 293 instead of 292 | `NotAsOfPayday(1792072800, round)` |
-| Employer reclaims the reserve while paydays are due | `UnsettledPaydays` |
+| Price the payday at round 205 instead of its as-of round 206 | `NotAsOfPayday(1792944000, 205)` |
+| Price it at round 207, which hadn't been published yet | `BadAnswer` |
+| Employer reclaims the reserve while the payday is due | `UnsettledPaydays` |
 | Reclaim more than the reserve | `InsufficientReserve` |
 | A stranger reclaims someone else's reserve | `NotEmployer` |
+| *Control:* settle with round 206 | succeeds |
 
 **It keeps running.** Payroll 2 pays BRL 0.10 every two hours. Each payday is settled within minutes and is stored as a payslip you can read.
 

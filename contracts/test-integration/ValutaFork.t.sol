@@ -213,4 +213,77 @@ contract ValutaForkTest is Test {
 
         assertEq(asof.payrollCount(), before + 1);
     }
+
+    // ── payslips() matches PaydaySettled events after back-pay ───────────
+    // Creates a 10-day MXN back-pay payroll, settles all paydays, then reads
+    // payslips(id, 0, 10) and asserts each payslip matches the corresponding
+    // PaydaySettled event (roundId, answer, usdc, paid + credited).
+    function test_Fork_Payslips_MatchEvents() public onlyFork {
+        uint256 salary  = 500e18;
+        uint256 count   = 10;
+        uint256 period  = 1 days;
+        uint256 startTs = block.timestamp - 10 days + 1 hours;
+
+        vm.prank(employer);
+        uint256 id = asof.create{value: 50_000 ether}(worker, "MXN", salary, startTs, period, count);
+
+        // Arrays to capture expected values from events.
+        uint80[]  memory expRoundIds  = new uint80[](count);
+        uint256[] memory expUsdc      = new uint256[](count);
+        uint256[] memory expPaid      = new uint256[](count);
+        uint256[] memory expCredited  = new uint256[](count);
+
+        bytes32 evtSig = keccak256(
+            "PaydaySettled(uint256,uint256,uint256,uint80,int256,uint256,uint256,uint256,uint256,uint256,address)"
+        );
+
+        uint256 actualCount = 0;
+        for (uint256 i = 0; i < count; i++) {
+            uint256 pdTs = startTs + i * period;
+            if (pdTs > block.timestamp) break;
+
+            (uint80 rid,,) = asof.asOf("MXN", pdTs);
+
+            vm.recordLogs();
+            uint80[] memory rids = new uint80[](1);
+            rids[0] = rid;
+            asof.settle(id, rids);
+            Vm.Log[] memory logs = vm.getRecordedLogs();
+
+            for (uint256 j = 0; j < logs.length; j++) {
+                if (logs[j].topics[0] == evtSig) {
+                    uint80 evtRid;
+                    uint256 evtUsdc; uint256 evtPaid; uint256 evtCredited;
+                    (,, evtRid,,,  evtUsdc, evtPaid, evtCredited,,) =
+                        abi.decode(logs[j].data,
+                            (uint256,uint256,uint80,int256,uint256,
+                             uint256,uint256,uint256,uint256,address));
+                    expRoundIds[actualCount] = evtRid;
+                    expUsdc[actualCount]     = evtUsdc;
+                    expPaid[actualCount]     = evtPaid;
+                    expCredited[actualCount] = evtCredited;
+                }
+            }
+            actualCount++;
+        }
+
+        // Read payslips batch.
+        Valuta.Payslip[] memory pss = asof.payslips(id, 0, 10);
+        assertEq(pss.length, actualCount, "payslips length == paydays settled");
+
+        for (uint256 i = 0; i < actualCount; i++) {
+            assertEq(pss[i].roundId,  expRoundIds[i], "roundId");
+            assertEq(pss[i].usdc,     expUsdc[i],     "usdc");
+            assertEq(pss[i].paid,     expPaid[i],     "paid");
+            assertEq(pss[i].credited, expCredited[i], "credited");
+            // arrearsAdded identity
+            assertEq(
+                pss[i].usdc - pss[i].paid - pss[i].credited,
+                expUsdc[i] - expPaid[i] - expCredited[i],
+                "arrears identity"
+            );
+        }
+
+        emit log_named_uint("[FORK] paydays settled and matched in payslips", actualCount);
+    }
 }

@@ -61,6 +61,14 @@ Arc Studio facts (agent guide, 2026-10-25):
 - **`PREVRANDAO` is always 0.** Not relevant to Asof; noted to stop anyone using it.
 - **Contract verification:** the explorer API returned Cloudflare 403 from the CLI in round 1. Sourcify supports 5042 (`--verifier sourcify`). Reported 2026-09; re-check at deploy.
 
+## Valuta deployments (mainnet)
+| Version | Address | Status |
+|---|---|---|
+| **v2 (current)**: on-chain payslips, batch views, checked casts | `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a` (deploy block 27,804,867) | live, Sourcify exact match (E-016) |
+| v1 | `0x2bDF0F489687a57a0E63E609281C3eC86dda76e9` | retired: payrolls ended, reserves reclaimed (E-015); history kept (E-011 to E-014) |
+
+App read path (D-015): `payrolls(1, 64)` for the list, `payslips(id, 0, 64)` for the ledger, and `duePreview(id, 32)` for what's owed. Use `eth_getLogs` only for a single `settledBlock` (public RPCs cap ranges below 10,000 blocks).
+
 ## Wallets (addresses only; keys in `.env`, mode 600)
 | Role | Address | Purpose |
 |---|---|---|

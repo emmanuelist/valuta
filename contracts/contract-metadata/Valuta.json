@@ -1,13 +1,34 @@
 {
-  "contractAddress": "0x807aecf42b356ee43abf95a83343e4bf3bd08516",
+  "contractAddress": "0x652b4a76ed68eb1f359ac861c3224cc2db6cf6eb",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/Valuta.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/Valuta.sol/Valuta.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x807aecf42b356ee43abf95a83343e4bf3bd08516"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x652b4a76ed68eb1f359ac861c3224cc2db6cf6eb"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x652b4a76ed68eb1f359ac861c3224cc2db6cf6eb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x652b4a76ed68eb1f359ac861c3224cc2db6cf6eb",
+      "txHash": "0xaae57147ef3af77c52a5506c382c89ac37c0816c20f48e226a3279dad4dfaf77",
+      "deployedAt": "2026-10-25T13:48:25.998Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x3a95e355464b7bccbafd5a18fd608bd48558d647",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x3a95e355464b7bccbafd5a18fd608bd48558d647",
+      "txHash": "0xb43eb475fd5c06c61b181926d2d104363cf2b2e623be107f9acb165cc1ed1c12",
+      "deployedAt": "2026-10-25T13:34:23.848Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x70592c4430bf3fce755667351d4272ef50434a9b",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x70592c4430bf3fce755667351d4272ef50434a9b",
+      "txHash": "0x19ab2967fbaf3f33e114f5756bc0281f55617274ce0f08322572db55942801cb",
+      "deployedAt": "2026-10-25T13:24:42.725Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x807aecf42b356ee43abf95a83343e4bf3bd08516",
@@ -168,6 +189,57 @@
           "name": "n",
           "type": "uint256",
           "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "duePreview",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "n",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "tuple[]",
+          "internalType": "struct Valuta.DueQuote[]",
+          "components": [
+            {
+              "name": "payday",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "roundId",
+              "type": "uint80",
+              "internalType": "uint80"
+            },
+            {
+              "name": "answer",
+              "type": "int256",
+              "internalType": "int256"
+            },
+            {
+              "name": "roundUpdatedAt",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "usdc",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
         }
       ],
       "stateMutability": "view"
@@ -337,6 +409,244 @@
               "name": "arrears",
               "type": "uint256",
               "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "payrolls",
+      "inputs": [
+        {
+          "name": "fromId",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "n",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "tuple[]",
+          "internalType": "struct Valuta.Payroll[]",
+          "components": [
+            {
+              "name": "employer",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "worker",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "currency",
+              "type": "bytes3",
+              "internalType": "bytes3"
+            },
+            {
+              "name": "salary",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "start",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "period",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "count",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "settled",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "endedAt",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "reserve",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "arrears",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "payslip",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "i",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct Valuta.Payslip",
+          "components": [
+            {
+              "name": "payday",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "roundUpdatedAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "settledAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "settledBlock",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "roundId",
+              "type": "uint80",
+              "internalType": "uint80"
+            },
+            {
+              "name": "settler",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "answer",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "usdc",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "paid",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "credited",
+              "type": "uint128",
+              "internalType": "uint128"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "payslips",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "from",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "n",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "tuple[]",
+          "internalType": "struct Valuta.Payslip[]",
+          "components": [
+            {
+              "name": "payday",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "roundUpdatedAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "settledAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "settledBlock",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "roundId",
+              "type": "uint80",
+              "internalType": "uint80"
+            },
+            {
+              "name": "settler",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "answer",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "usdc",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "paid",
+              "type": "uint128",
+              "internalType": "uint128"
+            },
+            {
+              "name": "credited",
+              "type": "uint128",
+              "internalType": "uint128"
             }
           ]
         }
@@ -656,6 +966,11 @@
     },
     {
       "type": "error",
+      "name": "CastOverflow",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "InsufficientReserve",
       "inputs": []
     },
@@ -692,6 +1007,11 @@
     },
     {
       "type": "error",
+      "name": "NotSettled",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "NothingDue",
       "inputs": []
     },
@@ -708,6 +1028,11 @@
     {
       "type": "error",
       "name": "ReentrantCall",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "SalaryTooLarge",
       "inputs": []
     },
     {

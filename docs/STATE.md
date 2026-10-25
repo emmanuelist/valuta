@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-25 ~14:20 UTC at c14bf85 (branch 6-app)_
+_Last verified: 2026-10-25 ~23:15 UTC at e761986 (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** when Studio turn 7 (`prompts/07-app.md` plus `07-app-spec.md`, the app) completes, pull it, run it locally, capture the first viewport at 1344×890, and run the Impeccable hero gate (`build-phase record hero`, then `advance`) (#6)
+**Next action:** when the Studio daily limit frees up (`arc-studio usage --json` below 100%; expected around 2026-10-26 12:00 UTC), send `prompts/08-redesign-hero.md` with `--file <abs>/prompts/08-redesign-spec.md --file <abs>/.impeccable/mocks/redesign-a-specimen.png --detach`, then attach. After it lands: pull, run locally, Impeccable hero gate at 1344×760, then prompts 09 and 10, re-run the critique (target ≥ 32/40), Vercel, film, submit (#6)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -26,10 +26,11 @@ _Last verified: 2026-10-25 ~14:20 UTC at c14bf85 (branch 6-app)_
 | Repo (private until 2026-10-27) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-25 |
 
 ## Design (Impeccable, comp-led)
-- PRODUCT.md written. Light theme is the default (builder's rule).
-- The builder approved the composite `.impeccable/mocks/comp-4-combined.png`: comp-3's claim band plus comp-2's ledger and proof inspector.
-- Direction contract: `.impeccable/surfaces/src-app-tsx.md`. Build phase: comps ✓ spec ✓ plates ✓ (none) → **hero** (open).
-- Higgsfield credits are exhausted. The builder can supply another account if more images are needed.
+- Critique baseline **19/40** (dual-agent, 2026-10-25), craft 4/10 against Setoff 8 and Warrant 9: `.impeccable/critique/2026-10-25T22-26-13Z__src-app-tsx.md`.
+- **Redesign (D-017):** the payslip is the hero. The approved comp is `.impeccable/mocks/redesign-a-specimen.png` (A, Specimen).
+- The spec has 20 pixel-exact regions and 0 plates. Faces are Hanken Grotesk and Spline Sans Mono (D-018).
+- Build phase: comps ✓ spec ✓ → plates gate waits on the **component review**: the builder accepts at http://127.0.0.1:61685/ (session d75619c3…).
+- Higgsfield: 4 credits left on the builder's new workspace.
 
 ## Broken or unverified
 - The app does not exist yet. Studio turn 7 is running detached; recover with `arc-studio attach --session asof --output json`.

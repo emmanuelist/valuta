@@ -134,3 +134,13 @@ The same pass makes two more changes:
 
 The superseded drafts moved to `internal/prompts-unsent/`.
 **Consequences:** one more Studio turn than planned. If capacity runs short, 11 is the turn to trim, since /new and /lookup already work from turn 7.
+
+## D-020 · Payroll 3 (EUR, daily to 4 Dec) keeps the app live through judging · 2026-10-25 · accepted
+**Context:** the keeper runs only on the builder's laptop, which travels on 2026-10-28. Payroll 2's last payday is 2026-10-28 12:00 UTC and payroll 1's is 2026-11-03 14:00 UTC, while judging starts after 2026-11-02 04:59 UTC. Without a new payroll, judges looking after 3 Nov would see nothing upcoming. The claim also names euros, and no payroll paid in them.
+**Decision (the builder's yes):** payroll 3, EUR 0.01 a day at 14:00 UTC from 2026-10-26, 40 paydays to 2026-12-04, reserve 0.47 USDC (40 × 0.011202 at EUR/USD 1.1203, with headroom for a stronger euro), paid to a fresh wallet WORKER_EU (E-023).
+**Consequences:**
+- The countdown always has a value date ahead during judging.
+- After 2026-10-28 no keeper runs, so due paydays wait with their amounts fixed. Judges can settle them, or try to cheat them.
+- The README and footer must say this plainly instead of "settled within minutes".
+- After judging, end payroll 3, reclaim its reserve and sweep WORKER_EU with the other wallets.
+

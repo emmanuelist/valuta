@@ -82,6 +82,7 @@ App read path (D-015): `payrolls(1, 64)` for the list, `payslips(id, 0, 64)` for
 | WORKER_MX | `0xCF280b429E3b6a52cC11794fb0789C5227d182Dc` | paid in MXN-indexed USDC |
 | WORKER_BR | `0x7fC019E5dae40F5430f6F991f80C1a1ec31347C2` | paid in BRL-indexed USDC |
 | STRANGER | `0xe5CAd734abc7d9ADed5Ec0d171FE451d38aBCaC3` | settles a payday it has nothing to do with |
+| WORKER_EU | `0x009794DdbEe1a72aAeAb7Fb37E698295d0383e34` | paid in EUR-indexed USDC (payroll 3, created 2026-10-25) |
 
 ## Environment
 | Var | Purpose | Where to get it |

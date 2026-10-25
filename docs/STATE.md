@@ -1,5 +1,5 @@
 # State
-_Last verified: 2026-10-25 23:30 UTC at 64e1177 (branch 6-app)_
+_Last verified: 2026-10-25 23:45 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
@@ -13,7 +13,7 @@ _Last verified: 2026-10-25 23:30 UTC at 64e1177 (branch 6-app)_
 | Whole payslip ledger in one `eth_call`; settlement tx by single-block `getLogs` | timed reads against mainnet | E-019 |
 | Stranger settled 10 overdue paydays on v2, each at its own round | tx and payslip read-back | E-019 |
 | 96 tests pass under Arc semantics (fork tests on live feeds included) | `arc-forge test --network arc` | E-017 |
-| Keeper settles due paydays every 10 min (payroll 1 daily, payroll 2 every 2 h); it caught up after the laptop slept | `internal/keeper.log`: 14:10 to 22:02 UTC, payroll 2 at 5 of 5 settled | — |
+| Keeper settles due paydays every 10 min (payrolls 1 and 3 daily, payroll 2 every 2 h); it caught up after the laptop slept; restarted for payroll 3 at 23:38 UTC | `internal/keeper.log`: 14:10 to 22:02 UTC, payroll 2 at 5 of 5 settled | — |
 
 ## Deployed
 | What | Network | Address / URL | Last checked |
@@ -21,6 +21,7 @@ _Last verified: 2026-10-25 23:30 UTC at 64e1177 (branch 6-app)_
 | **Valuta v2** | **Arc mainnet** | `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a` | 2026-10-25 14:15 UTC |
 | Payroll #1: MXN 1.00 daily, back pay from 10-15 (20 paydays) | v2 | id 1: 11 settled (10 by STRANGER, late; 1 by keeper, on time), reserve 0.5072 USDC | 2026-10-25 23:10 UTC |
 | Payroll #2: BRL 0.10 every 2 h from 10-25 14:00 (36 paydays) | v2 | id 2: 5 settled, reserve 0.6496 USDC | 2026-10-25 23:10 UTC |
+| Payroll #3: EUR 0.01 daily at 14:00 UTC from 10-26 (40 paydays, to 12-04) | v2 | id 3: 0 settled, reserve 0.47 USDC, first payday 10-26 14:00 UTC (E-023) | 2026-10-25 23:40 UTC |
 | Valuta v1 (retired) | Arc mainnet | `0x2bDF0F489687a57a0E63E609281C3eC86dda76e9` | ended and reclaimed |
 | Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-25 |
 | Repo (private until 2026-10-27) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-25 |

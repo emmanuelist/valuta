@@ -46,3 +46,13 @@ Append-only. To change a decision, add a new entry that supersedes it.
 ## D-009 · Cuts for the 2.5-day build · 2026-10-25 · accepted
 **Decision:** not building reserve yield through Earn Kit (it would need verified mainnet vaults, and the yields on demo amounts are invisible), cross-chain funding (more surface, not needed for the claim), a multi-employer dashboard (the claim needs one payroll and its payslips), or gas rebates for settlers (gasback already shows that mechanism).
 **Consequences:** these move to the "potential to go further" section of the README.
+
+## D-010 · Bound payout gas, because a worker contract could lock the employer's reserve · 2026-10-25 · accepted
+**Context:** a review of Studio's turn-1 `Asof.sol` found that `_tryTransfer` forwards all gas and copies return data. A worker that is a contract can burn the gas in `receive()` and make `settle` revert, so no payday settles and `reclaim` stays blocked by `UnsettledPaydays`. Studio's three audit rounds did not flag it.
+**Decision:** payouts triggered by a third party (`settle`, and arrears in `fund`) use a 50,000-gas stipend and an assembly `call` without return-data copy, then fall back to credit as before. `withdraw` and `reclaim` forward all gas (the caller is the recipient), also without copying return data. The fix is written by Studio (turn 2, `prompts/02-hardening.md`), with tests for a gas-burning worker and a huge-revert worker.
+**Consequences:** a recipient whose `receive` needs more than 50k gas is credited instead of pushed, and can still `withdraw` with full gas.
+
+## D-011 · Keep the stack Studio generated · 2026-10-25 · accepted
+**Context:** Studio's sandbox ships a Vite app: React 18.3, Vite 6, wagmi 2.19, viem 2.57.5 (pinned through overrides), ConnectKit, Tailwind 3, oxlint, TypeScript ~7.0, bun 1.3.14. Foundry: solc 0.8.30, `via_ir = true` (Studio enabled it after stack-too-deep), `evm_version = cancun`.
+**Decision:** keep it. Swapping frameworks would break the "built in Arc Studio" line (D-002) and cost a day. The visual layer is ours to restyle through Studio round-trips.
+**Consequences:** UI work happens inside this stack. Locally, bun 1.2.21 installs the 1.3.14 lockfile fine (`bun install --frozen-lockfile`, 832 packages).

@@ -39,7 +39,7 @@ The payslip is printed as a **security document**: crisp white paper on a cool-w
   - links underline with an offset
 
 ## 2. Home and `/payroll/:id`: first viewport at 1344×760
-The home page shows the featured payroll: the payroll with the most settled payslips.
+The home page features **payroll 1** (`FEATURED_PAYROLL_ID = 1n` in config). Its first payslip was settled nine days late by a stranger at payday's rate, so it shows the claim in one object. Don't pick the payroll by "most settled": payroll 2 settles every 2 h and would take over. `/payroll/:id` shows any payroll.
 - **Top bar** (0, 0, 1344, 63): ground colour, with a bottom hairline.
   - wordmark "Valuta" (21, 21), Hanken 600, 30px
   - links "Payrolls · New payroll · Rate lookup" (175, 25), 17px
@@ -50,6 +50,7 @@ The home page shows the featured payroll: the payroll with the most settled pays
   - amber outline and tint, clock icon, live each second: "Payroll 2 · next value date in 01:59:41"
   - it counts down to the soonest upcoming payday across all payrolls
   - at zero it reads "Fixing now…", then that payday appears as DUE with its fixed amount
+  - if no payroll has an upcoming payday: "No value dates ahead", in quiet secondary text with no amber
 - **The payslip** (478, 75, 846, 474): the signature object. It shows the selected payslip; on load, the featured payroll's first payslip. Contents:
   - **header** (512, 109): mono 14px small caps, "VALUTA PAYSLIP · No. 01 of 20 · PAYROLL 1"
   - **value-date stamp** (936, 113, 362×79):
@@ -71,7 +72,7 @@ The home page shows the featured payroll: the payroll with the most settled pays
     - due payslips show the seal outline only; upcoming ones show none
   - **three facts** (514, 399, 282×78): each line with a lucide CircleCheck in petrol and mono 15px text, computed from chain reads:
     - "Round 292 was live at 14:00", from `getRoundData(r).updatedAt ≤ payday`
-    - "Round 293 came at 14:06", from `getRoundData(r+1).updatedAt > payday`. If r is the latest: "No newer round yet".
+    - "Round 293 came at 14:06", from `getRoundData(r+1).updatedAt > payday`. If r is the latest: "No newer round yet". Trap: on these feeds, `getRoundData` past the latest round returns all zeros instead of reverting, so treat `updatedAt == 0` as "No newer round yet", never as a 1970 time.
     - "10 minutes old, inside 25 h", from payday − updatedAt against `maxAge()`. Stale-fallback case: "Live round was 27 h old; priced at the next round".
   - **footer** (512, 520): mono 14px
     - "settled 25 Oct 13:59 by 0xe5CA…aBC3, not the employer · tx 0x82ff…38b7 · Verify on Arc ↗"
@@ -122,5 +123,9 @@ The paid amount rolls its digits to the new value (280 ms) and then **never move
   - the facts computed from the preview round
   - footer actions:
     - **Settle now**: if not connected, open the wallet connect instead of a disabled button. Simulate first, then write. Then show a receipt card (tx link, "settled by you") that stays until dismissed.
-    - **Try to cheat it**: a read-only `eth_call` of `settle(id, [round+1])` from the visitor's address, or from the zero address if not connected. Show the chain's decoded error as a red **VOID** stamp: "NotAsOfPayday: the contract refused round 293 for this payday."
+    - **Try to cheat it**: a read-only `eth_call` of `settle(id, rounds)` from the visitor's address, or from the zero address if not connected.
+      - `settle` works in order from the first unsettled payday. So `rounds` holds the correct `duePreview` rounds for any due paydays before this one, then **one wrong round** for this payday.
+      - The wrong round is r+1 if it has been published, which is the late employer waiting for a better rate. Otherwise it is r−1. Never send an unpublished r+1: the chain answers `BadAnswer` for it (captured on mainnet, E-021), which proves nothing about the rate.
+      - Decode the revert with the ABI and show the error's real name and arguments, never hardcoded text. Show a red **VOID** stamp: "NotAsOfPayday: the contract refused round 205 for this payday. Round 206 was live at 16:00."
+      - Show the amount the wrong round would have paid, struck through, computed from `getRoundData(wrong).answer` with the same conversion.
 - **UPCOMING:** stamp "VALUE … · FIXES IN 01:59:41", no amount. A quiet line reads "today's rate would pay ≈ 0.020111; the round live at payday decides" (from `quote`).

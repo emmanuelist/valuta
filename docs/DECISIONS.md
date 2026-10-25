@@ -88,3 +88,9 @@ An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests 
 - About 110k more gas per payday (~0.002 USDC at 20 gwei).
 - v1 (`0x2bDF…76e9`) stays on mainnet as history (E-011 to E-014). Both its payrolls were ended and their reserves reclaimed to EMPLOYER (E-015).
 - The payrolls and the stranger's back-pay settlement are recreated on v2.
+
+## D-016 · Arc Studio's daily usage cap reached; fixes batched into two turns · 2026-10-25 · accepted
+**Context:** Studio turn 7 (the app) ended `budget_exceeded`: 100% of the user's daily limit, a 24-hour window (`arc-studio usage --json`), after seven turns today. It wrote all 20 app files and got lint and typecheck green inside its sandbox, but its own `vite build` step didn't run (it passes locally).
+**Decision:** no hand edits (D-002). Every fix found in today's inspection (hero fidelity, value-axis label collisions, exact 8-decimal rates, two-unit lateness, mobile overflow, the /new and /lookup pages, bundle size) is batched into two prompts written in advance: `prompts/08-hero-fidelity.md` (priority) and `prompts/09-pages-and-engineering.md`. They run as soon as capacity returns, expected around 2026-10-26 12:00 UTC.
+**Alternatives:** the builder can buy a usage increase with `arc-studio upgrade` (a one-time payment for the org). That's the builder's decision; agents must never run it.
+**Consequences:** M2 (due 2026-10-26 22:00 UTC) depends on Monday's Studio capacity. README, evidence and video work continue in parallel, because they aren't code.

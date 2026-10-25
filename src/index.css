@@ -1,13 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
+:root {
+  --ground:   #F7F8F9;
+  --surface:  #FFFFFF;
+  --claim:    #F9FBFC;
+  --ink:      #0F1720;
+  --secondary:#5B6470;
+  --rules:    #E3E6EA;
+  --petrol:   #0B4F6C;
+  --ptint:    #E6F0F4;
+  --vermilion:#D93F2B;
+  --amber:    #B7791F;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  color-scheme: light;
+  caret-color: var(--petrol);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rules) transparent;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: 'Radio Canada Big', system-ui, sans-serif;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--ptint); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--petrol);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--petrol);
+  text-decoration-line: underline;
+  text-underline-offset: 3px;
+}
+a:hover { opacity: 0.8; }
+
+/* Mono data class */
+.mono {
+  font-family: 'Geist Mono', 'Menlo', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Small-caps label */
+.label-caps {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+/* Form inputs */
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid var(--rules);
+  border-radius: 8px;
+  font-family: 'Radio Canada Big', system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus {
+  border-color: var(--petrol);
+}
+select.form-input { cursor: pointer; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--rules) 25%, #edf0f3 50%, var(--rules) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 4px;
 }

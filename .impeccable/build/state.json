@@ -57,8 +57,153 @@
       "closedAt": null,
       "attempts": 0,
       "notes": [],
-      "gate": null,
-      "forced": null
+      "gate": {
+        "ok": false,
+        "reasons": [
+          "region row-02 is missing (detail 0%, structure 75%): the comp shows material the build does not",
+          "region row-04 is missing (detail 0%, structure 85%): the comp shows material the build does not",
+          "region inspector-nav is missing (detail 5%, structure 79%): the comp shows material the build does not",
+          "region inspector-title is missing (detail 1%, structure 65%): the comp shows material the build does not",
+          "region value-axis-label is missing (detail 0%, structure 57%): the comp shows material the build does not",
+          "region settle-axis-label is missing (detail 0%, structure 72%): the comp shows material the build does not"
+        ],
+        "summary": "hero 76% (drift)",
+        "score": 0.7646,
+        "verdict": "drift",
+        "report": ".impeccable/review/diff/hero/report.json",
+        "sideBySide": "/Users/emmanuelist/Documents/hackathons/arc-studio/.impeccable/review/diff/hero/side-by-side.png",
+        "worst": [
+          "claim drift 54%",
+          "value-axis drift 57%",
+          "row-01 drift 57%"
+        ],
+        "worstIds": [
+          "claim",
+          "value-axis",
+          "row-01"
+        ],
+        "worstCrops": [
+          {
+            "id": "claim",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.5444,
+              "structure": 0.3249,
+              "color": 0.838,
+              "colorIntersection": 0.7529,
+              "paletteMatch": 0.8839,
+              "detail": 0.7227,
+              "detailRaw": 0.7383,
+              "detailAdded": 0.0313,
+              "bands": 0.64
+            },
+            "file": ".impeccable/review/diff/hero/regions/claim.png"
+          },
+          {
+            "id": "value-axis",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.5684,
+              "structure": 0.6823,
+              "color": 0.9782,
+              "colorIntersection": 0.9581,
+              "paletteMatch": 0.9891,
+              "detail": 0.0801,
+              "detailRaw": 0.1791,
+              "detailAdded": 0.1979,
+              "bands": 0.4333
+            },
+            "file": ".impeccable/review/diff/hero/regions/value-axis.png"
+          },
+          {
+            "id": "row-01",
+            "verdict": "drift",
+            "score": {
+              "overall": 0.5723,
+              "structure": 0.5343,
+              "color": 0.8521,
+              "colorIntersection": 0.7087,
+              "paletteMatch": 0.9293,
+              "detail": 0.2041,
+              "detailRaw": 0.3759,
+              "detailAdded": 0.3438,
+              "bands": 0.615
+            },
+            "file": ".impeccable/review/diff/hero/regions/row-01.png"
+          }
+        ],
+        "advisories": [
+          "(advisory, above the 72% bar) region connect: its ink sits in a 186x72px box in the comp and 157x45px in the build (padding, row height, or size); match the box, not only the position",
+          "(advisory, above the 72% bar; fix in the polish pass before responsive) 8 readings:",
+          "  text nav-links: letter-spacing is wider than the comp's (gap 0.114 vs 0.074 of the cap height); set letter-spacing to close it by about 1px",
+          "  text claim-sub: cap height 11px in the build, 33.5px in the comp (-67%); set font-size so the cap height renders at 33.5px (font-match ranked Edu VIC WA NT Beginner 700 at 43px)",
+          "  text ledger-header: cap height 2.8px in the build, 13.1px in the comp (-79%); set font-size so the cap height renders at 13.1px",
+          "  text row-02: cap height 31.1px in the build, 14.5px in the comp (+114%); set font-size so the cap height renders at 14.5px (also row-08)",
+          "  text settle-axis-label: cap height 8.3px in the build, 12.6px in the comp (-34%); set font-size so the cap height renders at 12.6px",
+          "  text row-01: 3 lines in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape",
+          "  text row-04: 1 line in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape (also row-08)",
+          "  text settle-caption: 2 lines in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape"
+        ],
+        "regionVerdicts": {
+          "topbar": "match",
+          "brand": "match",
+          "nav-links": "drift",
+          "connect": "match",
+          "hero-band": "match",
+          "claim": "drift",
+          "claim-sub": "match",
+          "stat-payrolls": "drift",
+          "stat-paydays": "drift",
+          "stat-paid": "match",
+          "ledger-card": "drift",
+          "ledger-header": "drift",
+          "row-01": "drift",
+          "row-02": "missing",
+          "row-03": "drift",
+          "row-04": "missing",
+          "row-05": "drift",
+          "row-06": "drift",
+          "row-07": "drift",
+          "row-08": "drift",
+          "row-11": "drift",
+          "settle": "drift",
+          "inspector-card": "drift",
+          "inspector-nav": "missing",
+          "inspector-title": "missing",
+          "value-axis-label": "missing",
+          "value-axis": "drift",
+          "settle-axis-label": "missing",
+          "settle-axis": "drift",
+          "settle-caption": "drift",
+          "proof-ids": "drift",
+          "explorer-link": "drift"
+        },
+        "at": "2026-10-25T14:58:23.816Z"
+      },
+      "forced": null,
+      "readingsSeen": {
+        "text nav-links: letter-spacing is wider than the comp's (gap 0.114 vs 0.074 of the cap height); set letter-spacing to close it by about 1px": 1,
+        "text claim-sub: cap height 11px in the build, 33.5px in the comp (-67%); set font-size so the cap height renders at 33.5px (font-match ranked Edu VIC WA NT Beginner 700 at 43px)": 1,
+        "text ledger-header: cap height 2.8px in the build, 13.1px in the comp (-79%); set font-size so the cap height renders at 13.1px": 1,
+        "text row-02: cap height 31.1px in the build, 14.5px in the comp (+114%); set font-size so the cap height renders at 14.5px (also row-08)": 1,
+        "text settle-axis-label: cap height 8.3px in the build, 12.6px in the comp (-34%); set font-size so the cap height renders at 12.6px": 1,
+        "text row-01: 3 lines in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 1,
+        "text row-04: 1 line in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape (also row-08)": 1,
+        "text settle-caption: 2 lines in the build, 3 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 1,
+        "text proof-ids: 4 lines in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 1,
+        "text row-01: the face renders 39% lighter than the comp's (ink density 0.31 vs 0.51); raise a weight step or use the ranked face (also row-03, row-04)": 1,
+        "text inspector-title: ink is #0d4d6d in the build, #0f0f0f in the comp; use the comp's colour": 1,
+        "text brand: its first line starts 22px lower than in the comp (22px vs 0px into the region box); the spacing above it is too large": 1,
+        "text brand: it starts 28px further right than in the comp": 1,
+        "text stat-paid: it starts 43px further left than in the comp": 1,
+        "text row-05: its first line starts 29px higher than in the comp (5px vs 34px into the region box); the spacing above it is too small (also row-08)": 1,
+        "text value-axis-label: its first line starts 50px lower than in the comp (50px vs 0px into the region box); the spacing above it is too large": 1,
+        "text settle-axis-label: its first line starts 29px higher than in the comp (5px vs 34px into the region box); the spacing above it is too small": 1,
+        "text proof-ids: its first line starts 27px lower than in the comp (27px vs 0px into the region box); the spacing above it is too large": 1,
+        "control connect: its rule sits 1px into the box in the comp and 12px in the build (+11px), so the strip is taller than the comp's; match the height, not only the position": 1,
+        "control explorer-link: its ink is 68px tall in the build and 42px in the comp (+26px); match the height, not only the position": 1
+      },
+      "records": 1
     },
     "sections": {
       "status": "pending",

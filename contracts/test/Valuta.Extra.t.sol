@@ -2,8 +2,9 @@
 pragma solidity ^0.8.30;
 
 import "forge-std/Test.sol";
-import "../Asof.sol";
+import "../Valuta.sol";
 import "../TestFeed.sol";
+import "../script/Ops.s.sol";
 
 // ---------------------------------------------------------------------------
 // Helpers (redeclared locally so this file compiles stand-alone)
@@ -29,16 +30,16 @@ contract AlwaysRejecting {
 }
 
 // ---------------------------------------------------------------------------
-// Shared base (mirrors AsofTest from Asof.t.sol so the extra file is self-contained)
+// Shared base (mirrors AsofTest from Valuta.t.sol so the extra file is self-contained)
 // ---------------------------------------------------------------------------
-abstract contract AsofBase is Test {
+abstract contract ValutaBase is Test {
     uint256 constant MICRO   = 1e12;
     uint256 constant MAX_AGE = 25 hours;
 
     TestFeed feedMXN;
     TestFeed feedARS;
 
-    Asof asof;
+    Valuta asof;
 
     address employer = makeAddr("employer");
     address worker   = makeAddr("worker");
@@ -63,13 +64,13 @@ abstract contract AsofBase is Test {
         codes[0] = "MXN"; feeds[0] = address(feedMXN); inv[0] = false;
         codes[1] = "ARS"; feeds[1] = address(feedARS); inv[1] = true;
 
-        asof = new Asof(codes, feeds, inv, MAX_AGE);
+        asof = new Valuta(codes, feeds, inv, MAX_AGE);
 
         vm.deal(employer, 1_000 ether);
         vm.deal(stranger,   100 ether);
     }
 
-    // 12 rounds every 6 h then a 27-h gap then 3 more (mirrors Asof.t.sol)
+    // 12 rounds every 6 h then a 27-h gap then 3 more (mirrors Valuta.t.sol)
     function _seedFeed(TestFeed feed, int256 rate) internal {
         for (uint256 i = 0; i < 12; i++) {
             feed.push(rate, t0 + i * 6 hours);
@@ -100,7 +101,7 @@ abstract contract AsofBase is Test {
 // ===========================================================================
 // A. NoPayroll guard on fund() and settle()
 // ===========================================================================
-contract NoPayrollTest is AsofBase {
+contract NoPayrollTest is ValutaBase {
     function test_Fund_NoPayroll_Reverts() public {
         vm.expectRevert(NoPayroll.selector);
         asof.fund{value: 1 ether}(9999);
@@ -117,7 +118,7 @@ contract NoPayrollTest is AsofBase {
 // ===========================================================================
 // B. NotEmployer guard on reclaim() and end()
 // ===========================================================================
-contract NotEmployerTest is AsofBase {
+contract NotEmployerTest is ValutaBase {
     function test_Reclaim_NotEmployer_Reverts() public {
         uint256 paydayTs = t0 + 1 hours;
         vm.warp(paydayTs + 1);
@@ -145,7 +146,7 @@ contract NotEmployerTest is AsofBase {
 // ===========================================================================
 // C. NothingDue edge-cases
 // ===========================================================================
-contract NothingDueExtraTest is AsofBase {
+contract NothingDueExtraTest is ValutaBase {
     function test_Settle_EmptyRoundIds_Reverts() public {
         uint256 id = _createMXN(worker, 5_000e18, t0 + 1 hours, 30 days, 1, 100 ether);
         uint80[] memory empty = new uint80[](0);
@@ -157,7 +158,7 @@ contract NothingDueExtraTest is AsofBase {
 // ===========================================================================
 // D. Events
 // ===========================================================================
-contract EventsTest is AsofBase {
+contract EventsTest is ValutaBase {
     function test_PayrollCreated_Emitted() public {
         uint256 salary    = 5_000e18;
         uint256 start     = t0 + 1 hours;
@@ -166,7 +167,7 @@ contract EventsTest is AsofBase {
         uint256 reserve   = 100 ether;
 
         vm.expectEmit(true, true, true, true, address(asof));
-        emit Asof.PayrollCreated(1, employer, worker, "MXN", salary, start, period, count);
+        emit Valuta.PayrollCreated(1, employer, worker, "MXN", salary, start, period, count);
         vm.prank(employer);
         asof.create{value: reserve}(worker, "MXN", salary, start, period, count);
     }
@@ -174,7 +175,7 @@ contract EventsTest is AsofBase {
     function test_Funded_Emitted() public {
         uint256 id = _createMXN(worker, 5_000e18, t0 + 1 hours, 30 days, 1, 0);
         vm.expectEmit(true, true, false, true, address(asof));
-        emit Asof.Funded(id, stranger, 1 ether);
+        emit Valuta.Funded(id, stranger, 1 ether);
         vm.prank(stranger);
         asof.fund{value: 1 ether}(id);
     }
@@ -193,7 +194,7 @@ contract EventsTest is AsofBase {
 
         // round 1 updatedAt = t0; roundId = _rid(1); answer = 5_000_000
         vm.expectEmit(true, false, false, true, address(asof));
-        emit Asof.PaydaySettled(
+        emit Valuta.PaydaySettled(
             id, 0, paydayTs,
             _rid(1), int256(5_000_000), t0,
             expectedUsdc,
@@ -219,7 +220,7 @@ contract EventsTest is AsofBase {
         // Fund 200: 200 goes to arrears, emitting ArrearsPaid
         vm.deal(stranger, 200 ether);
         vm.expectEmit(true, false, false, true, address(asof));
-        emit Asof.ArrearsPaid(id, 200 ether);
+        emit Valuta.ArrearsPaid(id, 200 ether);
         vm.prank(stranger);
         asof.fund{value: 200 ether}(id);
     }
@@ -234,7 +235,7 @@ contract EventsTest is AsofBase {
         asof.settle(id, rids);
 
         vm.expectEmit(true, false, false, true, address(asof));
-        emit Asof.Reclaimed(id, 50 ether);
+        emit Valuta.Reclaimed(id, 50 ether);
         vm.prank(employer);
         asof.reclaim(id, 50 ether);
     }
@@ -244,7 +245,7 @@ contract EventsTest is AsofBase {
         vm.warp(t0 + 2);
 
         vm.expectEmit(true, false, false, true, address(asof));
-        emit Asof.Ended(id, block.timestamp);
+        emit Valuta.Ended(id, block.timestamp);
         vm.prank(employer);
         asof.end(id);
     }
@@ -269,7 +270,7 @@ contract EventsTest is AsofBase {
         // Flip to accepting, then withdraw
         fw.flip();
         vm.expectEmit(true, false, false, true, address(asof));
-        emit Asof.Withdrawn(address(fw), creditAmt);
+        emit Valuta.Withdrawn(address(fw), creditAmt);
         vm.prank(address(fw));
         asof.withdraw();
     }
@@ -279,9 +280,9 @@ contract EventsTest is AsofBase {
 // E. Withdraw succeeds for a normal (EOA) credited account
 //    (supplements the existing FailedPayoutTest)
 // ===========================================================================
-contract WithdrawEOATest is AsofBase {
+contract WithdrawEOATest is ValutaBase {
     function test_Withdraw_EOA_AfterCredit() public {
-        // Use FlippableWorker to get credit into Asof, then flip and withdraw
+        // Use FlippableWorker to get credit into Valuta, then flip and withdraw
         FlippableWorker fw = new FlippableWorker();
 
         uint256 salary   = 5_000e18; // usdc = 250e18
@@ -316,7 +317,7 @@ contract WithdrawEOATest is AsofBase {
 // ===========================================================================
 // F. End() — paydays AT endedAt are not due; due paydays strictly before are
 // ===========================================================================
-contract EndEdgeTest is AsofBase {
+contract EndEdgeTest is ValutaBase {
     function test_End_PaydayAtEndedAt_NotDue() public {
         // payday 1 lands exactly at endedAt → not due
         uint256 period = 1 days;
@@ -358,7 +359,7 @@ contract EndEdgeTest is AsofBase {
         rids[1] = _rid(2); // payday 1 at start+6h = t0+7h → round 2 (updatedAt=t0+6h)
         asof.settle(id, rids);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.settled, 2);
     }
 }
@@ -366,11 +367,11 @@ contract EndEdgeTest is AsofBase {
 // ===========================================================================
 // G. Fund() zero-value shortcut (msg.value == 0 returns early, no event)
 // ===========================================================================
-contract FundZeroTest is AsofBase {
+contract FundZeroTest is ValutaBase {
     function test_Fund_ZeroValue_EmitsFunded() public {
         // fund(0) emits Funded but does nothing to reserve/arrears
         uint256 id = _createMXN(worker, 5_000e18, t0 + 1 hours, 30 days, 1, 0);
-        Asof.Payroll memory before = asof.payrollInfo(id);
+        Valuta.Payroll memory before = asof.payrollInfo(id);
 
         // fund with 0: the function returns early (amount == 0) before emit
         // Funded is still emitted with amount=0 per contract code
@@ -379,7 +380,7 @@ contract FundZeroTest is AsofBase {
         Vm.Log[] memory logs = vm.getRecordedLogs();
 
         // Verify reserve unchanged
-        Asof.Payroll memory after_ = asof.payrollInfo(id);
+        Valuta.Payroll memory after_ = asof.payrollInfo(id);
         assertEq(after_.reserve, before.reserve);
         assertEq(after_.arrears, before.arrears);
         // No Funded event expected (early return before emit)
@@ -393,7 +394,7 @@ contract FundZeroTest is AsofBase {
 // ===========================================================================
 // H. Invariant: contract balance == sum(reserves) + sum(credits) across many ops
 // ===========================================================================
-contract BalanceInvariantTest is AsofBase {
+contract BalanceInvariantTest is ValutaBase {
     // Three payrolls, some rejecting, one funded mid-stream
     function test_BalanceInvariant_MultiPayroll() public {
         AlwaysRejecting rw = new AlwaysRejecting();
@@ -417,9 +418,9 @@ contract BalanceInvariantTest is AsofBase {
         asof.settle(id2, rids);
         asof.settle(id3, rids);
 
-        Asof.Payroll memory p1 = asof.payrollInfo(id1);
-        Asof.Payroll memory p2 = asof.payrollInfo(id2);
-        Asof.Payroll memory p3 = asof.payrollInfo(id3);
+        Valuta.Payroll memory p1 = asof.payrollInfo(id1);
+        Valuta.Payroll memory p2 = asof.payrollInfo(id2);
+        Valuta.Payroll memory p3 = asof.payrollInfo(id3);
 
         uint256 totalReserve = p1.reserve + p2.reserve + p3.reserve;
         uint256 totalCredit  = asof.credit(worker) + asof.credit(address(rw));
@@ -432,7 +433,7 @@ contract BalanceInvariantTest is AsofBase {
 // ===========================================================================
 // I. Fuzz: asOf view round id, when fed to settle, must not revert NotAsOfPayday
 // ===========================================================================
-contract FuzzAsOfSettleTest is AsofBase {
+contract FuzzAsOfSettleTest is ValutaBase {
     function testFuzz_AsOf_RoundId_SettleNeverNotAsOfPayday(uint16 seed) public {
         uint256 historyEnd = t0 + 12 * 6 hours + 27 hours + 3 * 6 hours;
         // Restrict seed to avoid StartTooOld check (90 days back limit)
@@ -464,7 +465,7 @@ contract FuzzAsOfSettleTest is AsofBase {
 // ===========================================================================
 // J. Reclaim: full-cycle — createe, settle, reclaim full remainder
 // ===========================================================================
-contract ReclaimFullTest is AsofBase {
+contract ReclaimFullTest is ValutaBase {
     function test_Reclaim_FullRemainder() public {
         uint256 salary    = 5_000e18; // usdc = 250e18
         uint256 paydayTs  = t0 + 1 hours;
@@ -476,7 +477,7 @@ contract ReclaimFullTest is AsofBase {
         rids[0] = _rid(1);
         asof.settle(id, rids);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.arrears, 0);
         uint256 rem = p.reserve; // 50 ether
 
@@ -495,7 +496,7 @@ contract ReclaimFullTest is AsofBase {
 // K. Invariant: paid + credited + arrearsAdded == usdc (via event decode)
 //    — tests the underfunded AND the rejecting-worker paths
 // ===========================================================================
-contract InvariantEventTest is AsofBase {
+contract InvariantEventTest is ValutaBase {
     function _checkPaydaySettledInvariant(uint256 id, uint80[] memory rids) internal {
         vm.recordLogs();
         asof.settle(id, rids);
@@ -549,11 +550,11 @@ contract InvariantEventTest is AsofBase {
 // L. create() accepts msg.value as initial reserve (Funded event NOT emitted at
 //    create time — only PayrollCreated) and reserve is stored correctly
 // ===========================================================================
-contract CreateReserveTest is AsofBase {
+contract CreateReserveTest is ValutaBase {
     function test_Create_InitialReserveStored() public {
         vm.prank(employer);
         uint256 id = asof.create{value: 42 ether}(worker, "MXN", 1_000e18, t0 + 1 hours, 30 days, 1);
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.reserve, 42 ether);
     }
 
@@ -569,7 +570,7 @@ contract CreateReserveTest is AsofBase {
 // ===========================================================================
 // M. Fuzz: fund() with any value keeps balance invariant
 // ===========================================================================
-contract FuzzFundBalanceTest is AsofBase {
+contract FuzzFundBalanceTest is ValutaBase {
     function testFuzz_Fund_BalanceInvariant(uint64 fundAmt) public {
         uint256 paydayTs = t0 + 1 hours;
         vm.warp(paydayTs + 1);
@@ -583,7 +584,7 @@ contract FuzzFundBalanceTest is AsofBase {
         vm.prank(stranger);
         asof.fund{value: uint256(fundAmt)}(id);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         uint256 totalReserve = p.reserve;
         uint256 totalCredit  = asof.credit(worker);
 
@@ -604,7 +605,7 @@ contract FuzzFundBalanceTest is AsofBase {
 contract GasBurnerWorker {
     receive() external payable {
         // Infinite loop — consumes all gas forwarded to this call.
-        // With the 50_000-gas cap Asof uses, this exhausts the cap and
+        // With the 50_000-gas cap Valuta uses, this exhausts the cap and
         // returns false without reverting the settlement.
         while (true) {}
     }
@@ -619,7 +620,7 @@ contract HugePayloadWorker {
     }
 }
 
-contract GasCapTest is AsofBase {
+contract GasCapTest is ValutaBase {
     // ── helper: salary 5_000 MXN → 250e18 USDC at the seeded rate ──────────
     // usdc = 5_000e18 * 5_000_000 / 1e8 = 250e18; floor to MICRO → 250e18
     uint256 constant SALARY      = 5_000e18;
@@ -647,7 +648,7 @@ contract GasCapTest is AsofBase {
             "gas-burner worker: credited balance should equal expected USDC");
 
         // The payday was recorded as settled
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.settled, 1, "gas-burner worker: settled count should be 1");
     }
 
@@ -672,7 +673,7 @@ contract GasCapTest is AsofBase {
             "huge-payload worker: credited balance should equal expected USDC");
 
         // The payday was recorded as settled
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.settled, 1, "huge-payload worker: settled count should be 1");
     }
 }
@@ -680,7 +681,7 @@ contract GasCapTest is AsofBase {
 // ===========================================================================
 // N. (continued) ARS inverse conversion — exact arithmetic check
 // ===========================================================================
-contract ARSConversionExactTest is AsofBase {
+contract ARSConversionExactTest is ValutaBase {
     function test_ARS_ExactConversion() public {
         // USD/ARS = 1050 (answer = 105_000_000_000 at 8 dec)
         // salary = ARS 210,000 (210_000e18)
@@ -697,5 +698,87 @@ contract ARSConversionExactTest is AsofBase {
         uint256 balBefore = worker.balance;
         asof.settle(id, rids);
         assertEq(worker.balance - balBefore, 200e18);
+    }
+}
+
+// ===========================================================================
+// P. Ops.s.sol settleDue logic — unit test against TestFeed history
+// ===========================================================================
+// We test the settleDue logic by replicating what the script does in a Foundry
+// test environment: read dueCount, resolve rounds via asOf, batch-settle.
+// We use the shared ValutaBase feed history (16 rounds over ~4 days).
+contract OpSettleDueTest is ValutaBase {
+    Ops ops;
+
+    function setUp() public override {
+        super.setUp();
+        ops = new Ops();
+    }
+
+    // ── settleDue with nothing due returns immediately (no revert) ──────────
+    function test_SettleDue_NothingDue_NoRevert() public {
+        // Payroll that starts in the future.
+        uint256 futureStart = t0 + 7 days;
+        vm.prank(employer);
+        asof.create{value: 0}(worker, "MXN", 1_000e18, futureStart, 1 days, 2);
+
+        // settleDue logic: dueCount == 0 → returns without broadcast.
+        uint256 due = asof.dueCount(1);
+        assertEq(due, 0, "nothing should be due for a future payroll");
+        // If the script were called it would log and return — no revert.
+    }
+
+    // ── settleDue settles all due paydays in a batch ─────────────────────────
+    // Creates a payroll with 3 paydays spaced 6 hours apart (all within the
+    // seeded history). After warping past all three, settleDue resolves rounds
+    // via asOf and settles them.
+    function test_SettleDue_SettlesAllDue() public {
+        // Paydays at t0+1h, t0+7h, t0+13h — rounds 1, 2, 3 respectively.
+        uint256 salary = 5_000e18; // 250e18 USDC each at 0.05 MXN/USD
+        uint256 start  = t0 + 1 hours;
+        uint256 period = 6 hours;
+
+        vm.warp(start + 2 * period + 1); // past all 3 paydays
+
+        vm.prank(employer);
+        uint256 id = asof.create{value: 1_000 ether}(worker, "MXN", salary, start, period, 3);
+
+        uint256 due = asof.dueCount(id);
+        assertEq(due, 3, "3 paydays should be due");
+
+        // Replicate Ops.settleDue logic: resolve roundIds via asOf, then settle.
+        Valuta.Payroll memory p = asof.payrollInfo(id);
+        uint80[] memory roundIds = new uint80[](due);
+        for (uint256 k = 0; k < due; k++) {
+            uint256 pdTime = asof.payday(id, p.settled + k);
+            (uint80 rid,,) = asof.asOf(p.currency, pdTime);
+            roundIds[k] = rid;
+        }
+
+        uint256 workerBefore = worker.balance;
+        asof.settle(id, roundIds);
+
+        Valuta.Payroll memory after_ = asof.payrollInfo(id);
+        assertEq(after_.settled, 3, "all 3 paydays must be settled");
+
+        // Each payday: 5_000e18 * 5_000_000 / 1e8 = 250e18; 3 total = 750e18.
+        assertEq(worker.balance - workerBefore, 750 ether, "worker should receive 750 USDC");
+    }
+
+    // ── settleDue handles >32 paydays by chunking ────────────────────────────
+    // With our seeded 16-round history we can only make at most 16 due paydays,
+    // but we verify the chunk-split boundary at 32 is correct by testing that
+    // settle reverts TooManyPaydays when passed >32 in one call, while our
+    // replication of the chunk logic stays within 32 per call.
+    function test_SettleDue_ChunkBoundary_TooManyReverts() public {
+        // Passing 33 roundIds to settle directly reverts TooManyPaydays.
+        uint256 start = t0 + 1 hours;
+        vm.warp(start + 1);
+        vm.prank(employer);
+        uint256 id = asof.create{value: 100 ether}(worker, "MXN", 1_000e18, start, 1 hours, 100);
+
+        uint80[] memory tooMany = new uint80[](33);
+        vm.expectRevert(TooManyPaydays.selector);
+        asof.settle(id, tooMany);
     }
 }

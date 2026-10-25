@@ -1,6 +1,8 @@
-# Asof: build rules and pinned context
+# Valuta: build rules and pinned context
 
 Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
+
+Formerly named Asof, renamed on 2026-10-25 (D-012). The Studio session is still called `asof`; the Studio project is the same one.
 
 Built for Arc Microgrants 2, "Built with Arc Studio" (deadline 2026-11-02 04:59 UTC; our own cutoff is 2026-10-27, see docs/PLAN.md). Research and strategy live in `internal/` (gitignored).
 

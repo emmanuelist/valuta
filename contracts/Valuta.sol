@@ -2,8 +2,9 @@
 pragma solidity ^0.8.30;
 
 // ---------------------------------------------------------------------------
-// Asof – salary-in-local-currency, paid in USDC at the Chainlink rate that
-// was live at each payday ("as of payday").
+// Valuta: salaries agreed in pesos, reais or euros, paid in USDC on Arc at
+// the Chainlink rate that was live on payday, however late it settles and
+// whoever settles it.
 //
 // Arc facts honoured:
 //   • USDC IS the native gas token; msg.value and balances are 18-decimal.
@@ -57,7 +58,7 @@ error ZeroFeed();
 // ---------------------------------------------------------------------------
 // Main contract
 // ---------------------------------------------------------------------------
-contract Asof {
+contract Valuta {
     // -----------------------------------------------------------------------
     // Types
     // -----------------------------------------------------------------------

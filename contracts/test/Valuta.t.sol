@@ -2,7 +2,7 @@
 pragma solidity ^0.8.30;
 
 import "forge-std/Test.sol";
-import "../Asof.sol";
+import "../Valuta.sol";
 import "../TestFeed.sol";
 
 // ---------------------------------------------------------------------------
@@ -24,7 +24,7 @@ contract AcceptingWorker {
 // ---------------------------------------------------------------------------
 // Base test setup
 // ---------------------------------------------------------------------------
-contract AsofTest is Test {
+contract ValutaTest is Test {
     // Precision floor (micro-USDC in 18-decimal units)
     uint256 constant MICRO = 1e12;
 
@@ -36,7 +36,7 @@ contract AsofTest is Test {
     TestFeed feedEUR; // EUR/USD, 8 decimals, inverse=false
     TestFeed feedARS; // USD/ARS, 8 decimals, inverse=true
 
-    Asof asof;
+    Valuta asof;
 
     address employer = makeAddr("employer");
     address worker   = makeAddr("worker");
@@ -76,7 +76,7 @@ contract AsofTest is Test {
         codes[2] = "EUR"; feeds[2] = address(feedEUR); inv[2] = false;
         codes[3] = "ARS"; feeds[3] = address(feedARS); inv[3] = true;
 
-        asof = new Asof(codes, feeds, inv, MAX_AGE);
+        asof = new Valuta(codes, feeds, inv, MAX_AGE);
 
         vm.deal(employer, 1_000 ether);
         vm.deal(stranger, 100  ether);
@@ -123,7 +123,7 @@ contract AsofTest is Test {
 // ---------------------------------------------------------------------------
 // 1. As-of rule
 // ---------------------------------------------------------------------------
-contract AsofRuleTest is AsofTest {
+contract ValutaRuleTest is ValutaTest {
     // Payday is at t0 + 1 h (inside round 1, which starts at t0).
     // Round 1 covers [t0, t0+6h); round 2 starts at t0+6h.
     // So round 1 (rid=1) is the correct "as of" round.
@@ -247,7 +247,7 @@ contract AsofRuleTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 2. Conversion (direct and inverse)
 // ---------------------------------------------------------------------------
-contract ConversionTest is AsofTest {
+contract ConversionTest is ValutaTest {
     function test_DirectFeed_MXN() public {
         // salary = MXN 1,000 (1000e18)
         // MXN/USD rate = 0.05 (5_000_000 at 8 dec)
@@ -334,7 +334,7 @@ contract ConversionTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 3. Late settlement: same amount regardless of when settled
 // ---------------------------------------------------------------------------
-contract LateSettlementTest is AsofTest {
+contract LateSettlementTest is ValutaTest {
     function test_LateSettlement_SameAmount() public {
         uint256 salary = 10_000e18;
         uint256 paydayTs = t0 + 1 hours;
@@ -370,7 +370,7 @@ contract LateSettlementTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 4. Arrears
 // ---------------------------------------------------------------------------
-contract ArrearsTest is AsofTest {
+contract ArrearsTest is ValutaTest {
     function test_Arrears_PartialReserve() public {
         uint256 salary = 10_000e18;
         uint256 paydayTs = t0 + 1 hours;
@@ -384,7 +384,7 @@ contract ArrearsTest is AsofTest {
         uint256 workerBefore = worker.balance;
         asof.settle(id, rids);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         // reserve was 100e18, expected usdc = 10_000e18 * 5_000_000 / 1e8 = 500e18
         // paid = 100e18, arrears = 400e18
         assertEq(p.arrears, 400 ether);
@@ -409,7 +409,7 @@ contract ArrearsTest is AsofTest {
         vm.prank(stranger);
         asof.fund{value: 200 ether}(id);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.arrears, 200 ether);  // 400 - 200
         assertEq(p.reserve, 0);
         assertGt(worker.balance, workerBefore);
@@ -427,7 +427,7 @@ contract ArrearsTest is AsofTest {
 
         // Arrears = 400. Fund 500 → 400 clears arrears, 100 goes to reserve.
         asof.fund{value: 500 ether}(id);
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.arrears, 0);
         assertEq(p.reserve, 100 ether);
     }
@@ -436,7 +436,7 @@ contract ArrearsTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 5. Failed payout → credit; withdraw
 // ---------------------------------------------------------------------------
-contract FailedPayoutTest is AsofTest {
+contract FailedPayoutTest is ValutaTest {
     RejectingWorker rwrk;
     uint256 salary = 10_000e18; // usdc ≈ 500e18
 
@@ -534,7 +534,7 @@ contract FailedPayoutTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 6. Reclaim
 // ---------------------------------------------------------------------------
-contract ReclaimTest is AsofTest {
+contract ReclaimTest is ValutaTest {
     uint256 salary = 10_000e18;
 
     function test_Reclaim_RefusedWhileDueUnsettled() public {
@@ -570,7 +570,7 @@ contract ReclaimTest is AsofTest {
         asof.settle(id, rids);
 
         // reserve = 600 - 500 = 100 ether, no arrears
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.reserve, 100 ether);
         assertEq(p.arrears, 0);
 
@@ -597,7 +597,7 @@ contract ReclaimTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 7. End
 // ---------------------------------------------------------------------------
-contract EndTest is AsofTest {
+contract EndTest is ValutaTest {
     uint256 salary = 5_000e18;
 
     function test_End_FuturePaydaysNotDue() public {
@@ -649,7 +649,7 @@ contract EndTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 8. Stranger can settle; money goes only to worker
 // ---------------------------------------------------------------------------
-contract StrangerSettleTest is AsofTest {
+contract StrangerSettleTest is ValutaTest {
     function test_StrangerCanSettle() public {
         uint256 salary = 10_000e18;
         uint256 paydayTs = t0 + 1 hours;
@@ -673,7 +673,7 @@ contract StrangerSettleTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 9. Invariants
 // ---------------------------------------------------------------------------
-contract InvariantTest is AsofTest {
+contract InvariantTest is ValutaTest {
     uint256 salary = 5_000e18;
 
     function test_Invariant_ContractBalanceEqualsReservePlusCredits() public {
@@ -689,8 +689,8 @@ contract InvariantTest is AsofTest {
         rids1[0] = _rid(1);
         asof.settle(id2, rids1);
 
-        Asof.Payroll memory p1 = asof.payrollInfo(id1);
-        Asof.Payroll memory p2 = asof.payrollInfo(id2);
+        Valuta.Payroll memory p1 = asof.payrollInfo(id1);
+        Valuta.Payroll memory p2 = asof.payrollInfo(id2);
 
         uint256 totalReserve = p1.reserve + p2.reserve;
         // Credits (worker got paid directly, no credit in this test)
@@ -711,7 +711,7 @@ contract InvariantTest is AsofTest {
         rids[0] = _rid(1);
         asof.settle(id, rids);
 
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.settled, 1);
         assertLe(p.settled, p.count);
     }
@@ -754,7 +754,7 @@ contract InvariantTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 10. Fuzz: asOf view agrees with as-of rule
 // ---------------------------------------------------------------------------
-contract FuzzAsOfTest is AsofTest {
+contract FuzzAsOfTest is ValutaTest {
     function testFuzz_AsOfView_AgreesWithRule(uint256 seed) public {
         // Pick a random timestamp within the feed history range.
         uint256 historyEnd = t0 + 12 * 6 hours + 27 hours + 3 * 6 hours;
@@ -798,7 +798,7 @@ contract FuzzAsOfTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 11. NothingDue guard
 // ---------------------------------------------------------------------------
-contract NothingDueTest is AsofTest {
+contract NothingDueTest is ValutaTest {
     function test_NothingDue_FuturePayday() public {
         uint256 paydayTs = t0 + 1 days; // future
         vm.warp(t0 + 1);
@@ -825,7 +825,7 @@ contract NothingDueTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 12. Multi-payday settle batch
 // ---------------------------------------------------------------------------
-contract BatchSettleTest is AsofTest {
+contract BatchSettleTest is ValutaTest {
     function test_BatchSettle_TwoPaydays() public {
         // Two paydays, each 6 hours apart, both within round 1 coverage (round 1 covers t0..t0+6h).
         // Payday 0 at t0+1h (round 1), payday 1 at t0+7h (round 2 starts at t0+6h → round 2).
@@ -840,7 +840,7 @@ contract BatchSettleTest is AsofTest {
         rids[1] = _rid(2); // payday 1 in round 2
 
         asof.settle(id, rids);
-        Asof.Payroll memory p = asof.payrollInfo(id);
+        Valuta.Payroll memory p = asof.payrollInfo(id);
         assertEq(p.settled, 2);
     }
 
@@ -855,7 +855,7 @@ contract BatchSettleTest is AsofTest {
 // ---------------------------------------------------------------------------
 // 13. Input validation
 // ---------------------------------------------------------------------------
-contract ValidationTest is AsofTest {
+contract ValidationTest is ValutaTest {
     function test_ZeroWorkerReverts() public {
         vm.prank(employer);
         vm.expectRevert(ZeroWorker.selector);

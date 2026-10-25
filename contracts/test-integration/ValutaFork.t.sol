@@ -2,13 +2,13 @@
 pragma solidity ^0.8.30;
 
 // ---------------------------------------------------------------------------
-// AsofFork.t.sol – integration tests against Arc mainnet (chain 5042) using
+// ValutaFork.t.sol – integration tests against Arc mainnet (chain 5042) using
 // the real Chainlink MXN/USD and USD/ARS proxies.
 //
 // These tests are SKIPPED unless the environment variable ARC_RPC_URL is set.
 // Run with:
 //   ARC_RPC_URL=<arc-mainnet-rpc> forge test \
-//     --match-path contracts/test-integration/AsofFork.t.sol -vv
+//     --match-path contracts/test-integration/ValutaFork.t.sol -vv
 //
 // Facts about the Arc mainnet feeds verified on 2026-10-25:
 //   • Phase 1 only.
@@ -20,7 +20,7 @@ pragma solidity ^0.8.30;
 // ---------------------------------------------------------------------------
 
 import "forge-std/Test.sol";
-import "../Asof.sol";
+import "../Valuta.sol";
 import "../TestFeed.sol"; // only used as the feed interface type in setup
 
 /// @dev Minimal AggregatorV3 interface for reading live feeds.
@@ -30,7 +30,7 @@ interface IChainlinkFeed {
     function getRoundData(uint80) external view returns (uint80, int256, uint256, uint256, uint80);
 }
 
-contract AsofForkTest is Test {
+contract ValutaForkTest is Test {
     // ── Real Arc mainnet feed addresses ──────────────────────────────────
     address constant MXN_USD_FEED = 0x302eaa6cd6f7AdDdc973fAC2Bb8fa32e9Ce19f21;
     address constant USD_ARS_FEED = 0xa261C56CABf7Ed6081646b892E57175AB2Dd8617;
@@ -39,7 +39,7 @@ contract AsofForkTest is Test {
     uint256 constant MICRO      = 1e12;
     uint256 constant ARC_CHAIN  = 5042;
 
-    Asof asof;
+    Valuta asof;
     address employer = makeAddr("employer");
     address worker   = makeAddr("worker");
 
@@ -59,7 +59,7 @@ contract AsofForkTest is Test {
         // Confirm we are on Arc mainnet.
         assertEq(block.chainid, ARC_CHAIN, "not Arc mainnet");
 
-        // Deploy Asof with MXN and ARS on the fork.
+        // Deploy Valuta with MXN and ARS on the fork.
         bytes3[] memory codes  = new bytes3[](2);
         address[] memory feeds = new address[](2);
         bool[]    memory inv   = new bool[](2);
@@ -67,7 +67,7 @@ contract AsofForkTest is Test {
         codes[0] = "MXN"; feeds[0] = MXN_USD_FEED; inv[0] = false;
         codes[1] = "ARS"; feeds[1] = USD_ARS_FEED;  inv[1] = true;
 
-        asof = new Asof(codes, feeds, inv, MAX_AGE);
+        asof = new Valuta(codes, feeds, inv, MAX_AGE);
 
         vm.deal(employer, 100_000 ether);
     }
@@ -180,10 +180,10 @@ contract AsofForkTest is Test {
         // Round BEFORE the correct one (if it exists).
         if (aggId > 1) {
             uint80 prevRid = (phaseId << 64) | (aggId - 1);
-            uint80[] memory rids = new uint80[](1);
-            rids[0] = prevRid;
+            uint80[] memory prevRids = new uint80[](1);
+            prevRids[0] = prevRid;
             vm.expectRevert(abi.encodeWithSelector(NotAsOfPayday.selector, pdTs, prevRid));
-            asof.settle(id, rids);
+            asof.settle(id, prevRids);
         }
 
         // Round AFTER the correct one.
@@ -192,10 +192,10 @@ contract AsofForkTest is Test {
         IChainlinkFeed feed = IChainlinkFeed(MXN_USD_FEED);
         (,, , uint256 nextUpdatedAt,) = feed.getRoundData(nextRid);
         if (nextUpdatedAt > 0 && nextUpdatedAt > pdTs) {
-            uint80[] memory rids = new uint80[](1);
-            rids[0] = nextRid;
+            uint80[] memory nextRids = new uint80[](1);
+            nextRids[0] = nextRid;
             vm.expectRevert(abi.encodeWithSelector(NotAsOfPayday.selector, pdTs, nextRid));
-            asof.settle(id, rids);
+            asof.settle(id, nextRids);
         }
 
         // Correct round must pass.

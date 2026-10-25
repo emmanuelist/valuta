@@ -100,4 +100,7 @@ It sits between the coupon row and section A.
 - **Outside the sandbox:** typecheck and lint must pass there too. Exclude `scripts/` (sandbox tooling that imports `@circlefin/compass-chains`) from tsconfig and oxlint, or delete those scaffold scripts and their package.json entries if unused.
 - **package.json:** add `"build": "vite build"`. Make `lint` fail on any warning, without `--fix`, and keep a separate `lint:fix`.
 
+## Before you finish
+Open the preview at 1440×900 and scroll the whole home page, first on a settled payslip, then on a due one (payroll 2 or 3, when one is due). Run every attempt in section A, and check each result against what the chain answered. Fix anything clipped, overlapping or misaligned. There must be no placeholder copy and no console errors.
+
 Run `bun run typecheck`, `bun run lint` (zero warnings) and `bun run build`. Report the files changed.

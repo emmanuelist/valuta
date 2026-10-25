@@ -24,4 +24,7 @@ The non-negotiables, in short:
 7. **Motion:** "stamp, travel, hold" per spec §3 (framer-motion). The amount never moves while time moves. Reduced motion shows final states instantly.
 8. Delete the old ClaimBand KPI strip, ProofInspector, ValueAxis and SettlementAxis components and the payroll tab row once replaced. Mount exactly one payslip instance.
 
+## Before you finish
+Open the preview at 1344×760 and compare it with `context/redesign-a-specimen.png` region by region: each box, size and weight. Then check 1440×900. Fix anything clipped, overlapping or misaligned. There must be no placeholder copy and no console errors.
+
 Run `bun run typecheck`, `bun run lint` (zero warnings) and `vite build`. Report the files changed.

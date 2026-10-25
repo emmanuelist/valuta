@@ -144,3 +144,12 @@ The superseded drafts moved to `internal/prompts-unsent/`.
 - The README and footer must say this plainly instead of "settled within minutes".
 - After judging, end payroll 3, reclaim its reserve and sweep WORKER_EU with the other wallets.
 
+
+## D-021 · The redesign turns run back to back the moment Studio opens · 2026-10-25 · supersedes D-019's queue
+**Context:** the builder: "Now that you know the limit of the Studio, build at once all we can in the next session when it is open, so that we have ample time tomorrow." Studio's cap is daily (D-016), so idle capacity in an open window is lost, and every turn re-reads the workspace, which costs quota.
+**Decision:** three turns instead of four. Old 10 and 11 merge into `prompts/10-responsive-states-pages.md`. They are chained by `internal/studio-chain.sh`, with no wait between them. Each turn has a "Before you finish" check at the target viewports.
+- Gate 1: the builder's accepted component review (`component-review verify`), or their explicit word to skip it.
+- Gate 2: Studio capacity. Turn 08 starts below 60% used, so the hero is never cut mid-turn. Turns 09 and 10 start below 95%.
+
+After each turn the chain pulls, syncs Studio's deletions in `src/`, `public/` and `scripts/`, and commits as "studio turn NN". It stops on any status other than `completed`.
+**Consequences:** sections and responsive work land before the hero gate is run. The gates run afterwards on the full build, and the next window goes to fixes. If the cap cuts turn 10, its unfinished part carries into that window.

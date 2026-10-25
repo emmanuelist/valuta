@@ -102,3 +102,12 @@ An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests 
 - Raises from the redesign seed (`026e9c61…`): stamped coupon states (HELD / DUE / CREDITED / VOID), a value-date scrubber that drives the whole page, and slips registered on one baseline.
 - Light theme, comp-led again once credits exist.
 **Consequences:** the redesign runs as Studio turns after the daily reset (around 2026-10-26 12:00 UTC). It replaces prompts 08 and 09: their fixes are absorbed into the redesign prompts. The target is a re-run critique of ≥ 32/40 and a clear win over both references.
+
+## D-018 · Redesign faces chosen by visual match, overriding the metric matcher's pick · 2026-10-25 · accepted
+**Context:** Impeccable's font-match ranks faces by advance width and ink density. For the approved comp (`redesign-a-specimen.png`) it picked Nunito 700 for the claim (rounded terminals, where the comp shows a sharp neo-grotesk) and Roboto Condensed 300 for the amount (proportional, where tabular figures need monospace). Re-ranking with in-character candidates didn't change the metric's order.
+**Decision:** a side-by-side specimen against the comp crops (rendered in the browser, 2026-10-25) chose:
+- **Hanken Grotesk** for all words: single-storey g, crisp terminals, matching proportions
+- **Spline Sans Mono** (light) for every figure: the plain zero and carbon-numeral feel of the comp
+
+Setoff's Archivo and Warrant's Mona Sans were excluded on purpose, so each product keeps its own voice. The spec keeps font-match's record; the build uses these faces, and the hero gate's cap-height, weight and width readings will check the fit.
+**Consequences:** if the hero gate flags a family mismatch, address it by the measured readings, not by switching to Nunito.

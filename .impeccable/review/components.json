@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 3,
+  "stage": "components",
+  "id": "components",
+  "title": "Plan and asset review",
+  "comp": {
+    "path": ".impeccable/mocks/redesign-a-specimen.png",
+    "width": 2688,
+    "height": 1520
+  },
+  "specSha256": "07aefa8f8d6bf3d035afb64c9c61426179e1b012bcaa8da7297079dee9ecb35f",
+  "components": [
+    {
+      "id": "topbar",
+      "name": "Topbar",
+      "kind": "chrome",
+      "role": "plan",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0829
+      },
+      "note": "cool white top bar with a hairline bottom rule",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "brand",
+      "name": "Brand",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.016,
+        "y": 0.0276,
+        "w": 0.061,
+        "h": 0.0289
+      },
+      "note": "wordmark Valuta, confident grotesk, ink",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "nav-links",
+      "name": "Nav links",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.1302,
+        "y": 0.0329,
+        "w": 0.2269,
+        "h": 0.0211
+      },
+      "note": "links Payrolls, New payroll, Rate lookup",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "live",
+      "name": "Live",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.644,
+        "y": 0.0336,
+        "w": 0.1696,
+        "h": 0.0184
+      },
+      "note": "pulsing petrol dot plus Arc mainnet · block 27,861,402 (live block height)",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "connect",
+      "name": "Connect",
+      "kind": "control",
+      "role": "plan",
+      "box": {
+        "x": 0.8631,
+        "y": 0.0132,
+        "w": 0.119,
+        "h": 0.0553
+      },
+      "note": "petrol filled button Connect wallet",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "claim",
+      "name": "Claim",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.0238,
+        "y": 0.1553,
+        "w": 0.2976,
+        "h": 0.4421
+      },
+      "note": "the claim at display size over six lines: Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "countdown",
+      "name": "Countdown",
+      "kind": "control",
+      "role": "plan",
+      "box": {
+        "x": 0.0268,
+        "y": 0.6257,
+        "w": 0.253,
+        "h": 0.0572
+      },
+      "note": "amber outlined chip with clock icon: Payroll 2 · next value date in 01:59:41",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "slip-card",
+      "name": "Slip card",
+      "kind": "chrome",
+      "role": "plan",
+      "box": {
+        "x": 0.356,
+        "y": 0.0987,
+        "w": 0.6298,
+        "h": 0.6237
+      },
+      "note": "the payslip: white security paper card, perforated top edge, faint guilloché line ground, soft offset shadow",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "slip-header",
+      "name": "Slip header",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.381,
+        "y": 0.1434,
+        "w": 0.2969,
+        "h": 0.0138
+      },
+      "note": "small-caps mono header VALUTA PAYSLIP · No. 01 of 20 · PAYROLL 1",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "stamp",
+      "name": "Stamp",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.6964,
+        "y": 0.1493,
+        "w": 0.269,
+        "h": 0.1039
+      },
+      "note": "petrol rubber stamp rotated -3 degrees, bordered: VALUE 15 OCT 2026 · 14:00 UTC (code-drawn text in a rotated bordered box)",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "salary",
+      "name": "Salary",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.3817,
+        "y": 0.2421,
+        "w": 0.1198,
+        "h": 0.0204
+      },
+      "note": "mono line Salary MXN 1.00",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "rate-line",
+      "name": "Rate line",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.381,
+        "y": 0.3039,
+        "w": 0.5744,
+        "h": 0.0349
+      },
+      "note": "mono line Rate MXN/USD 0.05389760 (≈ 18.55 MXN per USD) · Chainlink round 292, published 13:50, between dashed rules",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "amount",
+      "name": "Amount",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.3828,
+        "y": 0.3717,
+        "w": 0.3497,
+        "h": 0.0638
+      },
+      "note": "the paid amount, very large carbon-blue mono: 0.053897 USDC",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "counterfactual",
+      "name": "Counterfactual",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.3806,
+        "y": 0.4612,
+        "w": 0.343,
+        "h": 0.0164
+      },
+      "note": "grey mono struck through: 0.053567 at the 25 Oct rate it settled on",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "seal",
+      "name": "Seal",
+      "kind": "chrome",
+      "role": "plan",
+      "box": {
+        "x": 0.8304,
+        "y": 0.3572,
+        "w": 0.1269,
+        "h": 0.2388
+      },
+      "note": "round guilloché seal with RATE HELD, generated at runtime as SVG from the payslip's round id (rosette of petrol line loops)",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "facts",
+      "name": "Facts",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.3828,
+        "y": 0.525,
+        "w": 0.2094,
+        "h": 0.1026
+      },
+      "note": "three check lines: Round 292 was live at 14:00 · Round 293 came at 14:06 · 10 minutes old, inside 25 h",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "slip-footer",
+      "name": "Slip footer",
+      "kind": "text",
+      "role": "plan",
+      "box": {
+        "x": 0.3813,
+        "y": 0.6842,
+        "w": 0.5647,
+        "h": 0.0184
+      },
+      "note": "mono footer: settled 25 Oct 13:59 by 0xe5CA…aBC3, not the employer · tx 0x82ff…38b7 · Verify on Arc (petrol link)",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "timeline",
+      "name": "Timeline",
+      "kind": "chrome",
+      "role": "plan",
+      "box": {
+        "x": 0.0461,
+        "y": 0.7171,
+        "w": 0.91,
+        "h": 0.0987
+      },
+      "note": "data timeline drawn at runtime: round markers 291 292(ringed) 293, payday star marker at 14:00, break, settlement dot 25 Oct",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "coupons",
+      "name": "Coupons",
+      "kind": "control",
+      "role": "plan",
+      "box": {
+        "x": 0.0205,
+        "y": 0.8526,
+        "w": 0.9572,
+        "h": 0.1263
+      },
+      "note": "row of eleven payslip coupons 01-11 with perforated edges, each with a small rotated petrol HELD stamp; coupon 01 selected with a petrol outline",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    },
+    {
+      "id": "divider",
+      "name": "Divider",
+      "kind": "chrome",
+      "role": "plan",
+      "box": {
+        "x": 0,
+        "y": 0.8257,
+        "w": 1,
+        "h": 0.0092
+      },
+      "note": "full-width hairline rule between the timeline and the coupon row",
+      "medium": "code",
+      "preview": {
+        "kind": "comp-crop"
+      },
+      "codeDrawn": true,
+      "dependencies": []
+    }
+  ],
+  "codeRegions": []
+}

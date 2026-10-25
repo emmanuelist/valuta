@@ -40,6 +40,8 @@ USDC: native balance (18 decimals) plus the optional ERC-20 interface `0x3600000
 | Foundry `cast` | 1.8.3 | wallets, reads | `cast --version` |
 | App stack (from Studio) | React 18.3 · Vite 6 · wagmi 2.19.5 · viem **2.57.5** (pinned through `overrides`) · ConnectKit 1.9 · Tailwind 3.4 · TypeScript ~7.0 · oxlint · bun 1.3.14 | — | `package.json`, `bun.lock` as pulled 2026-10-25; `bun install --frozen-lockfile` OK |
 | Foundry config (from Studio) | solc 0.8.30 · `via_ir = true` · `evm_version = cancun` · optimizer 200 · forge-std vendored in `lib/` | — | `foundry.toml` |
+| Fonts for the app | `@fontsource-variable/hanken-grotesk` 5.3.0 · `@fontsource-variable/spline-sans-mono` 5.3.0 (self-hosted; the Impeccable first-viewport capture refuses font CDNs) | redesign type | `npm view`, 2026-10-25 |
+| Sourcify human page | `https://repo.sourcify.dev/5042/<address>` shows the source with "Exact Match" (the `server/v2` URL is JSON) | footer and README links | `curl`, 2026-10-25 |
 
 Arc Studio facts (agent guide, 2026-10-25):
 - Deploys to Arc Testnet only.
@@ -60,6 +62,9 @@ Arc Studio facts (agent guide, 2026-10-25):
 - **Each native transfer emits two `Transfer` logs** (system emitter `0xffff…fffe` at 18 decimals and the USDC contract at 6). Indexers must not double-count (Arc docs; observed in round 1).
 - **`PREVRANDAO` is always 0.** Not relevant to Asof; noted to stop anyone using it.
 - **Contract verification:** the explorer API returned Cloudflare 403 from the CLI in round 1. Sourcify supports 5042 (`--verifier sourcify`). Reported 2026-09; re-check at deploy.
+
+- **The public RPC is an archive node** (verified 2026-10-25: state read 12M blocks, about 70 days, back). So `eth_call` with a block tag replays any past moment. To re-run a settled payslip's settlement, call at `settledBlock − 1` and pass the rounds of any paydays settled earlier in that tx first, because `settle` works in order from the first unsettled payday (E-022). At the latest block, a settled payday answers `NothingDue`.
+- **A wrong round that was not yet published answers `BadAnswer`, not `NotAsOfPayday`** (`getRoundData` past the latest returns zeros, so `startedAt == 0`). A cheat demo must use r+1 only once it exists at the call's block, else r−1 (E-021).
 
 ## Valuta deployments (mainnet)
 | Version | Address | Status |

@@ -111,3 +111,26 @@ An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests 
 
 Setoff's Archivo and Warrant's Mona Sans were excluded on purpose, so each product keeps its own voice. The spec keeps font-match's record; the build uses these faces, and the hero gate's cap-height, weight and width readings will check the fit.
 **Consequences:** if the hero gate flags a family mismatch, address it by the measured readings, not by switching to Nunito.
+
+## D-019 · One home page that is also the landing page; the redesign queue becomes four turns · 2026-10-25 · accepted
+**Context:** the builder asked whether Valuta gets a home page or a landing page. Both reference builds use one page: the live product and the claim in the first viewport, then story sections below. Setoff (round-1 winner) has "Try to break it", "How a debt clears" and "Stated plainly"; Warrant has its lock story and refusals. The queued spec covered only the first viewport. Impeccable's sections phase builds the rest of a surface inside the recorded system, with no new comp.
+**Decision:** `/` stays the product. The approved comp's first viewport, the claim plus a live mainnet payslip, is the proof, before any click. Below the fold the page reads as the reverse of the payslip:
+- "Try to cheat it.": four live read-only attempts on the selected payslip. Settled payslips are replayed at `settledBlock − 1` (E-022).
+- "How a payday is priced": four clauses filled from chain reads.
+- "Every payroll": the register, with Create a payroll.
+- The imprint: built in Arc Studio, stated plainly, the contract.
+
+There's no separate marketing page. It would put a click between the judge and the proof, and it would cost a comp and a Studio turn.
+
+The same pass makes two more changes:
+- Fonts are self-hosted from `@fontsource-variable`, because Impeccable's first-viewport capture refuses font CDNs.
+- One `tryCheat` function serves both due and settled payslips.
+
+**Queue:**
+- 08: the hero (spec + comp)
+- 09: home sections, settle flow, employer panel, document head
+- 10: responsive, accessibility, states
+- 11: /new, /lookup, bundle
+
+The superseded drafts moved to `internal/prompts-unsent/`.
+**Consequences:** one more Studio turn than planned. If capacity runs short, 11 is the turn to trim, since /new and /lookup already work from turn 7.

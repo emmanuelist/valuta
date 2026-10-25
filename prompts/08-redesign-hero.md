@@ -5,7 +5,7 @@ Two reference files are attached:
 - `context/redesign-a-specimen.png`: the approved composition (2× scale). At 1344×760 the first viewport must match it region for region.
 
 The non-negotiables, in short:
-1. **Fonts:** Hanken Grotesk for words, Spline Sans Mono for every figure (tabular). Light theme. Petrol #0B4F6C, carbon blue #1F3886 for the paid amount. **Lateness is quiet grey text, never red.** Red only for a refused cheat (VOID).
+1. **Fonts:** Hanken Grotesk for words, Spline Sans Mono for every figure (tabular), both self-hosted from `@fontsource-variable` with no font CDN (spec §1). Light theme. Petrol #0B4F6C, carbon blue #1F3886 for the paid amount. **Lateness is quiet grey text, never red.** Red only for a refused cheat (VOID).
 2. **The payslip** is a security document:
    - a perforated top edge (CSS mask) and a faint guilloché ground
    - the rotated value-date stamp, and rate, salary and amount lines formatted from bigints (rates with all 8 decimals)

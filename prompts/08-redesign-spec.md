@@ -22,8 +22,9 @@ The payslip is printed as a **security document**: crisp white paper on a cool-w
   - void red #B42318: **only** for a refused cheat (VOID); ≥ 4.5:1
 - **Lateness is never red.** It is quiet secondary text: "booked 9 d 23 h after the value date".
 - **Type:**
-  - **Hanken Grotesk** (Google Fonts) for all words, headings and UI.
-  - **Spline Sans Mono** (Google Fonts) for every figure, id, rate, amount, address and the payslip's printed lines. Always `tabular-nums`.
+  - **Hanken Grotesk** for all words, headings and UI.
+  - **Spline Sans Mono** for every figure, id, rate, amount, address and the payslip's printed lines. Always `tabular-nums`.
+  - **Self-host both:** `bun add @fontsource-variable/hanken-grotesk@5.3.0 @fontsource-variable/spline-sans-mono@5.3.0`, imported in `main.tsx`. Use no Google Fonts `<link>` and no font CDN: the first-viewport check loads fonts only from the app's own files.
   - Drop Radio Canada Big and Geist Mono.
 - **Paper:**
   - card radius 6px, 1px rule border
@@ -123,9 +124,13 @@ The paid amount rolls its digits to the new value (280 ms) and then **never move
   - the facts computed from the preview round
   - footer actions:
     - **Settle now**: if not connected, open the wallet connect instead of a disabled button. Simulate first, then write. Then show a receipt card (tx link, "settled by you") that stays until dismissed.
-    - **Try to cheat it**: a read-only `eth_call` of `settle(id, rounds)` from the visitor's address, or from the zero address if not connected.
-      - `settle` works in order from the first unsettled payday. So `rounds` holds the correct `duePreview` rounds for any due paydays before this one, then **one wrong round** for this payday.
-      - The wrong round is r+1 if it has been published, which is the late employer waiting for a better rate. Otherwise it is r−1. Never send an unpublished r+1: the chain answers `BadAnswer` for it (captured on mainnet, E-021), which proves nothing about the rate.
-      - Decode the revert with the ABI and show the error's real name and arguments, never hardcoded text. Show a red **VOID** stamp: "NotAsOfPayday: the contract refused round 205 for this payday. Round 206 was live at 16:00."
-      - Show the amount the wrong round would have paid, struck through, computed from `getRoundData(wrong).answer` with the same conversion.
+    - **Try to cheat it**: a read-only `eth_call` of `settle(id, rounds)` from the visitor's address, or from the zero address if not connected. Build it as one function, `tryCheat(payslip)`, because the next turn reuses it for settled payslips.
+      - **Which block:** for a DUE payslip, the latest block. For a HELD payslip, replay at `settledBlock − 1`, the block before it was settled, when it was still due. The public RPC serves historical state (verified 70 days back), so this works on every settled payslip.
+      - **The rounds:** `settle` works in order from the first unsettled payday. For a due payslip, `rounds` holds the correct `duePreview` rounds for any due paydays before it. For a replay, it holds the stored rounds of the paydays settled earlier in that same block. Either way, **one wrong round** for this payday comes last.
+      - **The wrong round** is r+1 if it had been published as of the call's block: the late employer waiting for a better rate. Otherwise it is r−1. Never send an unpublished r+1: the chain answers `BadAnswer`, which proves nothing about the rate (captured on mainnet, E-021).
+      - **The control:** also run the same call with the correct round, and show that it goes through.
+      - **Verified on mainnet:** at block 27,805,206, `settle(1, [round 293])` reverts with `NotAsOfPayday(1792072800, round 293)`, and `settle(1, [round 292])` succeeds.
+      - **The result:** decode the revert with the ABI and show the error's real name and arguments, never hardcoded text. Show it as a red **VOID** stamp: "NotAsOfPayday: the contract refused round 205 for this payday. Round 206 was live at 16:00."
+      - Show the amount the wrong round would have paid, struck through, computed from `getRoundData(wrong).answer` at that block with the same conversion.
+      - **This turn** shows it on DUE payslips only. The HELD hero at 1344×760 gets no cheat control, because the first viewport must match the comp. The next turn adds it in a section below.
 - **UPCOMING:** stamp "VALUE … · FIXES IN 01:59:41", no amount. A quiet line reads "today's rate would pay ≈ 0.020111; the round live at payday decides" (from `quote`).

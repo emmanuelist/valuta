@@ -11,14 +11,19 @@ import "../TestFeed.sol";
 // TWO MODES, selected via the environment variable DEPLOY_MODE:
 //
 //   DEPLOY_MODE=testnet  (default)
-//     • Deploys TestFeed mocks for MXN, BRL, EUR, JPY, CAD, AUD, KRW, ARS.
-//     • Seeds each feed with a short history.
-//     • Deploys Asof with the TestFeed registry and maxAge = 90_000 (25h).
+//     • Deploys one TestFeed per currency for MXN, BRL and EUR (3 feeds).
+//     • Seeds each with ~10 days of realistic history, two rounds per day,
+//       small daily moves, and one gap longer than 25 hours so stale-fallback
+//       paydays can be exercised.
+//     • Deploys Asof with those three currencies and maxAge = 90_000 (25 h).
 //
 //   DEPLOY_MODE=mainnet
-//     • Does NOT deploy — mainnet is deployed by the project owner using the
-//       real Chainlink proxy addresses listed below. This mode prints the
-//       constructor arguments and exits so the owner can deploy manually.
+//     • Broadcasts a real deployment of Asof on Arc mainnet (chain 5042) using
+//       the 8 real Chainlink proxy addresses hard-coded below.
+//     • This mode is intended to be run by the project owner with their own key:
+//         DEPLOY_MODE=mainnet forge script contracts/script/Deploy.s.sol \
+//           --rpc-url <ARC_MAINNET_RPC> --private-key $PRIVATE_KEY --broadcast
+//     • Do NOT run from Arc Studio; do NOT send funds to Arc Studio wallets.
 //
 // Mainnet Chainlink proxies on Arc (chain 5042), all 8 decimals, verified:
 //   EUR/USD  0xDd5B15443cd733D3966a50a3E48cB7DF9Fb5DE0D  (inverse=false)
@@ -32,7 +37,7 @@ import "../TestFeed.sol";
 //   maxAge   = 90_000 seconds (25 hours)
 // ---------------------------------------------------------------------------
 contract Deploy is Script {
-    // Mainnet proxy addresses — never deployed here, only logged.
+    // ── Mainnet proxy addresses ───────────────────────────────────────────
     address constant MAINNET_EUR_USD = 0xDd5B15443cd733D3966a50a3E48cB7DF9Fb5DE0D;
     address constant MAINNET_MXN_USD = 0x302eaa6cd6f7AdDdc973fAC2Bb8fa32e9Ce19f21;
     address constant MAINNET_BRL_USD = 0x3406DB72AC5136b89eba6808CFcaD83aF523B3C2;
@@ -48,111 +53,119 @@ contract Deploy is Script {
         string memory mode = vm.envOr("DEPLOY_MODE", string("testnet"));
 
         if (keccak256(bytes(mode)) == keccak256(bytes("mainnet"))) {
-            _printMainnetArgs();
+            _deployMainnet();
             return;
         }
 
-        // ── Testnet deploy ──────────────────────────────────────────────────
+        _deployTestnet();
+    }
+
+    // ── Mainnet deploy (owner runs with their own key) ────────────────────
+    function _deployMainnet() internal {
+        bytes3[] memory codes  = new bytes3[](8);
+        address[] memory feeds = new address[](8);
+        bool[]    memory inv   = new bool[](8);
+
+        codes[0] = "EUR"; feeds[0] = MAINNET_EUR_USD; inv[0] = false;
+        codes[1] = "MXN"; feeds[1] = MAINNET_MXN_USD; inv[1] = false;
+        codes[2] = "BRL"; feeds[2] = MAINNET_BRL_USD; inv[2] = false;
+        codes[3] = "JPY"; feeds[3] = MAINNET_JPY_USD; inv[3] = false;
+        codes[4] = "CAD"; feeds[4] = MAINNET_CAD_USD; inv[4] = false;
+        codes[5] = "AUD"; feeds[5] = MAINNET_AUD_USD; inv[5] = false;
+        codes[6] = "KRW"; feeds[6] = MAINNET_KRW_USD; inv[6] = false;
+        codes[7] = "ARS"; feeds[7] = MAINNET_USD_ARS; inv[7] = true;
+
+        vm.startBroadcast();
+        Asof asof = new Asof(codes, feeds, inv, MAX_AGE);
+        vm.stopBroadcast();
+
+        console.log("=== Asof Mainnet Deploy ===");
+        console.log("Asof:", address(asof));
+        console.log("maxAge:", MAX_AGE);
+    }
+
+    // ── Testnet deploy ─────────────────────────────────────────────────────
+    // Deploys one TestFeed per currency for MXN, BRL and EUR only.
+    // Registers only those three currencies in Asof (sufficient for testnet demos).
+    function _deployTestnet() internal {
         vm.startBroadcast();
 
-        // Deploy 8 TestFeeds.
-        TestFeed feedEUR = new TestFeed();
         TestFeed feedMXN = new TestFeed();
         TestFeed feedBRL = new TestFeed();
-        TestFeed feedJPY = new TestFeed();
-        TestFeed feedCAD = new TestFeed();
-        TestFeed feedAUD = new TestFeed();
-        TestFeed feedKRW = new TestFeed();
-        TestFeed feedARS = new TestFeed(); // USD/ARS inverse
+        TestFeed feedEUR = new TestFeed();
 
-        // Seed histories (a few rounds per day; one gap > 25 h to test staleness).
-        // Using realistic approximate rates (Oct 2026).
-        // All timestamps are relative to deploy time (block.timestamp) for clarity.
-        // In practice a real deploy will use absolute timestamps.
-
+        // Seed each feed with 10 days of history.
+        // Two rounds per day (every 12 hours), small daily moves, one >25 h gap.
+        // Absolute timestamps starting 10 days before now.
         uint256 base = block.timestamp - 10 days;
 
-        // EUR/USD ≈ 1.08 (8-decimal answer: 108_000_000)
-        _seedEurLike(feedEUR, base, 108_000_000);
-        // MXN/USD ≈ 0.048 (8-decimal: 4_800_000)
-        _seedEurLike(feedMXN, base, 4_800_000);
-        // BRL/USD ≈ 0.18 (8-decimal: 18_000_000)
-        _seedEurLike(feedBRL, base, 18_000_000);
-        // JPY/USD ≈ 0.0066 (8-decimal: 660_000)
-        _seedEurLike(feedJPY, base, 660_000);
-        // CAD/USD ≈ 0.73 (8-decimal: 73_000_000)
-        _seedEurLike(feedCAD, base, 73_000_000);
-        // AUD/USD ≈ 0.65 (8-decimal: 65_000_000)
-        _seedEurLike(feedAUD, base, 65_000_000);
-        // KRW/USD ≈ 0.00072 (8-decimal: 72_000)
-        _seedEurLike(feedKRW, base, 72_000);
-        // USD/ARS ≈ 1050 (8-decimal: 105_000_000_000)
-        _seedEurLike(feedARS, base, 105_000_000_000);
+        // MXN/USD: starts at 0.0536, drifts ±0.0002/day
+        // 8-decimal: 5_360_000 → daily increments of 20_000
+        _seedWithDrift(feedMXN, base, 5_360_000, 20_000);
 
-        // Build registry arrays.
-        bytes3[] memory codes   = new bytes3[](8);
-        address[] memory feeds  = new address[](8);
-        bool[]    memory inv    = new bool[](8);
+        // BRL/USD: starts at 0.2011, drifts ±0.0003/day
+        // 8-decimal: 20_110_000 → daily increments of 30_000
+        _seedWithDrift(feedBRL, base, 20_110_000, 30_000);
 
-        codes[0] = "EUR"; feeds[0] = address(feedEUR); inv[0] = false;
-        codes[1] = "MXN"; feeds[1] = address(feedMXN); inv[1] = false;
-        codes[2] = "BRL"; feeds[2] = address(feedBRL); inv[2] = false;
-        codes[3] = "JPY"; feeds[3] = address(feedJPY); inv[3] = false;
-        codes[4] = "CAD"; feeds[4] = address(feedCAD); inv[4] = false;
-        codes[5] = "AUD"; feeds[5] = address(feedAUD); inv[5] = false;
-        codes[6] = "KRW"; feeds[6] = address(feedKRW); inv[6] = false;
-        codes[7] = "ARS"; feeds[7] = address(feedARS); inv[7] = true;
+        // EUR/USD: starts at 1.1203, drifts ±0.0004/day
+        // 8-decimal: 112_030_000 → daily increments of 40_000
+        _seedWithDrift(feedEUR, base, 112_030_000, 40_000);
+
+        bytes3[] memory codes  = new bytes3[](3);
+        address[] memory feeds = new address[](3);
+        bool[]    memory inv   = new bool[](3);
+
+        codes[0] = "MXN"; feeds[0] = address(feedMXN); inv[0] = false;
+        codes[1] = "BRL"; feeds[1] = address(feedBRL); inv[1] = false;
+        codes[2] = "EUR"; feeds[2] = address(feedEUR); inv[2] = false;
 
         Asof asof = new Asof(codes, feeds, inv, MAX_AGE);
 
         vm.stopBroadcast();
 
-        // Report addresses.
         console.log("=== Asof Testnet Deploy ===");
-        console.log("Asof:       ", address(asof));
-        console.log("TestFeed EUR:", address(feedEUR));
+        console.log("Asof:        ", address(asof));
         console.log("TestFeed MXN:", address(feedMXN));
         console.log("TestFeed BRL:", address(feedBRL));
-        console.log("TestFeed JPY:", address(feedJPY));
-        console.log("TestFeed CAD:", address(feedCAD));
-        console.log("TestFeed AUD:", address(feedAUD));
-        console.log("TestFeed KRW:", address(feedKRW));
-        console.log("TestFeed ARS:", address(feedARS));
+        console.log("TestFeed EUR:", address(feedEUR));
         console.log("maxAge:      ", MAX_AGE);
     }
 
-    // ── Internal seed helper ──────────────────────────────────────────────
-    // Seeds ~10 rounds spaced 6 h apart, then a > 25 h gap, then 3 more rounds.
-    function _seedEurLike(TestFeed feed, uint256 base, int256 rate) internal {
-        // 10 rounds, every 6 hours
-        for (uint256 i = 0; i < 10; i++) {
-            feed.push(rate, base + i * 6 hours);
-        }
-        // 27-hour gap (stale region)
-        feed.push(rate, base + 10 * 6 hours + 27 hours);
-        // 3 more rounds at 6-hour spacing after the gap
-        uint256 gapEnd = base + 10 * 6 hours + 27 hours;
-        for (uint256 i = 1; i <= 3; i++) {
-            feed.push(rate, gapEnd + i * 6 hours);
-        }
-    }
+    // ── Seed helper ────────────────────────────────────────────────────────
+    // Seeds 10 days of history: 2 rounds/day at 12-hour intervals, with small
+    // daily rate drift. After day 5, inserts a 27-hour gap to create a stale
+    // region suitable for testing the stale-fallback path.
+    //
+    // Day  0: round 1  (base + 0h),  round 2  (base + 12h)
+    // Day  1: round 3  (base + 24h), round 4  (base + 36h)
+    // ...
+    // Day  4: round 9  (base + 96h), round 10 (base + 108h)
+    //          ── gap of 27 hours ──
+    // Day  5: round 11 (base + 135h = 108h + 27h), round 12 (base + 147h)
+    // ...
+    // Day  9: round 19 (base + 207h), round 20 (base + 219h)
+    function _seedWithDrift(TestFeed feed, uint256 base, int256 startRate, int256 dailyDrift) internal {
+        int256 rate = startRate;
+        uint256 t   = base;
+        bool gapInserted = false;
 
-    // ── Mainnet args (print only, never deploy) ───────────────────────────
-    function _printMainnetArgs() internal view {
-        console.log("=== Mainnet constructor arguments (DO NOT DEPLOY FROM HERE) ===");
-        console.log("Deployer runs: forge create Asof --constructor-args ...");
-        console.log("");
-        console.log("codes:   [EUR, MXN, BRL, JPY, CAD, AUD, KRW, ARS]");
-        console.log("feeds:");
-        console.log("  EUR/USD", MAINNET_EUR_USD);
-        console.log("  MXN/USD", MAINNET_MXN_USD);
-        console.log("  BRL/USD", MAINNET_BRL_USD);
-        console.log("  JPY/USD", MAINNET_JPY_USD);
-        console.log("  CAD/USD", MAINNET_CAD_USD);
-        console.log("  AUD/USD", MAINNET_AUD_USD);
-        console.log("  KRW/USD", MAINNET_KRW_USD);
-        console.log("  USD/ARS", MAINNET_USD_ARS);
-        console.log("inverse: [false,false,false,false,false,false,false,true]");
-        console.log("maxAge:  90000");
+        for (uint256 day = 0; day < 10; day++) {
+            // Insert the 27-hour gap after day 4's second round.
+            if (day == 5 && !gapInserted) {
+                t += 27 hours;
+                gapInserted = true;
+            }
+
+            // Round 1 of the day.
+            feed.push(rate, t);
+            t += 12 hours;
+
+            // Round 2 of the day (slight intra-day move).
+            feed.push(rate + dailyDrift / 2, t);
+            t += 12 hours;
+
+            // Apply daily drift for the next day.
+            rate += dailyDrift;
+        }
     }
 }

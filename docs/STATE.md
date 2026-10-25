@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-25 23:45 UTC at cccb9ac (branch 6-app)_
+_Last verified: 2026-10-26 00:05 UTC at 92605e9 (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** send Studio turn 08 (`prompts/08-redesign-hero.md`, with `--file <abs>/prompts/08-redesign-spec.md --file <abs>/.impeccable/mocks/redesign-a-specimen.png --detach`, then attach) once **both** hold: (1) the builder has accepted the component review at http://127.0.0.1:61685/ (Impeccable's plates gate: no page code before it), then `impeccable build-phase advance`; (2) `arc-studio usage --json` is below 100% (polled every 5 min into `internal/studio/usage-poll.log`; earliest 00:00 UTC if the cap is per calendar day, else it frees from about 12:00 UTC as the 10-25 turns age out). After it lands: pull, run, hero gate at 1344×760, turns 09 and 10, critique (target ≥ 32/40), CI (#5), Vercel, film, submit (#6)
+**Next action:** send Studio turn 08 (`prompts/08-redesign-hero.md`, with `--file <abs>/prompts/08-redesign-spec.md --file <abs>/.impeccable/mocks/redesign-a-specimen.png --detach`, then attach) once **both** hold: (1) the builder has accepted the component review at http://127.0.0.1:61685/ (Impeccable's plates gate: no page code before it), then `impeccable build-phase advance`; (2) `arc-studio usage --json` is below 100% (polled every 5 min into `internal/studio/usage-poll.log`; earliest 00:00 UTC if the cap is per calendar day, else it frees from about 12:00 UTC as the 10-25 turns age out). After it lands: pull, run, hero gate at 1344×760, then turns 09 (home sections, D-019), 10 (responsive, states) and 11 (pages, bundle), critique (target ≥ 32/40), CI (#5), Vercel, film, submit (#6)
 **Blocked on:** nothing
 
 ## Works (verified this session)

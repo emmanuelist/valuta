@@ -21,7 +21,12 @@ Chainlink FX proxies on Arc mainnet. All have 8 decimals, and the on-chain `desc
 | KRW / USD | `0x07040A33A0204596e927595D0994C5D841d7d61D` | direct | 0.3 % | 0.000756 |
 | USD / ARS | `0xa261C56CABf7Ed6081646b892E57175AB2Dd8617` | **inverse** (ARS per USD) | 0.5 % | 1643.0722 |
 
-**Round history is readable.** On MXN/USD, `getRoundData` works back to phase-1 round 1 (2026-06-11 14:31 UTC). Round ids are `(1 << 64) | n`; the latest on 2026-10-25 was n = 454 (id 18446744073709551942). Updates arrive about daily, plus deviation updates (e.g. 10-23 13:39 and 14:42).
+**Round history is readable.** On MXN/USD, `getRoundData` works back to phase-1 round 1 (2026-06-11 14:31 UTC). Round ids are `(1 << 64) | n`; the latest on 2026-10-25 was n = 326 (id 18446744073709551942). USD/ARS has only 62 rounds (first on 2026-09-14). Updates arrive about daily, plus deviation updates (e.g. 10-23 13:39 and 14:42).
+
+**Round semantics through the proxy** (checked on MXN/USD and USD/ARS, 2026-10-25):
+- `answeredInRound == roundId`, and `startedAt` is non-zero, 10–75 s before `updatedAt`.
+- `getRoundData` for an id past the latest round **returns zeros** (`updatedAt = 0`); it does not revert.
+- `getRoundData` for a phase-2 id **reverts**, as does an id below round 1.
 
 **None of these addresses has code on Arc Testnet** (`eth_getCode` = `0x`, 2026-10-25), hence D-004.
 
@@ -33,7 +38,8 @@ USDC: native balance (18 decimals) plus the optional ERC-20 interface `0x3600000
 | Arc Studio CLI `@circle-fin/arc-studio-cli` | 1.2.2 (published 2026-10-23) | `run --session asof --prompt-file --skills chainlink --output json`, `pull --dry-run --diff`, `ls`, `cat`, `deployments --json`, `usage` | `arc-studio --help`, `arc-studio agent-guide`, docs.arc.io/ai/arc-studio-cli |
 | Arc Foundry `arc-forge` | 1.7.1-dev (`~/.local/bin/arc-forge`) | build, test with Arc semantics, mainnet deploy | `arc-forge --version`, 2026-10-25 |
 | Foundry `cast` | 1.8.3 | wallets, reads | `cast --version` |
-| App stack | **unknown until Studio's first pull** | — | record here after the pull |
+| App stack (from Studio) | React 18.3 · Vite 6 · wagmi 2.19.5 · viem **2.57.5** (pinned through `overrides`) · ConnectKit 1.9 · Tailwind 3.4 · TypeScript ~7.0 · oxlint · bun 1.3.14 | — | `package.json`, `bun.lock` as pulled 2026-10-25; `bun install --frozen-lockfile` OK |
+| Foundry config (from Studio) | solc 0.8.30 · `via_ir = true` · `evm_version = cancun` · optimizer 200 · forge-std vendored in `lib/` | — | `foundry.toml` |
 
 Arc Studio facts (agent guide, 2026-10-25):
 - Deploys to Arc Testnet only.

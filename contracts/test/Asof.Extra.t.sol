@@ -595,6 +595,91 @@ contract FuzzFundBalanceTest is AsofBase {
 // ===========================================================================
 // N. ARS inverse conversion — exact arithmetic check
 // ===========================================================================
+
+// ===========================================================================
+// O. Gas-cap safety: workers that burn gas or bomb returndata are credited
+// ===========================================================================
+
+/// @dev Worker whose receive() runs an infinite loop, burning all forwarded gas.
+contract GasBurnerWorker {
+    receive() external payable {
+        // Infinite loop — consumes all gas forwarded to this call.
+        // With the 50_000-gas cap Asof uses, this exhausts the cap and
+        // returns false without reverting the settlement.
+        while (true) {}
+    }
+}
+
+/// @dev Worker whose receive() reverts with a huge returndata payload (65536 bytes).
+contract HugePayloadWorker {
+    receive() external payable {
+        assembly {
+            revert(0, 65536)
+        }
+    }
+}
+
+contract GasCapTest is AsofBase {
+    // ── helper: salary 5_000 MXN → 250e18 USDC at the seeded rate ──────────
+    // usdc = 5_000e18 * 5_000_000 / 1e8 = 250e18; floor to MICRO → 250e18
+    uint256 constant SALARY      = 5_000e18;
+    uint256 constant EXPECTED    = 250e18;   // expected USDC credited
+    uint256 constant RESERVE     = 300 ether;
+
+    function test_GasBurner_Worker_IsCredited() public {
+        GasBurnerWorker gbw = new GasBurnerWorker();
+
+        uint256 paydayTs = t0 + 1 hours;
+        vm.warp(paydayTs + 1);
+
+        // Create payroll with the gas-burner as worker
+        vm.prank(employer);
+        uint256 id = asof.create{value: RESERVE}(address(gbw), "MXN", SALARY, paydayTs, 30 days, 1);
+
+        uint80[] memory rids = new uint80[](1);
+        rids[0] = _rid(1);
+
+        // Settlement must NOT revert despite the infinite loop in receive()
+        asof.settle(id, rids);
+
+        // Transfer failed → full amount goes to credit, NOT to the worker's balance
+        assertEq(asof.credit(address(gbw)), EXPECTED,
+            "gas-burner worker: credited balance should equal expected USDC");
+
+        // The payday was recorded as settled
+        Asof.Payroll memory p = asof.payrollInfo(id);
+        assertEq(p.settled, 1, "gas-burner worker: settled count should be 1");
+    }
+
+    function test_HugePaylod_Worker_IsCredited() public {
+        HugePayloadWorker hpw = new HugePayloadWorker();
+
+        uint256 paydayTs = t0 + 1 hours;
+        vm.warp(paydayTs + 1);
+
+        // Create payroll with the huge-payload-reverter as worker
+        vm.prank(employer);
+        uint256 id = asof.create{value: RESERVE}(address(hpw), "MXN", SALARY, paydayTs, 30 days, 1);
+
+        uint80[] memory rids = new uint80[](1);
+        rids[0] = _rid(1);
+
+        // Settlement must NOT revert despite the huge returndata revert
+        asof.settle(id, rids);
+
+        // Transfer failed → full amount goes to credit
+        assertEq(asof.credit(address(hpw)), EXPECTED,
+            "huge-payload worker: credited balance should equal expected USDC");
+
+        // The payday was recorded as settled
+        Asof.Payroll memory p = asof.payrollInfo(id);
+        assertEq(p.settled, 1, "huge-payload worker: settled count should be 1");
+    }
+}
+
+// ===========================================================================
+// N. (continued) ARS inverse conversion — exact arithmetic check
+// ===========================================================================
 contract ARSConversionExactTest is AsofBase {
     function test_ARS_ExactConversion() public {
         // USD/ARS = 1050 (answer = 105_000_000_000 at 8 dec)

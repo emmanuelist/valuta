@@ -288,7 +288,9 @@ contract Asof {
         uint256 creditedAmt;
         uint256 paidAmt;
         if (toPay > 0) {
-            if (_tryTransfer(p.worker, toPay)) {
+            // Use capped-gas transfer: worker is not the caller here, so we must not
+            // allow their receive() to consume unlimited gas and revert the settlement.
+            if (_tryTransferCapped(p.worker, toPay)) {
                 paidAmt = toPay;
             } else {
                 _credited[p.worker] += toPay;
@@ -403,6 +405,11 @@ contract Asof {
     /// @notice Full payroll struct.
     function payrollInfo(uint256 id) external view returns (Payroll memory) {
         return _payrolls[id];
+    }
+
+    /// @notice Number of payrolls created so far (ids are 1-based, so the last id == payrollCount()).
+    function payrollCount() external view returns (uint256) {
+        return _nextId - 1;
     }
 
     // -----------------------------------------------------------------------
@@ -679,16 +686,40 @@ contract Asof {
         }
     }
 
-    /// @dev Attempt a native transfer; returns false on failure (no revert).
-    function _tryTransfer(address to, uint256 amount) internal returns (bool) {
+    // -----------------------------------------------------------------------
+    // Transfer helpers
+    // -----------------------------------------------------------------------
+
+    /// @dev Gas cap for payouts where the recipient is NOT the caller (settle, fund arrears).
+    ///      Prevents a malicious worker contract from burning all gas in receive() and
+    ///      making the settlement revert, which would lock the employer's reserve.
+    uint256 private constant PAYOUT_GAS = 50_000;
+
+    /// @dev Attempt a capped-gas native transfer (settle / fund arrears path).
+    ///      Uses an assembly call that does NOT copy return data, preventing
+    ///      returndata-bomb griefing. Returns false on failure.
+    function _tryTransferCapped(address to, uint256 amount) internal returns (bool ok) {
         if (to == address(0)) return false;
-        (bool ok,) = to.call{value: amount}("");
-        return ok;
+        assembly ("memory-safe") {
+            // call(gas, to, value, argsOffset, argsLen, retOffset, retLen)
+            ok := call(PAYOUT_GAS, to, amount, 0, 0, 0, 0)
+        }
     }
 
-    /// @dev Send native USDC to `to`; on failure, credit to withdrawable balance.
+    /// @dev Attempt a full-gas native transfer where the recipient IS the caller
+    ///      (withdraw, reclaim). Does NOT copy return data to prevent returndata-bomb
+    ///      griefing, but forwards all remaining gas so the caller's own contract
+    ///      receive() can do real work.
+    function _tryTransfer(address to, uint256 amount) internal returns (bool ok) {
+        if (to == address(0)) return false;
+        assembly ("memory-safe") {
+            ok := call(gas(), to, amount, 0, 0, 0, 0)
+        }
+    }
+
+    /// @dev Send native USDC to `to` via the capped-gas path; on failure, credit.
     function _sendOrCredit(address to, uint256 amount) internal {
-        if (!_tryTransfer(to, amount)) {
+        if (!_tryTransferCapped(to, amount)) {
             _credited[to] += amount;
         }
     }

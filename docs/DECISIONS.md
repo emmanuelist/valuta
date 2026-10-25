@@ -68,3 +68,10 @@ Append-only. To change a decision, add a new entry that supersedes it.
 ## D-013 · Funded from the Setoff leftovers · 2026-10-25 · resolves the pending part of D-006
 **Decision:** the builder chose to fund from the Setoff wallets rather than Binance. Six transfers moved 2.76 USDC: EMPLOYER 2.30, STRANGER 0.25, DEPLOYER 0.15, WORKER_MX 0.03, WORKER_BR 0.03 (E-008). About 2.15 USDC stays in the Setoff wallets for the builder's own withdrawal to Binance.
 **Consequences:** after judging, the payroll is ended, the reserve reclaimed, and every wallet swept back to the builder's Binance deposit address. That needs this laptop, because the keys exist only in `.env`.
+
+## D-014 · A local keeper settles due paydays while the laptop is on · 2026-10-25 · accepted
+**Context:** a blockchain doesn't run code on a timer. Payroll 2 pays every 2 hours, and someone has to send the transaction.
+**Decision:** `internal/keeper.sh` loops every 10 minutes and runs Studio's `Ops.settleDue` as EMPLOYER for each payroll with paydays due. It is operations glue, not product code (D-002 covers product code), and it is kept out of the repo.
+**Consequences:**
+- When the laptop is off (from 2026-10-28), paydays simply wait. Anyone can settle them later at the payday's own rate, which is the thesis, so judges can do it themselves from the app.
+- Keeper gas comes from EMPLOYER, about 0.003 USDC per settlement.

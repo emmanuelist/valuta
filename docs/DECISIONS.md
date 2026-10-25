@@ -94,3 +94,11 @@ An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests 
 **Decision:** no hand edits (D-002). Every fix found in today's inspection (hero fidelity, value-axis label collisions, exact 8-decimal rates, two-unit lateness, mobile overflow, the /new and /lookup pages, bundle size) is batched into two prompts written in advance: `prompts/08-hero-fidelity.md` (priority) and `prompts/09-pages-and-engineering.md`. They run as soon as capacity returns, expected around 2026-10-26 12:00 UTC.
 **Alternatives:** the builder can buy a usage increase with `arc-studio upgrade` (a one-time payment for the org). That's the builder's decision; agents must never run it.
 **Consequences:** M2 (due 2026-10-26 22:00 UTC) depends on Monday's Studio capacity. README, evidence and video work continue in parallel, because they aren't code.
+
+## D-017 · Redesign: the payslip is the hero · 2026-10-25 · supersedes the comp-4 composition (surface brief)
+**Context:** the builder found the UI not exciting or modern enough. The Impeccable critique (dual-agent, 2026-10-25) scored it 19/40 (Poor), with craft 4/10 against Setoff 8 and Warrant 9. Its P0: the proof axis is unreadable on real data, because the comp was approved on the one payday whose rounds were an hour apart, while real Arc FX rounds are 7–24 h apart. Snapshot: `.impeccable/critique/2026-10-25T22-26-13Z__src-app-tsx.md`.
+**Decision (the builder's answers):** "Payslip is the hero", "Full redesign + all fixes", "Wait for the free reset", "I'll add Higgsfield credits".
+- The payslip becomes the signature object: a value-date stamp, one honest timeline, a struck-through counterfactual at the settlement-time rate (from `asOf(currency, settledAt)`), three proof facts, a "RATE HELD" seal, and the settler shown.
+- Raises from the redesign seed (`026e9c61…`): stamped coupon states (HELD / DUE / CREDITED / VOID), a value-date scrubber that drives the whole page, and slips registered on one baseline.
+- Light theme, comp-led again once credits exist.
+**Consequences:** the redesign runs as Studio turns after the daily reset (around 2026-10-26 12:00 UTC). It replaces prompts 08 and 09: their fixes are absorbed into the redesign prompts. The target is a re-run critique of ≥ 32/40 and a clear win over both references.

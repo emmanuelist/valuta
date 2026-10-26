@@ -41,7 +41,7 @@ export function useNeighbourRoundsForProof(currency: string, roundId: bigint | n
   const prevId = roundId ? roundId - 1n : 0n
   const nextId = roundId ? roundId + 1n : 0n
 
-  const { data } = useReadContracts({
+  const { data, isLoading } = useReadContracts({
     contracts: [
       {
         address: feedInfo?.address ?? '0x0000000000000000000000000000000000000000',
@@ -85,5 +85,5 @@ export function useNeighbourRoundsForProof(currency: string, roundId: bigint | n
 
   const maxAge = data?.[2]?.status === 'success' ? Number(data[2].result) : 90_000
 
-  return { prev, next, maxAge }
+  return { prev, next, maxAge, neighboursLoading: isLoading }
 }

@@ -20,13 +20,7 @@ export function PageFooter() {
         borderTop: '1px solid var(--rule)',
       }}
     >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 40,
-        }}
-      >
+      <div className="footer-cols">
         {/* Column 1: Built in Arc Studio */}
         <div>
           <div

@@ -25,7 +25,9 @@ interface Props {
   /** All due quotes up to and including the selected one (for multi-settle) */
   allDueRounds: bigint[]
   /** Next neighbour round loaded from chain */
-  next:      RoundData | null
+  next:        RoundData | null
+  /** True while the neighbour-round read is in flight */
+  nextLoading: boolean
   maxAge:    number
   /** Rate at settledAt (for counterfactual) */
   counterfactualAnswer: bigint | null
@@ -73,7 +75,7 @@ function Skeleton({ w, h, className = '' }: { w: number | string; h: number; cla
 }
 
 export function PayslipCard({
-  payroll, payslip, dueQuote, allDueRounds, next, maxAge,
+  payroll, payslip, dueQuote, allDueRounds, next, nextLoading, maxAge,
   counterfactualAnswer, counterfactualRoundId,
   settlementTx, index, animKey,
 }: Props) {
@@ -103,9 +105,14 @@ export function PayslipCard({
   const factPaydayLive = paydayTs && roundUpdAt
     ? roundUpdAt <= paydayTs
     : null
-  const factNextCameAt = next
-    ? (next.updatedAt > 0 ? `Round ${fmtAggRound(next.roundId)} came at ${fmtTime(next.updatedAt)}` : 'No newer round yet')
-    : (!roundId ? null : 'No newer round yet')
+  // null while loading, string once resolved
+  const factNextCameAt = !roundId
+    ? null
+    : nextLoading
+      ? null   // still in flight — show skeleton in the facts list
+      : next && next.updatedAt > 0
+        ? `Round ${fmtAggRound(next.roundId)} came at ${fmtTime(next.updatedAt)}`
+        : 'No newer round yet'
   const factAge = paydayTs && roundUpdAt
     ? (() => {
         const ageMin = Math.round((paydayTs - roundUpdAt) / 60)
@@ -223,7 +230,7 @@ export function PayslipCard({
         <div className="payslip-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14, marginTop: 4, gap: 12 }}>
           <div
             className="mono"
-            style={{ fontSize: 13, color: 'var(--secondary)', letterSpacing: '.08em', textTransform: 'uppercase' }}
+            style={{ fontSize: 13, color: 'var(--secondary)', letterSpacing: '.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {isLoading
               ? <Skeleton w={280} h={14} />
@@ -238,6 +245,7 @@ export function PayslipCard({
               initial={stampInitial}
               animate={stampSpring}
               transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+              className="payslip-stamp"
               style={{
                 border: `2.5px solid ${isDue ? 'var(--amber)' : 'var(--petrol)'}`,
                 borderRadius: 6,
@@ -246,13 +254,13 @@ export function PayslipCard({
                 textAlign: 'center',
                 transformOrigin: 'center center',
                 flexShrink: 0,
-                whiteSpace: 'nowrap',
               }}
             >
               <div
+                className="payslip-stamp-text"
                 style={{
                   fontFamily: 'var(--font-words)',
-                  fontSize: 'clamp(18px, 1.8vw, 26px)',
+                  fontSize: 'clamp(14px, 1.8vw, 26px)',
                   fontWeight: 600,
                   letterSpacing: '.06em',
                   lineHeight: 1.15,
@@ -294,51 +302,53 @@ export function PayslipCard({
         </div>
         <div style={{ borderBottom: '1px dashed var(--rule)', marginBottom: 16 }} />
 
-        {/* Paid amount + seal row */}
-        <div className="payslip-amount-seal-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Amount */}
-            {isLoading || usdc === null
-              ? <Skeleton w={300} h={64} />
-              : (
-                <div
-                  className="mono"
-                  style={{
-                    fontSize: 'clamp(36px, 5vw, 64px)',
-                    fontWeight: 300,
-                    color: 'var(--carbon)',
-                    lineHeight: 1,
-                    letterSpacing: '-.01em',
-                    marginBottom: 4,
-                  }}
-                >
-                  {fmtUsdc(usdc)}{' '}
-                  <span>USDC</span>
-                </div>
-              )
+        {/* Paid amount — full width at all breakpoints */}
+        <div>
+          {isLoading || usdc === null
+            ? <Skeleton w={300} h={64} />
+            : (
+              <div
+                className="mono"
+                style={{
+                  fontSize: 'clamp(36px, 5vw, 64px)',
+                  fontWeight: 300,
+                  color: 'var(--carbon)',
+                  lineHeight: 1,
+                  letterSpacing: '-.01em',
+                  marginBottom: 4,
+                }}
+              >
+                {fmtUsdc(usdc)}{' '}
+                <span>USDC</span>
+              </div>
+            )
+          }
+          {isDue && (
+            <div style={{ fontSize: 12, color: 'var(--amber)', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>
+              already fixed
+            </div>
+          )}
+        </div>
+
+        {/* Counterfactual — full width at all breakpoints */}
+        {isSettled && (
+          <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginBottom: 12 }}>
+            {sameRound
+              ? 'Settled while its own round was still live: same amount'
+              : counterfactualUsdc !== null
+                ? (
+                  <span style={{ textDecoration: 'line-through' }}>
+                    {fmtUsdc(counterfactualUsdc)} at the {payslip ? fmtDateMixed(payslip.settledAt) : '—'} rate it settled on
+                  </span>
+                )
+                : null
             }
-            {isDue && (
-              <div style={{ fontSize: 12, color: 'var(--amber)', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>
-                already fixed
-              </div>
-            )}
+          </div>
+        )}
 
-            {/* Counterfactual */}
-            {isSettled && (
-              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginBottom: 12 }}>
-                {sameRound
-                  ? 'Settled while its own round was still live: same amount'
-                  : counterfactualUsdc !== null
-                    ? (
-                      <span style={{ textDecoration: 'line-through' }}>
-                        {fmtUsdc(counterfactualUsdc)} at the {payslip ? fmtDateMixed(payslip.settledAt) : '—'} rate it settled on
-                      </span>
-                    )
-                    : null
-                }
-              </div>
-            )}
-
+        {/* Facts + seal row: facts on left, seal floats right */}
+        <div className="payslip-facts-seal-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             {/* Three proof facts */}
             <motion.div
               key={`facts-${animKey}`}
@@ -363,6 +373,12 @@ export function PayslipCard({
                     <CircleCheck size={15} style={{ color: 'var(--petrol)', flexShrink: 0 }} />
                     <span className="mono" style={{ fontSize: 15, color: 'var(--ink)' }}>{fact}</span>
                   </motion.div>
+                ) : (fi === 1 && nextLoading && roundId) ? (
+                  // second fact is still loading — show a skeleton placeholder
+                  <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="skeleton" style={{ width: 15, height: 15, borderRadius: '50%', flexShrink: 0 }} />
+                    <div className="skeleton" style={{ width: 200, height: 14 }} />
+                  </div>
                 ) : null
               )}
               {factPaydayLive === false && roundUpdAt && paydayTs && (
@@ -383,9 +399,9 @@ export function PayslipCard({
             )}
           </div>
 
-          {/* RATE HELD seal */}
+          {/* RATE HELD seal — floats right of facts at all widths */}
           {roundId != null && !!paydayTs && (
-            <div style={{ flexShrink: 0, marginTop: -8 }}>
+            <div className="payslip-seal-wrap" style={{ flexShrink: 0, marginTop: -8 }}>
               <GuillocheSeal
                 roundId={roundId}
                 payday={paydayTs}

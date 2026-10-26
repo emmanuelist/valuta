@@ -243,15 +243,23 @@ select.form-input { cursor: pointer; }
   display: flex;
   align-items: center;
 }
+/* On phone: auto height to accommodate vertical timeline */
+.timeline-block-phone {
+  overflow: hidden;
+  width: 100%;
+}
 /* Divider directly below timeline */
 .timeline-divider {
   border: none;
   border-top: 1px solid var(--rule);
   margin: 0;
 }
-/* Coupon row: 16px padding top/bottom = 96px slot for coupons */
+/* Coupon row: 8px top / 8px bottom on desktop */
 .coupon-block {
-  padding: 16px 0 12px;
+  padding: 8px 0 8px;
+}
+@media (max-width: 699px) {
+  .coupon-block { padding: 12px 0 12px; }
 }
 
 /* ── Payslip card responsive ────────────────────────────────────────── */
@@ -263,14 +271,21 @@ select.form-input { cursor: pointer; }
     align-items: flex-start !important;
     gap: 10px !important;
   }
-  /* Amount + seal: seal floats right, amount fills left */
-  .payslip-amount-seal-row {
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
+  /* Stamp: constrain to card width minus its own padding so it stays on one line */
+  .payslip-stamp {
+    max-width: calc(100vw - 96px) !important;
+    overflow: hidden;
   }
-  /* Seal shrinks on phone */
-  .payslip-seal-phone { width: 96px !important; height: 96px !important; }
+  .payslip-stamp-text {
+    font-size: clamp(12px, 3.5vw, 16px) !important;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  /* Seal: 96 × 96 on phone — sits right of facts, never over text */
+  .payslip-seal-wrap svg {
+    width: 96px !important;
+    height: 96px !important;
+  }
 }
 
 /* ── Heading sizes ──────────────────────────────────────────────────── */
@@ -342,8 +357,16 @@ select.form-input { cursor: pointer; }
 }
 
 /* ── Imprint footer ─────────────────────────────────────────────────── */
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
 @media (max-width: 699px) {
-  .footer-cols { grid-template-columns: 1fr !important; }
+  .footer-cols {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 /* ── /new two-column layout ─────────────────────────────────────────── */

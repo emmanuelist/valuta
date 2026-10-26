@@ -5,6 +5,7 @@ import { usePayrollDetail } from '../hooks/useValutaData'
 import { useNeighbourRoundsForProof, useAsOfRate } from '../hooks/useAsOfRate'
 import { useSettlementTx } from '../hooks/useValutaData'
 import { useCountdown } from '../hooks/useCountdown'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import { PayslipCard } from './PayslipCard'
 import { HonestTimeline } from './HonestTimeline'
 import { CouponRow } from './CouponRow'
@@ -80,7 +81,7 @@ export function HomePage({
 
   const roundId  = selectedPayslip?.roundId ?? selectedDueQuote?.roundId ?? null
   const currency = payroll?.currency ?? ''
-  const { prev, next, maxAge } = useNeighbourRoundsForProof(currency, roundId)
+  const { prev, next, maxAge, neighboursLoading } = useNeighbourRoundsForProof(currency, roundId)
 
   const settledBlock = selectedPayslip?.settledBlock ?? null
   const { tx: settlementTx, fetch: fetchTx } = useSettlementTx(
@@ -115,6 +116,8 @@ export function HomePage({
     }, 10_000)
     return () => clearInterval(id)
   }, [refetch, refetchDetail])
+
+  const isPhone = useMediaQuery('(max-width: 699px)')
 
   const isAnyLoading = isLoading || detailLoading
   const isAnyError   = isError || detailError
@@ -212,6 +215,7 @@ export function HomePage({
                 dueQuote={selectedDueQuote}
                 allDueRounds={allDueRounds}
                 next={next}
+                nextLoading={neighboursLoading}
                 maxAge={maxAge}
                 counterfactualAnswer={counterfactualResult?.answer ?? null}
                 counterfactualRoundId={counterfactualResult?.roundId ?? null}
@@ -223,8 +227,8 @@ export function HomePage({
           </div>
         </div>
 
-        {/* Timeline — tight 80px block */}
-        <div className="timeline-block" style={{ marginTop: 12 }}>
+        {/* Timeline — tight 80px block on desktop, auto-height on phone */}
+        <div className={isPhone ? 'timeline-block-phone' : 'timeline-block'} style={{ marginTop: isPhone ? 8 : 4 }}>
           {payroll ? (
             <HonestTimeline
               payslip={selectedPayslip}
@@ -232,6 +236,7 @@ export function HomePage({
               prev={prev}
               next={next}
               animKey={animKey}
+              vertical={isPhone}
             />
           ) : isAnyLoading ? (
             <div className="skeleton" style={{ width: '60%', height: 12 }} />

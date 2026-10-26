@@ -165,3 +165,8 @@ After each turn the chain pulls, syncs Studio's deletions in `src/`, `public/` a
 
 Sent in Studio turn 11, section D.
 **Consequences:** the documenter records this vocabulary in DESIGN.md. Any surface that invents a synonym or a colour for an existing state is a bug.
+
+## D-023 · The initial bundle stays at about 494 kB gzipped · 2026-10-26 · accepted
+**Context:** turns 10 and 11 split /new and /lookup out (3–6 kB each), but the initial chunk stayed at about 494 kB gzipped, against a 250 kB target. Studio reported that wagmi, viem, ConnectKit and framer-motion form one import graph: `manualChunks` produced circular chunks and a larger bundle. Getting under 250 kB means replacing the wallet stack with a plain viem client plus an on-demand wallet adapter.
+**Decision:** keep it. The user-facing target is met: a cold production load renders payslip 01 with its proof facts in 2.3 s, using 5 batched RPC calls (`vite preview`, 2026-10-26). A wallet-stack rewrite two days before submission puts the settle flow at risk, and the film's live settlement depends on that flow.
+**Consequences:** revisit after judging, if the product continues.

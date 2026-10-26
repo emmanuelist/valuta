@@ -25,6 +25,7 @@ _Last verified: 2026-10-26 15:24 UTC (branch 6-app)_
 | Payroll #2: BRL 0.10 every 2 h from 10-25 14:00 (36 paydays) | v2 | id 2: 9 settled; 06–09 in one late tx, each at its own round (E-024) | 2026-10-26 06:50 UTC |
 | Payroll #3: EUR 0.01 daily at 14:00 UTC from 10-26 (40 paydays, to 12-04) | v2 | id 3: 0 settled, reserve 0.47 USDC, first payday 10-26 14:00 UTC (E-023) | 2026-10-25 23:37 UTC |
 | Valuta v1 (retired) | Arc mainnet | `0x2bDF0F489687a57a0E63E609281C3eC86dda76e9` | ended and reclaimed |
+| **The app (production)** | Vercel | https://valuta-arc.vercel.app (E-030) | 2026-10-26 16:55 UTC |
 | Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-25 |
 | Repo (private until 2026-10-27) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-25 |
 
@@ -37,7 +38,7 @@ _Last verified: 2026-10-26 15:24 UTC (branch 6-app)_
 
 ## Broken or unverified
 - **Film:** the pipeline is ported from Setoff into `internal/film/` (tooling, gitignored). Every figure comes from `film/facts.json`, read off mainnet with assertions. The narration is voiced (ElevenLabs, the builder's new key, 668 of 10,000 characters used) and aligned word by word. Not done yet: the capture moves and beat measurement for the redesigned UI (after turns 08–09), the Studio shot (needs the builder's login in the recording browser), render, score and master.
-- **Unverified in the live app:** the due-state hero, Settle now with its receipt, the employer panel, and /new create, which all need a browser wallet. The app is not deployed yet. The initial chunk is 492 kB gzipped (accepted, D-023).
+- **Unverified in the live app:** the due-state hero, Settle now with its receipt, the employer panel, and /new create, which all need a browser wallet. The initial chunk is 492 kB gzipped (accepted, D-023).
 - The keeper runs only while this session and laptop are up.
 - Studio streams can drop mid-turn. Always use `--detach` and then `attach`.
 

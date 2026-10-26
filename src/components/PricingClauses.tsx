@@ -3,7 +3,7 @@
 import type { Payroll, Payslip, DueQuote, RoundData } from '../lib/types'
 import {
   fmtRate8, fmtAggRound, fmtTime, fmtDateMixed, fmtDateTimeStamp,
-  fmtUsdc, fmtSalary, fmtLatenessVerbose, truncAddr,
+  fmtUsdc, fmtSalary, truncAddr,
 } from '../lib/format'
 
 interface Props {
@@ -74,11 +74,15 @@ export function PricingClauses({ payroll, payslip, dueQuote, next, maxAge }: Pro
   // Clause 3: anyone settles, any time, for the same amount
   let c3Body: string
   if (payslip) {
-    const lateness  = fmtLatenessVerbose(payslip.settledAt, payslip.payday)
+    // Lateness as "N d N h after its value date"
+    const diffSec   = payslip.settledAt - payslip.payday
+    const d         = Math.floor(diffSec / 86400)
+    const h         = Math.floor((diffSec % 86400) / 3600)
+    const lateStr   = d > 0 ? `${d} d ${h} h` : `${h} h`
     const byWhom    = payslip.settler.toLowerCase() === payroll.employer.toLowerCase()
       ? 'by the employer'
       : `by ${truncAddr(payslip.settler, 6, 4)}, not the employer`
-    c3Body = `No. ${String(payslip.index + 1).padStart(2,'0')} was settled ${lateness} ${byWhom}: ${usdc ? fmtUsdc(usdc) : '—'} USDC, the payday's amount to the micro-USDC.`
+    c3Body = `No. ${String(payslip.index + 1).padStart(2,'0')} was settled ${lateStr} after its value date ${byWhom}: ${usdc ? fmtUsdc(usdc) : '\u2014'} USDC, the payday\u2019s amount to the micro-USDC.`
   } else if (dueQuote && usdc) {
     c3Body = `Anyone can settle it now, or a year from now, for ${fmtUsdc(usdc)} USDC. The rate is already fixed.`
   } else {

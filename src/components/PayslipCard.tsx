@@ -260,7 +260,7 @@ export function PayslipCard({
                 className="payslip-stamp-text"
                 style={{
                   fontFamily: 'var(--font-words)',
-                  fontSize: 22,
+                  fontSize: 'clamp(14px, 1.45vw, 20px)',
                   fontWeight: 600,
                   letterSpacing: '.04em',
                   lineHeight: 1.15,
@@ -464,10 +464,10 @@ export function PayslipCard({
               </div>
             </div>
             {/* Quiet line: lateness · Try to cheat it ↓ */}
-            <div className="mono" style={{ fontSize: 12, color: 'var(--secondary)', marginTop: 5, opacity: .8, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}>
+            <div className="mono" style={{ fontSize: 12, color: 'var(--secondary)', marginTop: 5, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}>
               {latenessLabel && <span>{latenessLabel}</span>}
               {rateNote && <span>· {rateNote}</span>}
-              <a href="#cheat" style={{ color: 'var(--secondary)', textDecoration: 'none', opacity: .8 }}>
+              <a href="#cheat" style={{ color: 'var(--secondary)', textDecoration: 'none' }}>
                 · Try to cheat it ↓
               </a>
             </div>

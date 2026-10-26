@@ -151,7 +151,7 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
           return (
             <g key={ev.id}>
               {showBreak && (
-                <text x={x - 32} y={Y_LINE + 5} fontFamily="var(--font-mono)" fontSize={13} fill="var(--secondary)" opacity={.6}>//</text>
+                <text x={x - 32} y={Y_LINE + 5} fontFamily="var(--font-mono)" fontSize={13} fill="var(--secondary)">//</text>
               )}
 
               {isAsof && (
@@ -169,7 +169,7 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
                       const a2 = (k * 72 - 90 + 36) * Math.PI / 180
                       return [`${(x + 7 * Math.cos(a)).toFixed(1)},${(Y_LINE + 7 * Math.sin(a)).toFixed(1)}`, `${(x + 3.5 * Math.cos(a2)).toFixed(1)},${(Y_LINE + 3.5 * Math.sin(a2)).toFixed(1)}`]
                     }).join(' ')}
-                    fill="var(--ink)" opacity={.85}
+                    fill="var(--ink)"
                   />
                 </>
               )}

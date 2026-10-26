@@ -31,7 +31,7 @@ function buildRosette(size: number, roundId: bigint, payday: number) {
   const freq1     = 4  + Math.round(h(1) * 6)   // 4–10  primary frequency
   const freq2     = 9  + Math.round(h(2) * 9)   // 9–18  secondary frequency
   const phase     = h(3) * Math.PI * 2
-  const amp       = (maxR - minR) * (0.08 + h(4) * 0.10) // 8–18 % of ring
+  const amp       = (maxR - minR) * (0.05 + h(4) * 0.07) // 5–12 % of ring
   const sw        = 0.5 + h(5) * 0.25           // 0.5–0.75 px stroke
 
   const STEPS = 300
@@ -69,8 +69,9 @@ export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
 
   const { paths, strokeW, cx, cy, maxR, minR } = rosette
   const stroke  = '#0B4F6C'
-  // lighter lines: 35–55% opacity so the centre text reads clearly
-  const opacity = state === 'full' ? 0.52 : 0.38
+  // Faint watermark: 35–45% opacity per-line; lines overlap so apparent
+  // density is higher — keep individual strokes light to avoid a dark knot.
+  const opacity = state === 'full' ? 0.38 : 0.28
   const fontSize = Math.round(size * 0.115)
 
   return (

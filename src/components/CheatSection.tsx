@@ -447,73 +447,76 @@ export function CheatSection({
         </p>
       </div>
 
-      {/* Paper slip */}
-      <article
+      {/* Ruled rows on one paper slip — no nested card */}
+      <div
         style={{
           background: 'var(--paper)',
           border: '1px solid var(--rule)',
           borderRadius: 6,
           boxShadow: 'var(--shadow-paper)',
-          position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {/* Perforated top edge */}
-        <div className="perf-top" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 14, background: 'var(--ground)', zIndex: 2 }} />
-
-        <div style={{ position: 'relative', zIndex: 1, padding: '28px 32px 12px', paddingTop: 22 }}>
-          {/* Context + Run all row */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, marginBottom: 4 }}>
-            <div className="mono" style={{ fontSize: 14, color: 'var(--secondary)' }}>
-              {isUpcoming ? (
-                <>Nothing to attempt yet. Pick a settled or due payslip.</>
-              ) : ctxDesc}
-            </div>
-            {!isUpcoming && (
-              <button
-                onClick={() => void runAll()}
-                style={{
-                  border: '1.5px solid var(--petrol)',
-                  borderRadius: 4,
-                  padding: '5px 14px',
-                  background: 'transparent',
-                  color: 'var(--petrol)',
-                  fontFamily: 'var(--font-words)',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}
-              >
-                Run all
-              </button>
-            )}
+        {/* Context + Run all — top row */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16,
+            padding: '14px 24px',
+            borderBottom: '1px solid var(--rule)',
+          }}
+        >
+          <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)' }}>
+            {isUpcoming ? (
+              <>Nothing to attempt yet. Pick a settled or due payslip.</>
+            ) : ctxDesc}
           </div>
-
-          {/* Wrong-round counterfactual hint removed — shown inline in attempt 1 row */}
-
-          {/* Attempt rows */}
-          <div>
-            {configs.map((cfg, i) => (
-              <AttemptRow
-                key={cfg.id}
-                cfg={cfg}
-                num={i + 1}
-                state={states[cfg.id] ?? { status: 'idle' }}
-                onRun={() => {
-                  void cfg.run().then(result => updateState(cfg.id, result))
-                }}
-              />
-            ))}
-          </div>
+          {!isUpcoming && (
+            <button
+              onClick={() => void runAll()}
+              style={{
+                border: '1.5px solid var(--petrol)',
+                borderRadius: 4,
+                padding: '5px 14px',
+                background: 'transparent',
+                color: 'var(--petrol)',
+                fontFamily: 'var(--font-words)',
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              Run all
+            </button>
+          )}
         </div>
-      </article>
 
-      {/* Quiet note under the slip */}
-      <p style={{ margin: '10px 0 0', fontSize: 13, color: 'var(--secondary)', fontFamily: 'var(--font-words)' }}>
-        Calls from the employer's address need no key: eth_call simulates without signing.
-      </p>
+        {/* Attempt rows — plain ruled, no nesting */}
+        <div style={{ padding: '0 24px' }}>
+          {configs.map((cfg, i) => (
+            <AttemptRow
+              key={cfg.id}
+              cfg={cfg}
+              num={i + 1}
+              state={states[cfg.id] ?? { status: 'idle' }}
+              onRun={() => {
+                void cfg.run().then(result => updateState(cfg.id, result))
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Quiet note inside the slip, below the last row */}
+        <div style={{ padding: '10px 24px 14px', borderTop: '1px solid var(--rule)' }}>
+          <span style={{ fontSize: 13, color: 'var(--secondary)', fontFamily: 'var(--font-words)' }}>
+            Calls from the employer's address need no key: eth_call simulates without signing.
+          </span>
+        </div>
+      </div>
     </section>
   )
 }

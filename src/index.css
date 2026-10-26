@@ -22,6 +22,8 @@
   --state-upcoming: var(--secondary);
   --state-due:      var(--amber);
   --state-due-tint: var(--ambtint);
+  /* --state-due-ink: darker amber for text on tint, ≥4.5:1 on #F5E7CF */
+  --state-due-ink:  #6B3A0C;
   --state-held:     var(--petrol);
   --state-held-tint: var(--ptint);
   --state-paid:     var(--carbon);
@@ -146,6 +148,11 @@ select.form-input { cursor: pointer; }
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
   padding-bottom: 4px;
+  /* right padding = gap so last coupon has breathing room */
+  padding-right: 8px;
+  /* soft fade over last 32px to signal more coupons off-screen */
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
 }
 .coupon-row::-webkit-scrollbar { height: 4px; }
 .coupon-row::-webkit-scrollbar-track { background: transparent; }
@@ -159,7 +166,7 @@ select.form-input { cursor: pointer; }
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: .08em;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   padding: 2px 5px;

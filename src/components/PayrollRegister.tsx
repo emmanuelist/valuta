@@ -138,7 +138,7 @@ export function PayrollRegister({ payrolls, payrollCount, isLoading, currentId }
           className="mono register-table-head"
           style={{
             display: 'grid',
-            gridTemplateColumns: '40px 1fr 80px 120px 80px 60px 120px 80px 120px',
+            gridTemplateColumns: '40px 1fr 80px 160px 80px 60px 120px 80px 120px',
             padding: '10px 20px',
             borderBottom: '1px solid var(--rule)',
             fontSize: 11,
@@ -188,7 +188,7 @@ export function PayrollRegister({ payrolls, payrollCount, isLoading, currentId }
               className="register-table-row"
               style={{
                 display: 'grid',
-                gridTemplateColumns: '40px 1fr 80px 120px 80px 60px 120px 80px 120px',
+                gridTemplateColumns: '40px 1fr 80px 160px 80px 60px 120px 80px 120px',
                 padding: '13px 20px',
                 borderBottom: '1px solid var(--rule)',
                 textDecoration: 'none',
@@ -256,7 +256,7 @@ export function PayrollRegister({ payrolls, payrollCount, isLoading, currentId }
               <span className="mono" style={{ fontSize: 14, textAlign: 'right' }}>
                 {fmtSalary(p.salary, p.currency)}
               </span>
-              <span className="mono" style={{ fontSize: 14, color: 'var(--secondary)' }}>
+              <span className="mono" style={{ fontSize: 14, color: 'var(--secondary)', whiteSpace: 'nowrap' }}>
                 {periodLabel(p.period)}, {paydayTime(p.start, p.period)}
               </span>
               <span className="mono" style={{ fontSize: 14, textAlign: 'right' }}>

@@ -143,8 +143,6 @@ export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, ne
               style={{
                 color: colors.fg,
                 borderColor: colors.fg,
-                fontSize: c.state === 'upcoming' ? 9 : 10,
-                transform: 'rotate(-6deg)',
               }}
             >
               {c.label}

@@ -21,6 +21,8 @@ interface Props {
   payslip:   Payslip | null
   /** Due quote (for DUE state) */
   dueQuote:  DueQuote | null
+  /** All due quotes up to and including the selected one (for multi-settle) */
+  allDueRounds: bigint[]
   /** Next neighbour round loaded from chain */
   next:      RoundData | null
   maxAge:    number
@@ -70,7 +72,7 @@ function Skeleton({ w, h, className = '' }: { w: number | string; h: number; cla
 }
 
 export function PayslipCard({
-  payroll, payslip, dueQuote, next, maxAge,
+  payroll, payslip, dueQuote, allDueRounds, next, maxAge,
   counterfactualAnswer, counterfactualRoundId,
   settlementTx, index, animKey,
 }: Props) {
@@ -132,16 +134,16 @@ export function PayslipCard({
     : null
   const rateNote = sameRound ? 'the rate did not move' : null
 
-  // Settlement write
+  // Settlement write — settle all due paydays up to and including this one
   const { data: simData, error: simError } = useSimulateContract({
     address: VALUTA_ADDRESS,
     abi: VALUTA_ABI,
     functionName: 'settle',
-    args: isDue && dueQuote && roundId
-      ? [BigInt(payroll.id), [dueQuote.roundId]]
+    args: isDue && allDueRounds.length > 0
+      ? [BigInt(payroll.id), allDueRounds]
       : [BigInt(payroll.id), []],
     chainId: arc.id,
-    query: { enabled: isDue && !!dueQuote && !!walletAddr },
+    query: { enabled: isDue && allDueRounds.length > 0 && !!walletAddr },
   })
   const { writeContract, data: txHash, isPending } = useWriteContract()
   const { isLoading: confirming, isSuccess: confirmed } = useWaitForTransactionReceipt({
@@ -393,6 +395,13 @@ export function PayslipCard({
                     >
                       Verify on Arc ↗
                     </a>
+                    {' · '}
+                    <a
+                      href="#cheat"
+                      style={{ color: 'var(--secondary)' }}
+                    >
+                      Try to cheat it ↓
+                    </a>
                   </>
                 ) : null}
               </div>
@@ -416,7 +425,7 @@ export function PayslipCard({
                   borderRadius: 4, padding: '6px 12px',
                 }}
               >
-                ✓ Settled ·{' '}
+                ✓ Settled {allDueRounds.length > 1 ? `${allDueRounds.length} paydays` : '1 payday'} ·{' '}
                 <a href={`${ARC_EXPLORER}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
                   {txHash ? truncHash(txHash) : ''} ↗
                 </a>

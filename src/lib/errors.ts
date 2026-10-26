@@ -31,6 +31,29 @@ const ERROR_MESSAGES: Record<string, string> = {
   ZeroFeed:            'A feed address cannot be zero.',
 }
 
+/** Structured error result for displaying decoded revert data */
+export interface DecodedError {
+  name: string
+  args: readonly unknown[]
+  message: string
+}
+
+/** Decode a contract error into its name, args, and a human message. */
+export function decodeValutaErrorRich(error: unknown): DecodedError | null {
+  if (!error) return null
+  const raw = (error as { data?: string; message?: string; cause?: unknown })
+
+  if (raw.data && typeof raw.data === 'string') {
+    try {
+      const decoded = decodeErrorResult({ abi: VALUTA_ABI, data: raw.data as `0x${string}` })
+      const msg = ERROR_MESSAGES[decoded.errorName] ?? `Contract error: ${decoded.errorName}`
+      return { name: decoded.errorName, args: decoded.args ?? [], message: msg }
+    } catch { /* fall through */ }
+  }
+  if (raw.cause) return decodeValutaErrorRich(raw.cause)
+  return null
+}
+
 export function decodeValutaError(error: unknown): string {
   if (!error) return 'Unknown error.'
 

@@ -13,7 +13,7 @@ export default function App() {
   const { switchChain } = useSwitchChain()
   const isWrongChain = !!address && chainId !== arc.id
 
-  const { payrollCount, payrolls, totalPaydays, isLoading, isError, refetch } = usePayrollList()
+  const { payrollCount, payrolls, isLoading, isError, refetch } = usePayrollList()
 
   return (
     <div className="min-h-dvh flex flex-col" style={{ background: 'var(--ground)' }}>
@@ -49,8 +49,6 @@ export default function App() {
           <HomePage
             payrolls={payrolls}
             payrollCount={payrollCount}
-            totalPaydays={totalPaydays}
-            featuredId={1}
             isLoading={isLoading}
             isError={isError}
             refetch={refetch}

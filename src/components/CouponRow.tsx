@@ -35,10 +35,10 @@ function getCouponState(
 }
 
 const STATE_COLORS: Record<CouponState, { fg: string; border: string; bg: string }> = {
-  HELD:     { fg: 'var(--petrol)',  border: 'var(--petrol)',  bg: 'var(--ptint)' },
-  DUE:      { fg: 'var(--amber)',   border: 'var(--amber)',   bg: 'var(--ambtint)' },
-  CREDITED: { fg: 'var(--carbon)',  border: 'var(--carbon)',  bg: '#EAF0FC' },
-  upcoming: { fg: 'var(--secondary)', border: 'var(--rule)', bg: 'transparent' },
+  HELD:     { fg: 'var(--state-held)',     border: 'var(--state-held)',     bg: 'var(--state-held-tint)' },
+  DUE:      { fg: 'var(--state-due)',      border: 'var(--state-due)',      bg: 'var(--state-due-tint)' },
+  CREDITED: { fg: 'var(--state-credited)', border: 'var(--state-credited)', bg: 'var(--ptint)' },
+  upcoming: { fg: 'var(--secondary)',      border: 'var(--rule)',           bg: 'transparent' },
 }
 
 interface Props {
@@ -106,9 +106,11 @@ export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, ne
             style={{
               width: 112,
               height: 96,
-              background: isSelected ? colors.bg : 'var(--paper)',
+              background: isSelected
+                ? (c.state === 'HELD' ? 'var(--state-held-tint)' : c.state === 'DUE' ? 'var(--state-due-tint)' : c.state === 'CREDITED' ? 'var(--ptint)' : 'var(--ground)')
+                : 'var(--paper)',
               border: isSelected
-                ? `2px solid ${colors.border}`
+                ? `2px solid var(--petrol)`
                 : `1.5px dashed ${colors.border}`,
               borderRadius: 6,
               cursor: 'pointer',

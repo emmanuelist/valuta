@@ -102,12 +102,12 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
           {events.map((ev, i) => {
             const y     = 10 + i * ROW_H + ROW_H / 2
             const isAsof = ev.kind === 'asof'; const isPayday = ev.kind === 'payday'; const isSettlEv = ev.kind === 'settlement'
-            const col = isAsof ? 'var(--petrol)' : isPayday ? 'var(--ink)' : isSettlEv ? 'var(--carbon)' : 'var(--secondary)'
+            const col = isAsof ? 'var(--petrol)' : isPayday ? 'var(--ink)' : isSettlEv ? 'var(--state-paid)' : 'var(--secondary)'
             return (
               <g key={ev.id}>
                 {isAsof && (<><circle cx={30} cy={y} r={9} fill="none" stroke="var(--petrol)" strokeWidth={2} /><circle cx={30} cy={y} r={4} fill="var(--petrol)" /></>)}
                 {isPayday && (<circle cx={30} cy={y} r={9} fill="none" stroke="var(--ink)" strokeWidth={1.5} />)}
-                {isSettlEv && (<motion.circle key={`vs-${animKey}`} cx={30} cy={y} r={6} fill="var(--carbon)" initial={reduced ? {} : { cy: 10 + events.findIndex(e=>e.kind==='payday') * ROW_H + ROW_H/2 }} animate={{ cy: y }} transition={{ duration: reduced ? 0 : 0.45, ease: [0.22,1,0.36,1] }} />)}
+                {isSettlEv && (<motion.circle key={`vs-${animKey}`} cx={30} cy={y} r={6} fill="var(--state-paid)" initial={reduced ? {} : { cy: 10 + events.findIndex(e=>e.kind==='payday') * ROW_H + ROW_H/2 }} animate={{ cy: y }} transition={{ duration: reduced ? 0 : 0.45, ease: [0.22,1,0.36,1] }} />)}
                 {ev.kind === 'round' && !isAsof && (<circle cx={30} cy={y} r={5} fill="none" stroke="var(--rule)" strokeWidth={1.5} />)}
                 <text x={46} y={y - 7} fontFamily="var(--font-words)" fontSize={12} fontWeight={600} fill={col}>{ev.label}</text>
                 {ev.sublabel && (<text x={46} y={y + 8} fontFamily="var(--font-mono)" fontSize={11} fill="var(--secondary)">{ev.sublabel}</text>)}
@@ -146,7 +146,7 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
           const isSettlEv = ev.kind === 'settlement'
           const prevTs    = events[i - 1]?.ts ?? 0
           const showBreak = isSettlEv && (ev.ts - prevTs) > BREAK_GAP
-          const col = isAsof ? 'var(--petrol)' : isPayday ? 'var(--ink)' : isSettlEv ? 'var(--carbon)' : 'var(--secondary)'
+          const col = isAsof ? 'var(--petrol)' : isPayday ? 'var(--ink)' : isSettlEv ? 'var(--state-paid)' : 'var(--secondary)'
 
           return (
             <g key={ev.id}>
@@ -177,7 +177,7 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
                 <motion.circle
                   key={`settle-dot-${animKey}`}
                   cx={x} cy={Y_LINE} r={7}
-                  fill="var(--carbon)"
+                  fill="var(--state-paid)"
                   initial={reduced ? { cx: x } : { cx: xs[events.findIndex(e => e.kind === 'payday')] }}
                   animate={{ cx: x }}
                   transition={{ duration: reduced ? 0 : 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}

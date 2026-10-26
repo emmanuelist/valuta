@@ -322,7 +322,7 @@ export function PayslipCard({
                   style={{
                     fontSize: 'clamp(36px, 5vw, 64px)',
                     fontWeight: 300,
-                    color: 'var(--carbon)',
+                    color: 'var(--state-paid)',
                     lineHeight: 1,
                     letterSpacing: '-.01em',
                     marginBottom: 4,
@@ -481,7 +481,7 @@ export function PayslipCard({
               <div
                 className="mono"
                 style={{
-                  fontSize: 13, color: 'var(--petrol)', border: '1px solid var(--petrol)',
+                  fontSize: 13, color: 'var(--state-paid)', border: '1px solid var(--state-paid)',
                   borderRadius: 4, padding: '6px 12px',
                 }}
               >

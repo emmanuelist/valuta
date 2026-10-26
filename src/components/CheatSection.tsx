@@ -69,10 +69,10 @@ function SettlesStamp() {
       transition={{ duration: 0.2 }}
       style={{
         display: 'inline-block',
-        border: '2.5px solid var(--petrol)',
+        border: '2.5px solid var(--state-paid)',
         borderRadius: 4,
         padding: '1px 8px',
-        color: 'var(--petrol)',
+        color: 'var(--state-paid)',
         fontFamily: 'var(--font-words)',
         fontWeight: 700,
         fontSize: 13,

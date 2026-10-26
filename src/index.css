@@ -24,9 +24,12 @@
   --state-due-tint: var(--ambtint);
   /* --state-due-ink: darker amber for text on tint, ≥4.5:1 on #F5E7CF */
   --state-due-ink:  #6B3A0C;
-  --state-held:     var(--petrol);
-  --state-held-tint: var(--ptint);
-  --state-paid:     var(--carbon);
+  --green:          #1A6B47;
+  --gtint:          #E4F2EA;
+  --state-held:     var(--green);
+  --state-held-tint: var(--gtint);
+  --state-paid:     var(--green);
+  --state-credited: var(--carbon);
   --state-void:     var(--void);
   --state-late:     var(--secondary);
 
@@ -188,6 +191,7 @@ select.form-input { cursor: pointer; }
 
 /* ── TopBar responsive ──────────────────────────────────────────────── */
 @media (max-width: 699px) {
+  .topbar-mark   { width: 24px !important; height: 24px !important; }
   .topbar-links  { display: none !important; }
   .topbar-block  { display: none !important; }
   .topbar-connect { display: none !important; }

@@ -78,17 +78,31 @@ export function TopBar({ currentPath }: Props) {
           zIndex: 100,
         }}
       >
-        {/* Wordmark */}
+        {/* Mark + Wordmark */}
         <button
           onClick={() => navigate('/')}
           style={{
-            fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 28,
-            color: 'var(--ink)', background: 'none', border: 'none', cursor: 'pointer',
-            padding: 0, lineHeight: 1, letterSpacing: '-.01em', marginRight: 28,
+            display: 'flex', alignItems: 'center', gap: 10,
+            background: 'none', border: 'none', cursor: 'pointer',
+            padding: 0, marginRight: 28,
           }}
           aria-label="Valuta home"
         >
-          Valuta
+          <img
+            src="/valuta-mark.svg"
+            alt=""
+            aria-hidden="true"
+            className="topbar-mark"
+            style={{ width: 28, height: 28, flexShrink: 0 }}
+          />
+          <span
+            style={{
+              fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 28,
+              color: 'var(--ink)', lineHeight: 1, letterSpacing: '-.01em',
+            }}
+          >
+            Valuta
+          </span>
         </button>
 
         {/* Desktop nav */}

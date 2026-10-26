@@ -20,7 +20,7 @@ The non-negotiables, in short:
    - a countdown chip to the next value date
    - refetch on new blocks (throttled)
    - a newly due payday stamps itself DUE and stays highlighted until seen
-6. **Due payslips:** an "already fixed" amount, **Settle now** (connects the wallet if needed, simulates, then leaves a receipt), and **Try to cheat it**: a read-only `settle` with one wrong round for this payday, after the correct rounds for any earlier due paydays. The wrong round is r+1 once it's published, otherwise r−1. Show the chain's decoded error (`NotAsOfPayday`) as a VOID stamp, as in spec §5.
+6. **Due payslips:** an "already fixed" amount, **Settle now** (connects the wallet if needed, simulates, then leaves a receipt), and **Try to cheat it**: a read-only `settle` with one wrong round for this payday, after the correct rounds for any earlier due paydays. The wrong round is the rate on the day it was settled (today's rate for a due payslip), falling back to r±1 when that is the payslip's own round. Show the chain's decoded error (`NotAsOfPayday`) as a VOID stamp, as in spec §5.
 7. **Motion:** "stamp, travel, hold" per spec §3 (framer-motion). The amount never moves while time moves. Reduced motion shows final states instantly.
 8. Delete the old ClaimBand KPI strip, ProofInspector, ValueAxis and SettlementAxis components and the payroll tab row once replaced. Mount exactly one payslip instance.
 

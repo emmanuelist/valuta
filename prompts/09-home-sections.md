@@ -21,7 +21,7 @@ Below the fold, the page reads as **the reverse of the payslip**: the attempts t
   - a result cell, empty until run
   - **Run all**, at the slip's top right, runs the four in order, 150 ms apart.
 - **The four attempts:**
-  1. "Pay it at the next round's rate", or "the previous round's rate" when the next round wasn't published at that block. This is `tryCheat(payslip)` from turn 08. Expected: `NotAsOfPayday`, with "would have paid 0.054080 USDC" struck through.
+  1. "Pay it at the rate on the day it was settled", or, for a due payslip, "Pay it at today's rate". This is `tryCheat(payslip)` from turn 08. Expected: `NotAsOfPayday`, with "would have paid 0.053567 USDC" struck through: the same figure as the payslip's counterfactual line.
   2. "The employer pulls the reserve while this payday is due": `reclaim(id, 1)` from the employer's address at the same block. Expected: `UnsettledPaydays`.
   3. "A stranger takes the reserve": `reclaim(id, 1)` from the visitor's address, or the zero address if not connected. Expected: `NotEmployer`.
   4. "Control: pay it at round 292, the round live at payday": the honest `settle`. Show a petrol **SETTLES** stamp and "The honest call goes through. Nothing was sent."

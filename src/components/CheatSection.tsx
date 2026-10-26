@@ -27,7 +27,8 @@ interface AttemptConfig {
   label: string           // "Pay it at the rate on the day it was settled"
   callSig: string         // mono 13px description of the call
   disabled?: boolean
-  disabledReason?: string
+  /** Struck-through USDC amount to show under the result (attempt 1 only) */
+  strikethroughHint?: string
   run: () => Promise<AttemptState>
 }
 
@@ -117,11 +118,12 @@ function fmtErrorDetail(name: string, args: readonly unknown[]): string {
 // ── The Row ───────────────────────────────────────────────────────────────────
 
 function AttemptRow({
-  cfg, state, onRun,
+  cfg, state, onRun, num,
 }: {
   cfg: AttemptConfig
   state: AttemptState
   onRun: () => void
+  num: number
 }) {
   const isRunning = state.status === 'running'
   const isDisabled = cfg.disabled || isRunning
@@ -136,19 +138,19 @@ function AttemptRow({
         borderBottom: '1px solid var(--rule)',
       }}
     >
-      {/* Left: label + call sig */}
+      {/* Left: number + label + call sig */}
       <div>
-        <div style={{ fontFamily: 'var(--font-words)', fontWeight: 500, fontSize: 17, color: cfg.disabled ? 'var(--secondary)' : 'var(--ink)', marginBottom: 4 }}>
-          {cfg.label}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 4 }}>
+          <span className="mono" style={{ fontSize: 13, color: 'var(--secondary)', flexShrink: 0 }}>
+            {num}.
+          </span>
+          <span style={{ fontFamily: 'var(--font-words)', fontWeight: 500, fontSize: 17, color: cfg.disabled ? 'var(--secondary)' : 'var(--ink)' }}>
+            {cfg.label}
+          </span>
         </div>
-        <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)' }}>
+        <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', paddingLeft: 22 }}>
           {cfg.callSig}
         </div>
-        {cfg.disabled && cfg.disabledReason && (
-          <div style={{ fontSize: 13, color: 'var(--secondary)', marginTop: 4, fontFamily: 'var(--font-words)' }}>
-            {cfg.disabledReason}
-          </div>
-        )}
       </div>
 
       {/* Right: Run button */}
@@ -187,9 +189,17 @@ function AttemptRow({
             {state.status === 'refused' && (
               <>
                 <VoidStamp show />
-                <span className="mono" style={{ fontSize: 13, color: 'var(--ink)' }}>
-                  {fmtErrorDetail(state.errorName, state.errorArgs)}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <span className="mono" style={{ fontSize: 13, color: 'var(--ink)' }}>
+                    {fmtErrorDetail(state.errorName, state.errorArgs)}
+                  </span>
+                  {cfg.strikethroughHint && (
+                    <span className="mono" style={{ fontSize: 13, color: 'var(--secondary)' }}>
+                      would have paid{' '}
+                      <span style={{ textDecoration: 'line-through' }}>{cfg.strikethroughHint}</span>
+                    </span>
+                  )}
+                </div>
               </>
             )}
             {state.status === 'settles' && (
@@ -220,12 +230,14 @@ interface Props {
   dueQuote:  DueQuote | null  // selected due quote
   /** Correct round ids for all due paydays up to and including the selected one */
   correctRounds: bigint[]
-  /** The counterfactual USDC (what the wrong round would have paid) */
+  /** The counterfactual USDC (what attempt 1 would have paid) */
   counterfactualUsdc: bigint | null
+  /** The settle-day round (asOf at settledAt) — attempt 1 uses this, not correctRound+1 */
+  settleDayRoundId: bigint | null
 }
 
 export function CheatSection({
-  payroll, payslip, dueQuote, correctRounds, counterfactualUsdc,
+  payroll, payslip, dueQuote, correctRounds, counterfactualUsdc, settleDayRoundId,
 }: Props) {
   const client = usePublicClient({ chainId: arc.id })
   const { address: walletAddr } = useAccount()
@@ -293,28 +305,36 @@ export function CheatSection({
 
   // ── Build configs ───────────────────────────────────────────────────────────
 
-  // The wrong round: the rate the day it was settled (counterfactual round)
-  // For due payslips: latest round from duePreview when available
-  // If that equals the correct round, use correctRound + 1 as fallback
   const correctRound = payslip?.roundId ?? dueQuote?.roundId ?? null
   const feedInfo = FEEDS[payroll.currency]
   const isInverse = feedInfo?.inverse ?? false
-
-  // Compute wrong-round id: for settled, counterfactual; for due, a wrong version
-  // We approximate by using correctRound + 1 (the next round, which was published
-  // after payday — exactly what the contract will reject as NotAsOfPayday)
-  const wrongRound: bigint | null = correctRound != null ? correctRound + 1n : null
-
-  // Wrong-round amount (counterfactual)
-  const wrongRoundUsdc = counterfactualUsdc
+  void isInverse
 
   const payrollId  = BigInt(payroll.id)
   const callerAddr = strangerAddr
 
+  // Attempt 1: for a SETTLED payslip, the "wrong" round is asOf(currency, settledAt)
+  // (the settle-day round). If that happens to equal the payslip's own round,
+  // fall back to correctRound + 1.
+  // For a DUE payday: use correctRound + 1 (next round, published after payday).
+  let wrongRound: bigint | null = null
+  if (isSettled && correctRound !== null) {
+    if (settleDayRoundId !== null && settleDayRoundId !== correctRound) {
+      wrongRound = settleDayRoundId
+    } else {
+      wrongRound = correctRound + 1n
+    }
+  } else if (isDue && correctRound !== null) {
+    wrongRound = correctRound + 1n
+  }
+
+  // Wrong-round amount (counterfactual)
+  const wrongRoundUsdc = counterfactualUsdc
+
   // Build the correct rounds array for attempt 4 (honest)
   const honestRounds: bigint[] = [...correctRounds]
 
-  // Build the wrong rounds for attempt 1: replace the last round with wrongRound
+  // Build the wrong rounds for attempt 1: replace the correct round with wrongRound
   const wrongRounds: bigint[] = correctRounds.length > 0
     ? [...correctRounds.slice(0, -1), ...(wrongRound != null ? [wrongRound] : [])]
     : wrongRound != null ? [wrongRound] : []
@@ -325,7 +345,7 @@ export function CheatSection({
 
   const callSig1 = wrongRound != null
     ? `settle(${payroll.id}, [${wrongRound & ((1n << 64n) - 1n)}])`
-    : 'settle(…, [wrong_round])'
+    : 'settle(\u2026, [wrong_round])'
 
   const configs: AttemptConfig[] = [
     {
@@ -333,7 +353,7 @@ export function CheatSection({
       label: label1,
       callSig: callSig1,
       disabled: isUpcoming || wrongRounds.length === 0,
-      disabledReason: isUpcoming ? undefined : undefined,
+      strikethroughHint: wrongRoundUsdc !== null ? `${fmtUsdc(wrongRoundUsdc)} USDC` : undefined,
       run: async () => {
         if (wrongRounds.length === 0) return { status: 'rpc-error', reason: 'No round available' }
         updateState('wrong_rate', { status: 'running' })
@@ -471,24 +491,15 @@ export function CheatSection({
             )}
           </div>
 
-          {/* Wrong-round counterfactual hint */}
-          {!isUpcoming && wrongRoundUsdc !== null && (
-            <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginBottom: 8 }}>
-              would have paid{' '}
-              <span style={{ textDecoration: 'line-through' }}>
-                {fmtUsdc(wrongRoundUsdc)} USDC
-              </span>
-              {' '}at the wrong rate ·{' '}
-              {isInverse ? 'inverse feed' : 'direct feed'}
-            </div>
-          )}
+          {/* Wrong-round counterfactual hint removed — shown inline in attempt 1 row */}
 
           {/* Attempt rows */}
           <div>
-            {configs.map(cfg => (
+            {configs.map((cfg, i) => (
               <AttemptRow
                 key={cfg.id}
                 cfg={cfg}
+                num={i + 1}
                 state={states[cfg.id] ?? { status: 'idle' }}
                 onRun={() => {
                   void cfg.run().then(result => updateState(cfg.id, result))

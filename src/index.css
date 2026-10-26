@@ -18,6 +18,16 @@
   --ambtint:    #F5E7CF;
   --void:       #B42318;
 
+  /* ── Semantic state tokens ──────────────────────────────────────── */
+  --state-upcoming: var(--secondary);
+  --state-due:      var(--amber);
+  --state-due-tint: var(--ambtint);
+  --state-held:     var(--petrol);
+  --state-held-tint: var(--ptint);
+  --state-paid:     var(--carbon);
+  --state-void:     var(--void);
+  --state-late:     var(--secondary);
+
   --font-words: 'Hanken Grotesk Variable', system-ui, sans-serif;
   --font-mono:  'Spline Sans Mono Variable', 'Menlo', monospace;
   --shadow-paper: 0 1px 2px rgba(14,27,38,.05), 0 18px 40px -18px rgba(14,27,38,.18);
@@ -93,13 +103,14 @@ input::placeholder, textarea::placeholder { color: #6B7A84; opacity: 1; }
 .form-input:focus { border-color: var(--petrol); }
 select.form-input { cursor: pointer; }
 
-/* Form field errors */
+/* Form field errors — amber border + ink text, NOT red */
 .field-error {
   font-family: var(--font-words);
   font-size: 13px;
-  color: var(--void);
+  color: var(--ink);
   margin-top: 4px;
 }
+.field-error-border { border-color: var(--amber) !important; }
 
 /* ── Skeleton shimmer ───────────────────────────────────────────────── */
 @keyframes shimmer {
@@ -176,13 +187,23 @@ select.form-input { cursor: pointer; }
   .topbar-menu-btn { display: flex !important; }
 }
 
+/* ── Section wrappers ───────────────────────────────────────────────── */
+.section-outer {
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 2vw, 27px);
+}
+
 /* ── Home layout ────────────────────────────────────────────────────── */
 
-/* ≥1100px: two-column side-by-side */
+/* ≥1100px: two-column side-by-side
+   Claim starts at y=118: topbar=63px + padding-top=55px = 118px ✓
+   Payslip card top at y=75: the right column also gets padding-top=55px,
+   but the card itself starts 12px lower (within the col) due to no extra margin */
 .home-layout {
   display: flex;
   gap: clamp(28px, 3.5vw, 56px);
-  padding-top: clamp(20px, 3vh, 55px);
+  padding-top: 55px;
   align-items: flex-start;
 }
 
@@ -192,6 +213,8 @@ select.form-input { cursor: pointer; }
   display: flex;
   flex-direction: column;
   gap: 0;
+  /* Claim at y=118, card top at y=75 → left col has extra top margin */
+  margin-top: 44px;
 }
 
 .home-right {
@@ -202,8 +225,8 @@ select.form-input { cursor: pointer; }
 
 /* 700–1099px: single column */
 @media (max-width: 1099px) {
-  .home-layout { flex-direction: column !important; gap: 24px; }
-  .home-left   { width: 100% !important; }
+  .home-layout { flex-direction: column !important; gap: 24px; padding-top: 32px; }
+  .home-left   { width: 100% !important; margin-top: 0 !important; }
   .home-right  { width: 100% !important; max-width: 100%; }
 }
 
@@ -212,20 +235,42 @@ select.form-input { cursor: pointer; }
   .home-layout { padding-top: 16px; gap: 16px; }
 }
 
+/* ── Timeline block tight to 75px + timed coupon row ───────────────── */
+/* Timeline section: height exactly 80px, no extra margin above */
+.timeline-block {
+  height: 80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+/* Divider directly below timeline */
+.timeline-divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+/* Coupon row: 16px padding top/bottom = 96px slot for coupons */
+.coupon-block {
+  padding: 16px 0 12px;
+}
+
 /* ── Payslip card responsive ────────────────────────────────────────── */
 
-/* Phone: stack all rows vertically, stamp above amount */
+/* Phone: stamp moves above amount row; seal floats right of facts */
 @media (max-width: 699px) {
   .payslip-header-row {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 10px !important;
   }
+  /* Amount + seal: seal floats right, amount fills left */
   .payslip-amount-seal-row {
     flex-direction: row !important;
+    align-items: flex-start !important;
     gap: 8px !important;
   }
-  .payslip-seal { float: right; margin-left: 8px; }
+  /* Seal shrinks on phone */
+  .payslip-seal-phone { width: 96px !important; height: 96px !important; }
 }
 
 /* ── Heading sizes ──────────────────────────────────────────────────── */
@@ -236,18 +281,15 @@ select.form-input { cursor: pointer; }
   line-height: 1.08;
   letter-spacing: -0.015em;
   color: var(--ink);
-  margin: 0 0 28px;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 1099px) {
+  .home-claim { font-size: clamp(26px, 5vw, 40px); }
 }
 
 @media (max-width: 699px) {
-  .home-claim { font-size: clamp(26px, 8vw, 34px); margin-bottom: 16px; }
-}
-
-/* ── Section wrappers ───────────────────────────────────────────────── */
-.section-outer {
-  max-width: 1344px;
-  margin: 0 auto;
-  padding: 0 clamp(16px, 2vw, 27px);
+  .home-claim { font-size: clamp(26px, 8vw, 32px); margin-bottom: 16px; }
 }
 
 /* ── Cheat section attempt rows ─────────────────────────────────────── */
@@ -259,15 +301,49 @@ select.form-input { cursor: pointer; }
   }
 }
 
-/* ── Register table ─────────────────────────────────────────────────── */
+/* ── Register ───────────────────────────────────────────────────────── */
+/* Phone: one ruled entry per payroll — hide wide table, show stacked */
 @media (max-width: 699px) {
-  .register-table-row { flex-wrap: wrap; gap: 4px 12px; }
-  .register-col-hide  { display: none !important; }
+  .register-table-head   { display: none !important; }
+  .register-table-row    { 
+    display: block !important;
+    padding: 14px 16px !important;
+  }
+  .register-row-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: var(--font-words);
+    font-size: 15px;
+  }
+  .register-row-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+  }
+  .register-col-hide { display: none !important; }
+}
+@media (min-width: 700px) {
+  .register-row-title { display: none !important; }
+  .register-row-grid  { display: none !important; }
+}
+
+/* ── Payday strip in register ────────────────────────────────────────── */
+.payday-strip {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+  height: 6px;
+}
+.payday-segment {
+  flex: 1;
+  border-radius: 1px;
+  max-width: 12px;
 }
 
 /* ── Imprint footer ─────────────────────────────────────────────────── */
 @media (max-width: 699px) {
-  .footer-cols { flex-direction: column !important; gap: 24px !important; }
+  .footer-cols { grid-template-columns: 1fr !important; }
 }
 
 /* ── /new two-column layout ─────────────────────────────────────────── */
@@ -306,4 +382,18 @@ select.form-input { cursor: pointer; }
 button, [role="button"] { min-height: 36px; }
 @media (max-width: 699px) {
   button, [role="button"], a { min-height: 44px; }
+}
+
+/* ── CountdownChip ── due state while countdown runs ────────────────── */
+.countdown-chip-due {
+  border-color: var(--state-due) !important;
+  background: var(--state-due-tint) !important;
+  color: var(--state-due) !important;
+}
+@media (max-width: 699px) {
+  .countdown-chip-due {
+    width: 100% !important;
+    white-space: normal !important;
+    justify-content: flex-start;
+  }
 }

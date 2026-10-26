@@ -23,7 +23,8 @@ function buildRosette(size: number, roundId: bigint, payday: number) {
   const cy   = size / 2
   // hard cap: never exceed 85 px radius regardless of size
   const maxR = Math.min(size * 0.46, 85)
-  const minR = size * 0.15         // clear centre disc
+  // centre disc: ~34px at size=171, proportional but min 20px
+  const minR = Math.max(20, size * 0.20)
 
   const h    = (slot: number) => hashParam(aggRoundId(roundId), payday, slot)
   const lineCount = Math.round(40 + h(0) * 50)  // 40–90 wave lines
@@ -68,7 +69,8 @@ export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
 
   const { paths, strokeW, cx, cy, maxR, minR } = rosette
   const stroke  = '#0B4F6C'
-  const opacity = state === 'full' ? 0.72 : 0.55
+  // lighter lines: 35–55% opacity so the centre text reads clearly
+  const opacity = state === 'full' ? 0.52 : 0.38
   const fontSize = Math.round(size * 0.115)
 
   return (
@@ -99,16 +101,16 @@ export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
       {/* Outer border ring */}
       <circle cx={cx} cy={cy} r={maxR + 3} fill="none" stroke={stroke} strokeWidth={1} opacity={0.4} />
 
-      {/* Clear centre disc */}
+      {/* Clear centre disc — always paper-white so text reads clearly */}
       <circle
-        cx={cx} cy={cy} r={minR - 2}
-        fill={state === 'full' ? '#E3EEF3' : 'var(--paper)'}
-        stroke={stroke} strokeWidth={0.8} opacity={0.6}
+        cx={cx} cy={cy} r={minR - 1}
+        fill="var(--paper)"
+        stroke={stroke} strokeWidth={0.8} opacity={0.5}
       />
 
-      {/* "RATE HELD" text */}
+      {/* "RATE HELD" text — two lines centred in the clear disc */}
       <text
-        x={cx} y={cy - fontSize * 0.15}
+        x={cx} y={cy - fontSize * 0.6}
         textAnchor="middle"
         dominantBaseline="middle"
         fontFamily="'Hanken Grotesk Variable', sans-serif"
@@ -118,7 +120,7 @@ export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
         letterSpacing="0.06em"
       >RATE</text>
       <text
-        x={cx} y={cy + fontSize * 1.2}
+        x={cx} y={cy + fontSize * 0.7}
         textAnchor="middle"
         dominantBaseline="middle"
         fontFamily="'Hanken Grotesk Variable', sans-serif"

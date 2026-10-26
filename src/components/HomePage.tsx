@@ -198,7 +198,7 @@ export function HomePage({
                 Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.
               </h1>
             )}
-            <CountdownChip next={nextValueDate} />
+            <CountdownChip next={nextValueDate} isLoading={isAnyLoading} />
           </div>
 
           {/* Right: payslip hero */}
@@ -223,8 +223,8 @@ export function HomePage({
           </div>
         </div>
 
-        {/* Timeline */}
-        <div style={{ marginTop: 20, paddingBottom: 8 }}>
+        {/* Timeline — tight 80px block */}
+        <div className="timeline-block" style={{ marginTop: 12 }}>
           {payroll ? (
             <HonestTimeline
               payslip={selectedPayslip}
@@ -234,17 +234,15 @@ export function HomePage({
               animKey={animKey}
             />
           ) : isAnyLoading ? (
-            <div style={{ height: 80, display: 'flex', alignItems: 'center' }}>
-              <div className="skeleton" style={{ width: '60%', height: 12 }} />
-            </div>
+            <div className="skeleton" style={{ width: '60%', height: 12 }} />
           ) : null}
         </div>
 
-        {/* Divider */}
-        <div role="separator" style={{ borderTop: '1px solid var(--rule)' }} />
+        {/* Divider directly below timeline */}
+        <hr className="timeline-divider" />
 
         {/* Coupon row */}
-        <div style={{ padding: '16px 0', minHeight: 112 }}>
+        <div className="coupon-block">
           {isAnyLoading && !payroll ? (
             <CouponSkeleton />
           ) : payroll && totalItems > 0 ? (
@@ -284,6 +282,7 @@ export function HomePage({
               : selectedDueQuote ? allDueRounds : []
           }
           counterfactualUsdc={counterfactualUsdc}
+          settleDayRoundId={counterfactualResult?.roundId ?? null}
         />
       )}
 
@@ -302,6 +301,7 @@ export function HomePage({
       <PayrollRegister
         payrolls={payrolls}
         payrollCount={payrollCount}
+        isLoading={isAnyLoading}
         currentId={payrollId}
       />
 

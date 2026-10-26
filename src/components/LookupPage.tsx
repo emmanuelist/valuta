@@ -117,12 +117,12 @@ function RatesBoard({ maxAge }: { maxAge: number }) {
                     </span>
                     <span
                       className="mono"
-                      style={{ fontSize: 12, marginLeft: 8, color: stale ? 'var(--amber)' : 'var(--secondary)' }}
+                      style={{ fontSize: 12, marginLeft: 8, color: stale ? 'var(--state-due)' : 'var(--secondary)' }}
                     >
                       {ageText}
                     </span>
                     {stale && (
-                      <span style={{ display: 'block', fontFamily: 'var(--font-words)', fontSize: 11, color: 'var(--amber)' }}>
+                      <span style={{ display: 'block', fontFamily: 'var(--font-words)', fontSize: 11, color: 'var(--state-due)' }}>
                         stale: a payday now would price at the next round
                       </span>
                     )}
@@ -142,8 +142,9 @@ function RatesBoard({ maxAge }: { maxAge: number }) {
 export function LookupPage() {
   const uid = useId()
   const [currency,  setCurrency]  = useState('MXN')
-  const [dateTime,  setDateTime]  = useState(() => toLocalDatetime(Date.now() / 1000 - 3600))
-  const [showResult, setShowResult] = useState(false)
+  // Open pre-loaded with the hero payday: MXN at 2026-10-15 14:00 UTC
+  const [dateTime,  setDateTime]  = useState('2026-10-15T14:00')
+  const [showResult, setShowResult] = useState(true)
 
   const ts = dateTime ? Math.floor(new Date(dateTime + 'Z').getTime() / 1000) : 0
   const currencyBytes: `0x${string}` = currency ? toBytes3(currency) : '0x4d584e'
@@ -233,7 +234,7 @@ export function LookupPage() {
           <select
             id={`${uid}-cur`} value={currency}
             onChange={e => { setCurrency(e.target.value); setShowResult(false) }}
-            className="form-input" style={{ width: 160 }}
+            className="form-input" style={{ width: 220 }}
           >
             {CURRENCIES.map(c => (
               <option key={c} value={c}>{CURRENCY_NAMES[c] ?? c} ({c})</option>

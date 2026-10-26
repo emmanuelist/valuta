@@ -252,10 +252,10 @@ export function PayslipCard({
               <div
                 style={{
                   fontFamily: 'var(--font-words)',
-                  fontSize: 18,
+                  fontSize: 'clamp(18px, 1.8vw, 26px)',
                   fontWeight: 600,
                   letterSpacing: '.06em',
-                  lineHeight: 1.2,
+                  lineHeight: 1.15,
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -287,7 +287,7 @@ export function PayslipCard({
                     : `≈ ${fmtRateInverse(answer)} ${currency} per USD`
                   const roundNum = fmtAggRound(roundId)
                   const pubAt    = roundUpdAt ? fmtTime(roundUpdAt) : '—'
-                  return `${currency}/USD ${rateStr} (${inv2dp}) · round ${roundNum}, published ${pubAt}`
+                  return `Rate ${currency}/USD ${rateStr} (${inv2dp}) · Chainlink round ${roundNum}, published ${pubAt}`
                 })()
             }
           </div>
@@ -399,36 +399,37 @@ export function PayslipCard({
         {/* Footer */}
         {isSettled && payslip && (
           <>
+            {/* Primary line: settled … by … · tx … · Verify on Arc ↗ */}
             <div style={{ borderTop: '1px solid var(--rule)', marginTop: 16, paddingTop: 12 }}>
-              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}>
+              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 6px', lineHeight: 1.6 }}>
                 <span>settled {fmtDateTime(payslip.settledAt)}</span>
                 <span>by {truncAddr(payslip.settler, 6, 4)}</span>
                 <CopyButton value={payslip.settler} label="settler address" />
                 <span>
                   {payslip.settler.toLowerCase() === payroll.employer.toLowerCase()
-                    ? '(employer)'
-                    : '(not employer)'}
+                    ? '· employer'
+                    : '· not the employer'}
                 </span>
                 {settlementTx && (
                   <>
                     <span>· tx {truncHash(settlementTx.hash)}</span>
                     <CopyButton value={settlementTx.hash} label="transaction hash" />
-                    <a href={`${ARC_EXPLORER}/tx/${settlementTx.hash}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--petrol)' }}>
-                      Verify on Arc ↗
-                    </a>
                     <span>·</span>
-                    <a href="#cheat" style={{ color: 'var(--secondary)' }}>
-                      Try to cheat it ↓
+                    <a href={`${ARC_EXPLORER}/tx/${settlementTx.hash}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--petrol)', textDecoration: 'none' }}>
+                      Verify on Arc ↗
                     </a>
                   </>
                 )}
               </div>
             </div>
-            {(latenessLabel || rateNote) && (
-              <div className="mono" style={{ fontSize: 12, color: 'var(--secondary)', marginTop: 6, opacity: .75 }}>
-                {[latenessLabel, rateNote].filter(Boolean).join(' · ')}
-              </div>
-            )}
+            {/* Quiet line: lateness · Try to cheat it ↓ */}
+            <div className="mono" style={{ fontSize: 12, color: 'var(--secondary)', marginTop: 5, opacity: .8, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}>
+              {latenessLabel && <span>{latenessLabel}</span>}
+              {rateNote && <span>· {rateNote}</span>}
+              <a href="#cheat" style={{ color: 'var(--secondary)', textDecoration: 'none', opacity: .8 }}>
+                · Try to cheat it ↓
+              </a>
+            </div>
           </>
         )}
 

@@ -62,7 +62,15 @@ function Field({ id, label, error, hint, children }: FieldProps) {
       </label>
       {children}
       {hint && !error && <p className="field-error" style={{ color: 'var(--secondary)' }}>{hint}</p>}
-      {error && <p className="field-error" role="alert">{error}</p>}
+      {error && (
+        <p
+          className="field-error"
+          role="alert"
+          style={{ color: 'var(--ink)', display: 'flex', alignItems: 'flex-start', gap: 6 }}
+        >
+          {error}
+        </p>
+      )}
     </div>
   )
 }
@@ -522,9 +530,10 @@ export function NewPayrollPage() {
             <Field id={id('worker')} label="Worker address" error={shouldShow('worker') ? errs.worker : undefined}>
               <input
                 id={id('worker')} value={worker} onChange={e => setWorker(e.target.value)} onBlur={() => touch('worker')}
-                placeholder="0x…" className="form-input mono" style={{ fontSize: 14 }}
+                placeholder="0x…"
+                className={`form-input mono${shouldShow('worker') && errs.worker ? ' field-error-border' : ''}`}
+                style={{ fontSize: 14 }}
                 aria-invalid={shouldShow('worker') && !!errs.worker}
-                aria-describedby={shouldShow('worker') && errs.worker ? id('worker-err') : undefined}
               />
             </Field>
 
@@ -585,7 +594,7 @@ export function NewPayrollPage() {
               )}
             </Field>
 
-            <Field id={id('count')} label="Number of paydays (1\u201310,000)" error={shouldShow('count') ? errs.count : undefined}>
+            <Field id={id('count')} label="Number of paydays (1–10,000)" error={shouldShow('count') ? errs.count : undefined}>
               <input
                 id={id('count')} value={count} type="number" min="1" max="10000" placeholder="12"
                 onChange={e => setCount(e.target.value)} onBlur={() => touch('count')}

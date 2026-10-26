@@ -1,5 +1,6 @@
 // PayrollRegister — "Every payroll"
 // A ruled table of all payrolls with live dueCount and nextPayday reads.
+// Includes a payday strip using semantic state colours.
 import { useMemo } from 'react'
 import { useReadContracts } from 'wagmi'
 import { arc } from 'viem/chains'
@@ -35,13 +36,45 @@ function paydayTime(start: number, _period: number): string {
   return `${h}:${m} UTC`
 }
 
+/** Payday strip: up to 36 segments, each coloured by state */
+function PaydayStrip({ p, due }: { p: Payroll; due: number }) {
+  const total = Math.min(p.count, 36)
+  if (total === 0) return null
+
+  const segments: { color: string }[] = []
+  for (let i = 0; i < total; i++) {
+    let color: string
+    if (i < p.settled) {
+      color = 'var(--state-held)'           // settled (HELD)
+    } else if (i < p.settled + due) {
+      color = 'var(--state-due)'            // due (amber)
+    } else {
+      color = 'var(--rule)'                 // upcoming (light rule)
+    }
+    segments.push({ color })
+  }
+
+  return (
+    <div className="payday-strip" aria-hidden="true">
+      {segments.map((s, i) => (
+        <div
+          key={i}
+          className="payday-segment"
+          style={{ background: s.color, opacity: 0.85 }}
+        />
+      ))}
+    </div>
+  )
+}
+
 interface Props {
   payrolls:     Payroll[]
   payrollCount: number
+  isLoading?:   boolean
   currentId:    number  // highlight with petrol outline
 }
 
-export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
+export function PayrollRegister({ payrolls, payrollCount, isLoading, currentId }: Props) {
   // Batch dueCount + nextPayday for each payroll
   const contracts = useMemo(() =>
     payrolls.flatMap(p => [
@@ -87,7 +120,7 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
           Every payroll
         </h2>
         <span className="mono" style={{ fontSize: 15, color: 'var(--secondary)' }}>
-          {payrollCount} on Arc mainnet
+          {isLoading ? '\u2026' : `${payrollCount} on Arc mainnet`}
         </span>
       </div>
 
@@ -100,9 +133,9 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
           overflow: 'hidden',
         }}
       >
-        {/* Table header */}
+        {/* Table header — hidden on phones via .register-table-head */}
         <div
-          className="mono"
+          className="mono register-table-head"
           style={{
             display: 'grid',
             gridTemplateColumns: '40px 1fr 80px 120px 80px 60px 120px 80px 120px',
@@ -128,22 +161,31 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
 
         {/* Rows */}
         {payrolls.map((p, i) => {
-          const due  = getDue(i)
-          const next = getNext(i)
+          const due      = getDue(i)
+          const next     = getNext(i)
           const isEnded   = p.endedAt > 0
           const isComplete = p.settled >= p.count && !isEnded
           const isCurrent = p.id === currentId
 
           let nextLabel: string
-          if (isEnded)    nextLabel = `ended ${fmtDate(p.endedAt)}`
+          if (isEnded)         nextLabel = `ended ${fmtDate(p.endedAt)}`
           else if (isComplete) nextLabel = 'complete'
-          else if (next > 0)  nextLabel = `${fmtDate(next)} ${fmtTime(next)}`
-          else nextLabel = '—'
+          else if (next > 0)   nextLabel = `${fmtDate(next)} ${fmtTime(next)}`
+          else                 nextLabel = '\u2014'
+
+          const statusLabel = isEnded
+            ? 'ended'
+            : isComplete
+            ? 'complete'
+            : due > 0
+            ? null   // shown separately
+            : null
 
           return (
             <a
               key={p.id}
               href={`/payroll/${p.id}`}
+              className="register-table-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '40px 1fr 80px 120px 80px 60px 120px 80px 120px',
@@ -154,20 +196,63 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
                 gap: 8,
                 alignItems: 'center',
                 background: 'var(--paper)',
-                outline: isCurrent ? '2px solid var(--petrol)' : 'none',
+                outline: isCurrent ? '2px solid var(--state-held)' : 'none',
                 outlineOffset: isCurrent ? '-2px' : 0,
                 transition: 'background 0.1s',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--ptint)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--state-held-tint)' }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--paper)' }}
               aria-current={isCurrent ? 'page' : undefined}
             >
+              {/* Visible on phone only — title line */}
+              <div className="register-row-title" style={{ gridColumn: '1 / -1' }}>
+                <span className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginRight: 6 }}>
+                  {String(p.id).padStart(2, '0')}
+                </span>
+                {CURRENCY_NAMES[p.currency] ?? p.currency}
+                <PaydayStrip p={p} due={due} />
+              </div>
+              {/* Phone grid: key-value pairs */}
+              <div className="register-row-grid" style={{ gridColumn: '1 / -1' }}>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Salary</span>
+                <span className="mono" style={{ fontSize: 12 }}>{p.currency} {fmtSalary(p.salary, p.currency)}</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Schedule</span>
+                <span className="mono" style={{ fontSize: 12 }}>{periodLabel(p.period)}, {paydayTime(p.start, p.period)}</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Paydays</span>
+                <span className="mono" style={{ fontSize: 12 }}>{p.settled} of {p.count}</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Due</span>
+                <span className="mono" style={{ fontSize: 12, color: due > 0 ? 'var(--state-due)' : 'var(--secondary)', fontWeight: due > 0 ? 600 : 400 }}>{due > 0 ? due : '0'}</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Reserve</span>
+                <span className="mono" style={{ fontSize: 12 }}>{fmtUsdc(p.reserve)} USDC</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Arrears</span>
+                <span className="mono" style={{ fontSize: 12, color: p.arrears > 0n ? 'var(--state-due)' : 'var(--secondary)' }}>{p.arrears > 0n ? fmtUsdc(p.arrears) : '0'}</span>
+                <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 12 }}>Next value date</span>
+                <span className="mono" style={{ fontSize: 12 }}>{nextLabel}</span>
+              </div>
+
+              {/* Desktop columns */}
               <span className="mono" style={{ fontSize: 14, color: 'var(--secondary)' }}>
                 {String(p.id).padStart(2, '0')}
               </span>
-              <span style={{ fontFamily: 'var(--font-words)', fontSize: 15 }}>
-                {CURRENCY_NAMES[p.currency] ?? p.currency}
-              </span>
+              <div>
+                <div style={{ fontFamily: 'var(--font-words)', fontSize: 15 }}>
+                  {CURRENCY_NAMES[p.currency] ?? p.currency}
+                </div>
+                <PaydayStrip p={p} due={due} />
+                {(statusLabel || due > 0 || p.arrears > 0n) && (
+                  <div className="mono" style={{ fontSize: 11, marginTop: 2, display: 'flex', gap: 6 }}>
+                    {due > 0 && (
+                      <span style={{ color: 'var(--state-due)', fontWeight: 600 }}>{due} due</span>
+                    )}
+                    {p.arrears > 0n && (
+                      <span style={{ color: 'var(--state-due)' }}>{fmtUsdc(p.arrears)} arrears</span>
+                    )}
+                    {statusLabel && (
+                      <span style={{ color: 'var(--state-upcoming)' }}>{statusLabel}</span>
+                    )}
+                  </div>
+                )}
+              </div>
               <span className="mono" style={{ fontSize: 14, textAlign: 'right' }}>
                 {fmtSalary(p.salary, p.currency)}
               </span>
@@ -181,7 +266,7 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
                 className="mono"
                 style={{
                   fontSize: 14, textAlign: 'right',
-                  color: due > 0 ? 'var(--amber)' : 'var(--secondary)',
+                  color: due > 0 ? 'var(--state-due)' : 'var(--secondary)',
                   fontWeight: due > 0 ? 600 : 400,
                 }}
               >
@@ -194,7 +279,7 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
                 className="mono"
                 style={{
                   fontSize: 14, textAlign: 'right',
-                  color: p.arrears > 0n ? 'var(--amber)' : 'var(--secondary)',
+                  color: p.arrears > 0n ? 'var(--state-due)' : 'var(--secondary)',
                 }}
               >
                 {p.arrears > 0n ? fmtUsdc(p.arrears) : '0'}
@@ -217,7 +302,7 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
             href="/new"
             style={{
               display: 'inline-block',
-              background: 'var(--petrol)', color: '#fff',
+              background: 'var(--state-held)', color: '#fff',
               borderRadius: 4, padding: '8px 20px',
               fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 15,
               textDecoration: 'none',
@@ -229,7 +314,7 @@ export function PayrollRegister({ payrolls, payrollCount, currentId }: Props) {
             href="/lookup"
             style={{
               fontFamily: 'var(--font-words)', fontSize: 15,
-              color: 'var(--petrol)',
+              color: 'var(--state-held)',
             }}
           >
             Look up the rate at any moment →

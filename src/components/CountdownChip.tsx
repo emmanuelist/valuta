@@ -5,23 +5,20 @@ import { fmtCountdown } from '../lib/format'
 
 interface Props {
   next: NextValueDate | null
+  /** When true, data is still loading — show a skeleton instead of "No value dates ahead" */
+  isLoading?: boolean
   /** When true, renders full-width (phone layout) */
   fullWidth?: boolean
 }
 
-export function CountdownChip({ next, fullWidth }: Props) {
+export function CountdownChip({ next, isLoading, fullWidth }: Props) {
   if (!next) {
-    return (
-      <div
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '10px 16px', color: 'var(--secondary)', fontSize: 15,
-          fontFamily: 'var(--font-words)',
-        }}
-      >
-        No value dates ahead
-      </div>
-    )
+    if (isLoading) {
+      return (
+        <div className="skeleton" style={{ width: 320, height: 44, borderRadius: 22 }} aria-busy="true" />
+      )
+    }
+    return null
   }
 
   const isFixingNow = next.secondsLeft <= 0
@@ -31,21 +28,23 @@ export function CountdownChip({ next, fullWidth }: Props) {
 
   return (
     <div
+      className="countdown-chip-due"
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: 8,
         padding: '10px 18px',
-        border: '1.5px solid var(--amber)',
+        border: '1.5px solid var(--state-due)',
         borderRadius: 22,
-        background: 'var(--ambtint)',
-        color: 'var(--amber)',
+        background: 'var(--state-due-tint)',
+        color: 'var(--state-due)',
         fontFamily: 'var(--font-words)',
         fontWeight: 500,
         fontSize: 15,
         // size to content — no fixed width, no overflow/ellipsis
         width: fullWidth ? '100%' : undefined,
-        whiteSpace: 'nowrap',
+        whiteSpace: fullWidth ? 'normal' : 'nowrap',
+        minWidth: fullWidth ? 'unset' : undefined,
       }}
       aria-live="polite"
       aria-label={label}

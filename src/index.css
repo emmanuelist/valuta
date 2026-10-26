@@ -197,13 +197,12 @@ select.form-input { cursor: pointer; }
 /* ── Home layout ────────────────────────────────────────────────────── */
 
 /* ≥1100px: two-column side-by-side
-   Claim starts at y=118: topbar=63px + padding-top=55px = 118px ✓
-   Payslip card top at y=75: the right column also gets padding-top=55px,
-   but the card itself starts 12px lower (within the col) due to no extra margin */
+   Topbar=63px + padding-top=12px = 75px → card top y=75
+   Claim is inside home-left which has its own margin-top=44px → y≈119 */
 .home-layout {
   display: flex;
   gap: clamp(28px, 3.5vw, 56px);
-  padding-top: 55px;
+  padding-top: 12px;
   align-items: flex-start;
 }
 

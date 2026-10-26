@@ -3,7 +3,7 @@
 # Valuta
 
 [![Arc mainnet](https://img.shields.io/badge/Arc%20mainnet-live-0B4F6C)](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)
-[![Sourcify](https://img.shields.io/badge/Sourcify-exact%20match-0B4F6C)](https://sourcify.dev/server/v2/contract/5042/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)
+[![Sourcify](https://img.shields.io/badge/Sourcify-exact%20match-0B4F6C)](https://repo.sourcify.dev/5042/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)
 [![Tests](https://img.shields.io/badge/tests-96%20passing%20(arc--forge)-0B4F6C)](#tests)
 [![Built with Arc Studio](https://img.shields.io/badge/built%20with-Arc%20Studio-0B4F6C)](https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
@@ -64,7 +64,11 @@ Round 293 was published at 14:06 on 15 Oct, six minutes after payday 1. Settling
 | A stranger reclaims someone else's reserve | `NotEmployer` |
 | *Control:* settle with round 206 | succeeds |
 
-**It keeps running.** Payroll 2 pays BRL 0.10 every two hours. Each payday is settled within minutes and is stored as a payslip you can read.
+**Any refusal can be replayed, at any time.** Arc's public RPC serves historical state, so an attempt can be re-run at the block before a payday was settled. At block 27,805,206, one block before the stranger's settlement, `settle(1, [round 293])` reverts `NotAsOfPayday(1792072800, round 293)`, and `settle(1, [round 292])` succeeds ([E-022](docs/EVIDENCE.md)).
+
+**Lateness changes nothing, to the second.** Payroll 2 pays BRL 0.10 every two hours. Overnight on 26 Oct the builder's laptop slept, and its keeper settled four paydays at once at 06:46 UTC, up to 6 h 46 m late, in [one transaction](https://explorer.arc.io/tx/0xdd5ce0466ec0270f1d1e6573763b2dc4fff6b3a4c854925c5d77556fd8e5a190). Each still got its own round. The 00:00 payday paid at round 207, because round 208 was published sixteen seconds later, at 00:00:16. The 02:00, 04:00 and 06:00 paydays paid at round 208 ([E-024](docs/EVIDENCE.md)).
+
+**It keeps running.** Payroll 3 pays EUR 0.01 a day until 4 Dec ([E-023](docs/EVIDENCE.md)). The builder's keeper settles paydays only while their laptop is on, and not at all after 28 Oct. From then on, due paydays wait with their amounts already fixed, and anyone can settle them.
 
 Every mainnet transaction, with gas and receipts, is in [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
 
@@ -133,7 +137,7 @@ Naming these is cheaper than having a judge find them.
 - **The demo payrolls are wallets the builder controls.** Every function is permissionless, so anyone can create a payroll or settle a due payday.
 - **The fixing can lag the market.** Chainlink FX feeds here update on a 24-hour heartbeat or a 0.3–0.5% deviation, so a payday's rate can be up to 25 hours old. It is a published fixing, not an execution price.
 - **Phase boundaries.** A payday that straddles a Chainlink aggregator phase change can't be proven by `settle` (`UnprovableRound`). All feeds are in phase 1 today.
-- **Someone has to send the transaction.** A local keeper settles payroll 2 while the builder's laptop is on. Any payday left unsettled can be settled later by anyone, at the same amount.
+- **Someone has to send the transaction.** A local keeper settles payrolls 1–3 while the builder's laptop is on, until 28 Oct. Any payday left unsettled waits as due and can be settled later by anyone, at the same amount.
 - **Amounts are cents, not salaries**, because this is real money on mainnet.
 
 ## Run it locally

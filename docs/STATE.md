@@ -1,5 +1,5 @@
 # State
-_Last verified: 2026-10-26 07:10 UTC (branch 6-app)_
+_Last verified: 2026-10-26 07:08 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)

@@ -1,5 +1,5 @@
 # State
-_Last verified: 2026-10-26 07:08 UTC (branch 6-app)_
+_Last verified: 2026-10-26 07:53 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
@@ -34,6 +34,7 @@ _Last verified: 2026-10-26 07:08 UTC (branch 6-app)_
 - Higgsfield: 4 credits left on the builder's new workspace.
 
 ## Broken or unverified
+- **Film:** the pipeline is ported from Setoff into `internal/film/` (tooling, gitignored). Every figure comes from `film/facts.json`, read off mainnet with assertions. The narration is voiced (ElevenLabs, the builder's new key, 668 of 10,000 characters used) and aligned word by word. Not done yet: the capture moves and beat measurement for the redesigned UI (after turns 08–09), the Studio shot (needs the builder's login in the recording browser), render, score and master.
 - The current app (Studio turn 7) runs and reads mainnet (E-020), but scored 19/40. It will be replaced by the redesign turns 08–10. It runs locally (`bunx vite --port 5173`) and is not deployed yet.
 - The keeper runs only while this session and laptop are up.
 - Studio streams can drop mid-turn. Always use `--detach` and then `attach`.

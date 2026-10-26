@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-26 15:24 UTC (branch 6-app)_
+_Last verified: 2026-10-26 22:08 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** the UI is frozen (Studio at 93% for today). Deploy to Vercel (needs the builder's go-ahead: the auto-mode check blocked `vercel deploy --prod`; the project `valuta` is linked). Then verify the due state, the settle flow and the employer panel with a browser wallet (pause the keeper before a payday). Then film capture (`internal/film`), the README Studio table (turns 08–16), DESIGN.md (documenter), and submit (#6, #8)
+**Next action:** Studio turn 18 (`prompts/18-seal-and-states.md`: seal A, the builder's choice; upcoming coupons; due-state truth; lazy wallet) is armed in `internal/studio-turn18.sh` and fires when usage is below 60%, about 13:50 UTC on 2026-10-27. Tonight: benchmark, film capture of the app chapters. Tomorrow: verify turn 18, redeploy (`vercel deploy --prod`, then alias `valuta-arc`), the Studio film chapter (builder logs in), render, the builder uploads to YouTube, repo public, preflight, the builder submits (#8)
 **Blocked on:** nothing
 
 ## Works (verified this session)

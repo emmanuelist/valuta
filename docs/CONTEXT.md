@@ -67,6 +67,8 @@ Arc Studio facts (agent guide, 2026-10-25):
 - **The public RPC is an archive node** (verified 2026-10-25: state read 12M blocks, about 70 days, back). So `eth_call` with a block tag replays any past moment. To re-run a settled payslip's settlement, call at `settledBlock − 1` and pass the rounds of any paydays settled earlier in that tx first, because `settle` works in order from the first unsettled payday (E-022). At the latest block, a settled payday answers `NothingDue`.
 - **A wrong round that was not yet published answers `BadAnswer`, not `NotAsOfPayday`** (`getRoundData` past the latest returns zeros, so `startedAt == 0`). A cheat demo must use r+1 only once it exists at the call's block, else r−1 (E-021).
 
+- **macOS can SIGKILL the esbuild binary that bun hard-links from its cache** (exit 137; `vite build` fails with "The service was stopped"). Seen 2026-10-26 after a `bun install`. Fix: give it a fresh inode (`cp node_modules/@esbuild/darwin-arm64/bin/esbuild x && mv x node_modules/@esbuild/darwin-arm64/bin/esbuild`). Run Vite under Node (`node node_modules/vite/bin/vite.js`).
+
 ## Valuta deployments (mainnet)
 | Version | Address | Status |
 |---|---|---|

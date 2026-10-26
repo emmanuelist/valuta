@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-26 13:58 UTC (branch 6-app)_
+_Last verified: 2026-10-26 15:25 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** Studio turn 11 (`prompts/11-fixes-from-review.md`: the measured fixes from the rendered review of turns 08–10) is queued in `internal/studio-turn11.sh` and starts when usage is below 70% (it was 79% at 13:56 UTC; yesterday's app turn ages out around 14:30–14:42). After it lands: render the review again (1344×760 against the comp, 1440, 390, 360, /new, /lookup, Run all), then CI (#5), Vercel, the film capture, the README Studio table, and submit (#6, #8)
+**Next action:** the UI is frozen (Studio at 93% for today). Deploy to Vercel (needs the builder's go-ahead: the auto-mode check blocked `vercel deploy --prod`; the project `valuta` is linked). Then verify the due state, the settle flow and the employer panel with a browser wallet (pause the keeper before a payday). Then film capture (`internal/film`), the README Studio table (turns 08–16), DESIGN.md (documenter), and submit (#6, #8)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -37,7 +37,7 @@ _Last verified: 2026-10-26 13:58 UTC (branch 6-app)_
 
 ## Broken or unverified
 - **Film:** the pipeline is ported from Setoff into `internal/film/` (tooling, gitignored). Every figure comes from `film/facts.json`, read off mainnet with assertions. The narration is voiced (ElevenLabs, the builder's new key, 668 of 10,000 characters used) and aligned word by word. Not done yet: the capture moves and beat measurement for the redesigned UI (after turns 08–09), the Studio shot (needs the builder's login in the recording browser), render, score and master.
-- **Known defects, queued in turn 11:** cheat attempt 1 sends round 293 instead of the settle-day round 326; loading states claim "No value dates ahead" and "0 payrolls"; the desktop hero sits about 50px high and the coupon row falls below 760; the seal is too heavy; the phone layout of the payslip, timeline, chip, register and footer is broken; the initial chunk is 492 kB gzipped. The app is not deployed yet.
+- **Unverified in the live app:** the due-state hero, Settle now with its receipt, the employer panel, and /new create, which all need a browser wallet. The app is not deployed yet. The initial chunk is 492 kB gzipped (accepted, D-023).
 - The keeper runs only while this session and laptop are up.
 - Studio streams can drop mid-turn. Always use `--detach` and then `attach`.
 

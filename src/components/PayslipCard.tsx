@@ -194,7 +194,6 @@ export function PayslipCard({
         position: 'relative',
         overflow: 'hidden',
         width: '100%',
-        minHeight: 474,
       }}
       aria-label={`Payslip ${index + 1} of ${payroll.count}, payroll ${payroll.id}`}
       aria-live="polite"
@@ -230,7 +229,7 @@ export function PayslipCard({
         <div className="payslip-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14, marginTop: 4, gap: 12 }}>
           <div
             className="mono"
-            style={{ fontSize: 13, color: 'var(--secondary)', letterSpacing: '.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+            style={{ fontSize: 13, color: 'var(--secondary)', letterSpacing: '.08em', textTransform: 'uppercase', whiteSpace: 'nowrap', minWidth: 0, flex: 1 }}
           >
             {isLoading
               ? <Skeleton w={280} h={14} />
@@ -254,15 +253,16 @@ export function PayslipCard({
                 textAlign: 'center',
                 transformOrigin: 'center center',
                 flexShrink: 0,
+                maxWidth: 362,
               }}
             >
               <div
                 className="payslip-stamp-text"
                 style={{
                   fontFamily: 'var(--font-words)',
-                  fontSize: 'clamp(14px, 1.8vw, 26px)',
+                  fontSize: 22,
                   fontWeight: 600,
-                  letterSpacing: '.06em',
+                  letterSpacing: '.04em',
                   lineHeight: 1.15,
                   whiteSpace: 'nowrap',
                 }}
@@ -302,106 +302,131 @@ export function PayslipCard({
         </div>
         <div style={{ borderBottom: '1px dashed var(--rule)', marginBottom: 16 }} />
 
-        {/* Paid amount — full width at all breakpoints */}
-        <div>
-          {isLoading || usdc === null
-            ? <Skeleton w={300} h={64} />
-            : (
-              <div
-                className="mono"
-                style={{
-                  fontSize: 'clamp(36px, 5vw, 64px)',
-                  fontWeight: 300,
-                  color: 'var(--carbon)',
-                  lineHeight: 1,
-                  letterSpacing: '-.01em',
-                  marginBottom: 4,
-                }}
-              >
-                {fmtUsdc(usdc)}{' '}
-                <span>USDC</span>
-              </div>
-            )
-          }
-          {isDue && (
-            <div style={{ fontSize: 12, color: 'var(--amber)', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>
-              already fixed
-            </div>
-          )}
-        </div>
+        {/*
+          payslip-body-row: on desktop (≥700px) this is a flex row —
+            left col (amount + counterfactual + facts) | right col (seal).
+          On phones (<700px) it collapses: amount and counterfactual are
+            full-width, then a sub-row holds facts-left + seal-right.
+        */}
+        <div className="payslip-body-row">
 
-        {/* Counterfactual — full width at all breakpoints */}
-        {isSettled && (
-          <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginBottom: 12 }}>
-            {sameRound
-              ? 'Settled while its own round was still live: same amount'
-              : counterfactualUsdc !== null
-                ? (
-                  <span style={{ textDecoration: 'line-through' }}>
-                    {fmtUsdc(counterfactualUsdc)} at the {payslip ? fmtDateMixed(payslip.settledAt) : '—'} rate it settled on
-                  </span>
-                )
-                : null
-            }
-          </div>
-        )}
+          {/* Left column: amount, counterfactual, facts */}
+          <div className="payslip-body-left">
 
-        {/* Facts + seal row: facts on left, seal floats right */}
-        <div className="payslip-facts-seal-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Three proof facts */}
-            <motion.div
-              key={`facts-${animKey}`}
-              ref={factRef}
-              style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
-            >
-              {[
-                paydayTs && roundUpdAt && roundId
-                  ? `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)}`
-                  : null,
-                factNextCameAt,
-                factAge,
-              ].map((fact, fi) =>
-                fact ? (
-                  <motion.div
-                    key={fi}
-                    initial={reduced ? { opacity: 1 } : { opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: reduced ? 0 : fi * 0.09, duration: 0.2 }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 8 }}
-                  >
-                    <CircleCheck size={15} style={{ color: 'var(--petrol)', flexShrink: 0 }} />
-                    <span className="mono" style={{ fontSize: 15, color: 'var(--ink)' }}>{fact}</span>
-                  </motion.div>
-                ) : (fi === 1 && nextLoading && roundId) ? (
-                  // second fact is still loading — show a skeleton placeholder
-                  <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div className="skeleton" style={{ width: 15, height: 15, borderRadius: '50%', flexShrink: 0 }} />
-                    <div className="skeleton" style={{ width: 200, height: 14 }} />
-                  </div>
-                ) : null
-              )}
-              {factPaydayLive === false && roundUpdAt && paydayTs && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <CircleX size={15} style={{ color: 'var(--void)', flexShrink: 0 }} />
-                  <span className="mono" style={{ fontSize: 14, color: 'var(--void)' }}>
-                    Stale-fallback: live round was more than {Math.round(maxAge / 3600)} h old
-                  </span>
+            {/* Amount */}
+            {isLoading || usdc === null
+              ? <Skeleton w={300} h={64} />
+              : (
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 'clamp(36px, 5vw, 64px)',
+                    fontWeight: 300,
+                    color: 'var(--carbon)',
+                    lineHeight: 1,
+                    letterSpacing: '-.01em',
+                    marginBottom: 4,
+                  }}
+                >
+                  {fmtUsdc(usdc)}{' '}
+                  <span>USDC</span>
                 </div>
-              )}
-            </motion.div>
-
-            {/* Upcoming hint */}
-            {isUpcoming && (
-              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginTop: 8 }}>
-                Today's rate would pay ≈ — ; the round live at payday decides
+              )
+            }
+            {isDue && (
+              <div style={{ fontSize: 12, color: 'var(--amber)', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>
+                already fixed
               </div>
             )}
+
+            {/* Counterfactual */}
+            {isSettled && (
+              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginBottom: 12 }}>
+                {sameRound
+                  ? 'Settled while its own round was still live: same amount'
+                  : counterfactualUsdc !== null
+                    ? (
+                      <span style={{ textDecoration: 'line-through' }}>
+                        {fmtUsdc(counterfactualUsdc)} at the {payslip ? fmtDateMixed(payslip.settledAt) : '—'} rate it settled on
+                      </span>
+                    )
+                    : null
+                }
+              </div>
+            )}
+
+            {/*
+              On phones this sub-row holds facts (left) + seal (right).
+              On desktop the seal is in payslip-body-right instead.
+            */}
+            <div className="payslip-facts-seal-row">
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* Three proof facts */}
+                <motion.div
+                  key={`facts-${animKey}`}
+                  ref={factRef}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
+                >
+                  {[
+                    paydayTs && roundUpdAt && roundId
+                      ? `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)}`
+                      : null,
+                    factNextCameAt,
+                    factAge,
+                  ].map((fact, fi) =>
+                    fact ? (
+                      <motion.div
+                        key={fi}
+                        initial={reduced ? { opacity: 1 } : { opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: reduced ? 0 : fi * 0.09, duration: 0.2 }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                      >
+                        <CircleCheck size={15} style={{ color: 'var(--petrol)', flexShrink: 0 }} />
+                        <span className="mono" style={{ fontSize: 15, color: 'var(--ink)' }}>{fact}</span>
+                      </motion.div>
+                    ) : (fi === 1 && nextLoading && roundId) ? (
+                      <div key={fi} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className="skeleton" style={{ width: 15, height: 15, borderRadius: '50%', flexShrink: 0 }} />
+                        <div className="skeleton" style={{ width: 200, height: 14 }} />
+                      </div>
+                    ) : null
+                  )}
+                  {factPaydayLive === false && roundUpdAt && paydayTs && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <CircleX size={15} style={{ color: 'var(--void)', flexShrink: 0 }} />
+                      <span className="mono" style={{ fontSize: 14, color: 'var(--void)' }}>
+                        Stale-fallback: live round was more than {Math.round(maxAge / 3600)} h old
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Upcoming hint */}
+                {isUpcoming && (
+                  <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', marginTop: 8 }}>
+                    Today's rate would pay ≈ — ; the round live at payday decides
+                  </div>
+                )}
+              </div>
+
+              {/* Seal — phone only: visible here beside the facts */}
+              {roundId != null && !!paydayTs && (
+                <div className="payslip-seal-phone-only payslip-seal-wrap" style={{ flexShrink: 0 }}>
+                  <GuillocheSeal
+                    roundId={roundId}
+                    payday={paydayTs}
+                    state={sealState}
+                    size={96}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* RATE HELD seal — floats right of facts at all widths */}
+          {/* Right column: seal — desktop only */}
           {roundId != null && !!paydayTs && (
-            <div className="payslip-seal-wrap" style={{ flexShrink: 0, marginTop: -8 }}>
+            <div className="payslip-body-right payslip-seal-wrap" style={{ flexShrink: 0 }}>
               <GuillocheSeal
                 roundId={roundId}
                 payday={paydayTs}

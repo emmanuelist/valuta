@@ -264,12 +264,63 @@ select.form-input { cursor: pointer; }
 
 /* ── Payslip card responsive ────────────────────────────────────────── */
 
-/* Phone: stamp moves above amount row; seal floats right of facts */
+/*
+  Desktop (≥700px):
+    payslip-body-row  — flex row, left takes all remaining space, seal on the right
+    payslip-body-left — fills remaining width
+    payslip-body-right — 171px seal column, aligned to top
+    payslip-facts-seal-row — no flex here; the seal lives in body-right
+    payslip-seal-phone-only — hidden: the phone duplicate seal
+*/
+.payslip-body-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.payslip-body-left {
+  flex: 1;
+  min-width: 0;
+}
+.payslip-body-right {
+  flex-shrink: 0;
+  margin-top: -8px; /* aligns seal top with amount cap-height */
+}
+/* Facts-seal sub-row: on desktop, just a plain block (seal is in body-right) */
+.payslip-facts-seal-row {
+  display: block;
+}
+/* Phone duplicate seal hidden on desktop */
+.payslip-seal-phone-only {
+  display: none;
+}
+
+/*
+  Phone (<700px):
+    payslip-body-row collapses to block (no flex row)
+    payslip-body-right (desktop seal) hidden
+    payslip-facts-seal-row becomes a flex row: facts-left + 96px seal-right
+    payslip-seal-phone-only shown
+    header stamp constrained to card width
+*/
 @media (max-width: 699px) {
   .payslip-header-row {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 10px !important;
+  }
+  .payslip-body-row {
+    display: block;
+  }
+  .payslip-body-right {
+    display: none !important;
+  }
+  .payslip-facts-seal-row {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .payslip-seal-phone-only {
+    display: block !important;
   }
   /* Stamp: constrain to card width minus its own padding so it stays on one line */
   .payslip-stamp {
@@ -280,11 +331,6 @@ select.form-input { cursor: pointer; }
     font-size: clamp(12px, 3.5vw, 16px) !important;
     overflow: hidden;
     text-overflow: clip;
-  }
-  /* Seal: 96 × 96 on phone — sits right of facts, never over text */
-  .payslip-seal-wrap svg {
-    width: 96px !important;
-    height: 96px !important;
   }
 }
 

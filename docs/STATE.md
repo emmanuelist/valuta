@@ -1,14 +1,16 @@
 # State
-_Last verified: 2026-10-26 07:53 UTC (branch 6-app)_
+_Last verified: 2026-10-26 13:58 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** nothing to send by hand. `internal/studio-chain.sh` (running since 07:07 UTC, log `internal/studio/chain.log`) sends Studio turns 08 → 09 → 10 back to back (D-021). The builder skipped the component review ("skip the review"); Impeccable refused to force its plates gate, so its formal gates stay unrecorded and fidelity is measured with standalone `comp-diff`. Turns start when usage is below 50% (08), 55% (09) and 85% (10). The cap is rolling (CONTEXT), so 08 is expected between about 12:40 and 14:45 UTC. When the chain ends: verify locally, hero comp-diff at 1344×760, critique (target ≥ 32/40), fix turn in the next window, CI (#5), Vercel, film, submit (#6)
+**Next action:** Studio turn 11 (`prompts/11-fixes-from-review.md`: the measured fixes from the rendered review of turns 08–10) is queued in `internal/studio-turn11.sh` and starts when usage is below 70% (it was 79% at 13:56 UTC; yesterday's app turn ages out around 14:30–14:42). After it lands: render the review again (1344×760 against the comp, 1440, 390, 360, /new, /lookup, Run all), then CI (#5), Vercel, the film capture, the README Studio table, and submit (#6, #8)
 **Blocked on:** nothing
 
 ## Works (verified this session)
 | Capability | Verified by | Evidence |
 |---|---|---|
+| **Redesigned app (Studio turns 08–10)**: the payslip hero, home sections, settle flow, employer panel, phone layout, /new, /lookup. The local gate is green (typecheck, lint with `--deny-warnings`, build). A cold production load renders the payslip in 2.3 s with 5 RPC calls | browser renders, `bun run typecheck/lint/build`, `vite preview` timing | E-026 |
+| "Try to cheat it" Run all replays at block 27,805,206 and shows the chain's own refusals | in the browser | E-026 |
 | **Valuta v2 live on Arc mainnet, Sourcify exact match** | receipt, code, Sourcify API | E-016 |
 | Whole payslip ledger in one `eth_call`; settlement tx by single-block `getLogs` | timed reads against mainnet | E-019 |
 | Stranger settled 10 overdue paydays on v2, each at its own round | tx and payslip read-back | E-019 |
@@ -35,7 +37,7 @@ _Last verified: 2026-10-26 07:53 UTC (branch 6-app)_
 
 ## Broken or unverified
 - **Film:** the pipeline is ported from Setoff into `internal/film/` (tooling, gitignored). Every figure comes from `film/facts.json`, read off mainnet with assertions. The narration is voiced (ElevenLabs, the builder's new key, 668 of 10,000 characters used) and aligned word by word. Not done yet: the capture moves and beat measurement for the redesigned UI (after turns 08–09), the Studio shot (needs the builder's login in the recording browser), render, score and master.
-- The current app (Studio turn 7) runs and reads mainnet (E-020), but scored 19/40. It will be replaced by the redesign turns 08–10. It runs locally (`bunx vite --port 5173`) and is not deployed yet.
+- **Known defects, queued in turn 11:** cheat attempt 1 sends round 293 instead of the settle-day round 326; loading states claim "No value dates ahead" and "0 payrolls"; the desktop hero sits about 50px high and the coupon row falls below 760; the seal is too heavy; the phone layout of the payslip, timeline, chip, register and footer is broken; the initial chunk is 492 kB gzipped. The app is not deployed yet.
 - The keeper runs only while this session and laptop are up.
 - Studio streams can drop mid-turn. Always use `--detach` and then `attach`.
 

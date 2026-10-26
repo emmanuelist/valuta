@@ -4,6 +4,7 @@
 
 [![Arc mainnet](https://img.shields.io/badge/Arc%20mainnet-live-0B4F6C)](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)
 [![Sourcify](https://img.shields.io/badge/Sourcify-exact%20match-0B4F6C)](https://repo.sourcify.dev/5042/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)
+[![CI](https://github.com/emmanuelist/valuta/actions/workflows/ci.yml/badge.svg)](https://github.com/emmanuelist/valuta/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-96%20passing%20(arc--forge)-0B4F6C)](#tests)
 [![Built with Arc Studio](https://img.shields.io/badge/built%20with-Arc%20Studio-0B4F6C)](https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)

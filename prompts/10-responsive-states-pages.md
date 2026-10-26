@@ -1,5 +1,23 @@
 Valuta redesign, part 3 (same workspace). Responsive layouts, accessibility, every non-happy state, the two secondary pages and the bundle. Keep the visual language from `context/08-redesign-spec.md`: Hanken Grotesk, Spline Sans Mono, petrol, the paper payslip.
 
+## 0. First: hero fixes from the review of turn 08
+Compare the first viewport at 1344×760 with `context/redesign-a-specimen-1x.png`. Each of these is a measured miss:
+1. **Vertical placement:**
+   - The payslip card sits at (478, 75), with its perforated top edge fully visible under the top bar's hairline. Today it starts near y=55, and its top edge is hidden under the bar.
+   - The claim starts at y=118. Today it starts near y=65, against the bar.
+2. **The value stamp** is one line, as in the comp: "VALUE 15 OCT 2026 · 14:00 UTC", in Hanken Grotesk 600 at about 28px with 0.06em tracking, inside its 362×79 box, rotated −3°. Today it wraps "UTC" onto a second line in the mono face.
+3. **The RATE HELD seal** stays inside its box (1116, 271, 171×181) and inside the card.
+   - Draw it as a dense, circular banknote guilloché rosette: 40–90 fine wave lines (stroke 0.5–0.75px, petrol at 60–85% opacity) around a clear centre disc that holds "RATE HELD".
+   - Keep the deterministic hash, but cap every radius at 85px and vary only frequency, phase and line count.
+   - Today it draws long petals that spill over the rate line and past the card's right edge, so it reads as a flower, not a security seal.
+4. **The countdown chip** shows its whole text, never an ellipsis: "Payroll 1 · next value date in 01:59:41". Size it to its content (at least 340px), with tabular figures so it never jitters.
+5. **Top bar:**
+   - "Connect wallet" is the comp's petrol filled button (1160, 10, 160×42, white Hanken 500, radius 6), not ConnectKit's default text button.
+   - The live dot is petrol and pulses; today it is grey.
+6. **The timeline** spans its whole box, from x=67 to x=1280. Keep log spacing for the relative distances, then scale the set so the first event sits at the left end and the last at the right end. Today it ends near x=780 and leaves the right 40% empty.
+7. **The amount** "0.053897 USDC" is one size: Spline Sans Mono 300 at about 64px, with "USDC" the same size as the figure, as in the comp.
+8. **The rate line:** "≈ 18.55 MXN per USD", with two decimals.
+
 ## A. Responsive: designed, not shrunk
 - **1100px and up:** the composition as built. The first viewport must also hold at common desktop widths, 1280 to 1600:
   - fluid columns from the spec's proportions, not a fixed-pixel grid that wraps 100px narrower
@@ -89,6 +107,6 @@ Valuta redesign, part 3 (same workspace). Responsive layouts, accessibility, eve
 - Cold load to a rendered payslip in under 3 s.
 
 ## Before you finish
-Open the preview at 1440×900, 1280×800, 768×1024, 390×844 and 360×740, and on `/`, `/payroll/2`, `/new` and `/lookup`. Fix anything clipped, overlapping, misaligned or scrolling sideways. There must be no placeholder copy and no console errors.
+Open the preview at 1344×760 and compare it region by region with `context/redesign-a-specimen-1x.png`, then at 1440×900, 1280×800, 768×1024, 390×844 and 360×740, and on `/`, `/payroll/2`, `/new` and `/lookup`. Fix anything clipped, overlapping, misaligned or scrolling sideways. There must be no placeholder copy and no console errors.
 
 Run `bun run typecheck`, `bun run lint` (zero warnings) and `bun run build`, and report the gzipped initial chunk size and the files changed.

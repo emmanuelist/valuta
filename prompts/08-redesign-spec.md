@@ -1,6 +1,6 @@
 # Valuta redesign: "the payslip is the hero" (reference for Studio turns 8–10)
 
-The approved composition is `context/redesign-a-specimen.png`, at 2688×1520 = 2× a 1344×760 viewport. All boxes below are in **1344-wide CSS px** (the comp's pixels halved). The first viewport at 1344×760 must land each region at its box. Real data replaces the comp's sample values.
+The approved composition is `context/redesign-a-specimen-1x.png`, at 1344×760. All boxes below are in **1344-wide CSS px**, which are that image's own pixels. The first viewport at 1344×760 must land each region at its box. Real data replaces the comp's sample values.
 
 **Unchanged rules:**
 - Every value comes from Arc mainnet (Valuta v2 `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a`, the Chainlink feeds, the chain).

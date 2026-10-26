@@ -2,7 +2,7 @@ Redesign the Valuta app's home and `/payroll/:id` pages so **the payslip is the 
 
 Two reference files are attached:
 - `context/08-redesign-spec.md`: the complete spec (tokens, fonts, every region's box in 1344-wide px, the payslip's contents and their chain reads, the honest timeline, the coupon row, the motion, live data, due and upcoming states). Follow it in full.
-- `context/redesign-a-specimen.png`: the approved composition (2× scale). At 1344×760 the first viewport must match it region for region.
+- `context/redesign-a-specimen-1x.png`: the approved composition at 1344×760, which is the spec's own coordinate space. At 1344×760 the first viewport must match it region for region.
 
 The non-negotiables, in short:
 1. **Fonts:** Hanken Grotesk for words, Spline Sans Mono for every figure (tabular), both self-hosted from `@fontsource-variable` with no font CDN (spec §1). Light theme. Petrol #0B4F6C, carbon blue #1F3886 for the paid amount. **Lateness is quiet grey text, never red.** Red only for a refused cheat (VOID).
@@ -25,6 +25,6 @@ The non-negotiables, in short:
 8. Delete the old ClaimBand KPI strip, ProofInspector, ValueAxis and SettlementAxis components and the payroll tab row once replaced. Mount exactly one payslip instance.
 
 ## Before you finish
-Open the preview at 1344×760 and compare it with `context/redesign-a-specimen.png` region by region: each box, size and weight. Then check 1440×900. Fix anything clipped, overlapping or misaligned. There must be no placeholder copy and no console errors.
+Open the preview at 1344×760 and compare it with `context/redesign-a-specimen-1x.png` region by region: each box, size and weight. Then check 1440×900. Fix anything clipped, overlapping or misaligned. There must be no placeholder copy and no console errors.
 
 Run `bun run typecheck`, `bun run lint` (zero warnings) and `vite build`. Report the files changed.

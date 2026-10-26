@@ -13,6 +13,7 @@ import {
 } from '../lib/format'
 import { VALUTA_ADDRESS, VALUTA_ABI, FEEDS, ARC_EXPLORER } from '../contracts/abi'
 import { GuillocheSeal } from './GuillocheSeal'
+import { CopyButton } from './CopyButton'
 import { decodeValutaError } from '../lib/errors'
 
 interface Props {
@@ -174,6 +175,8 @@ export function PayslipCard({
 
   const isLoading = !payroll
 
+  const isEnded = payroll.endedAt > 0
+
   return (
     <article
       style={{
@@ -186,7 +189,8 @@ export function PayslipCard({
         width: '100%',
         minHeight: 474,
       }}
-      aria-label={`Payslip ${index + 1}`}
+      aria-label={`Payslip ${index + 1} of ${payroll.count}, payroll ${payroll.id}`}
+      aria-live="polite"
     >
       {/* Perforated top edge */}
       <div
@@ -202,8 +206,21 @@ export function PayslipCard({
 
       <div style={{ position: 'relative', zIndex: 1, padding: '24px 32px 28px', paddingTop: 20 }}>
 
+        {/* Ended banner */}
+        {isEnded && (
+          <div
+            style={{
+              padding: '6px 12px', marginBottom: 10,
+              background: 'var(--ambtint)', borderRadius: 4,
+              fontFamily: 'var(--font-words)', fontSize: 13, color: 'var(--amber)',
+            }}
+          >
+            This payroll ended on {fmtDateTime(payroll.endedAt)} — no more paydays will be added.
+          </div>
+        )}
+
         {/* Header row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14, marginTop: 4 }}>
+        <div className="payslip-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14, marginTop: 4, gap: 12 }}>
           <div
             className="mono"
             style={{ fontSize: 13, color: 'var(--secondary)', letterSpacing: '.08em', textTransform: 'uppercase' }}
@@ -214,7 +231,7 @@ export function PayslipCard({
             }
           </div>
 
-          {/* Value-date stamp */}
+          {/* Value-date stamp — one line, 28 px Hanken 600, -3° */}
           {paydayTs ? (
             <motion.div
               key={`stamp-${animKey}`}
@@ -224,20 +241,25 @@ export function PayslipCard({
               style={{
                 border: `2.5px solid ${isDue ? 'var(--amber)' : 'var(--petrol)'}`,
                 borderRadius: 6,
-                padding: '6px 14px',
+                padding: '10px 18px',
                 color: isDue ? 'var(--amber)' : 'var(--petrol)',
                 textAlign: 'center',
                 transformOrigin: 'center center',
-                maxWidth: 360,
                 flexShrink: 0,
+                whiteSpace: 'nowrap',
               }}
             >
               <div
-                className="mono"
-                style={{ fontSize: 17, fontWeight: 700, letterSpacing: '.12em', lineHeight: 1.25 }}
+                style={{
+                  fontFamily: 'var(--font-words)',
+                  fontSize: 18,
+                  fontWeight: 600,
+                  letterSpacing: '.06em',
+                  lineHeight: 1.2,
+                  whiteSpace: 'nowrap',
+                }}
               >
-                VALUE {fmtDateTimeStamp(paydayTs)}
-                {isDue ? ' · DUE' : ''}
+                VALUE {fmtDateTimeStamp(paydayTs)}{isDue ? ' · DUE' : ''}
               </div>
             </motion.div>
           ) : isLoading ? (
@@ -259,13 +281,13 @@ export function PayslipCard({
             {isLoading || !answer || !roundId
               ? <Skeleton w={440} h={15} />
               : (() => {
-                  const rateStr = fmtRate8(answer)
-                  const inv     = isInverse
-                    ? `≈ ${fmtRateInverse(answer)} ${currency} per USD`
+                  const rateStr  = fmtRate8(answer)
+                  const inv2dp   = isInverse
+                    ? `≈ ${fmtRateInverse(answer)} per USD`
                     : `≈ ${fmtRateInverse(answer)} ${currency} per USD`
                   const roundNum = fmtAggRound(roundId)
                   const pubAt    = roundUpdAt ? fmtTime(roundUpdAt) : '—'
-                  return `Rate ${currency}/USD ${rateStr} (${inv}) · Chainlink round ${roundNum}, published ${pubAt}`
+                  return `${currency}/USD ${rateStr} (${inv2dp}) · round ${roundNum}, published ${pubAt}`
                 })()
             }
           </div>
@@ -273,7 +295,7 @@ export function PayslipCard({
         <div style={{ borderBottom: '1px dashed var(--rule)', marginBottom: 16 }} />
 
         {/* Paid amount + seal row */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <div className="payslip-amount-seal-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Amount */}
             {isLoading || usdc === null
@@ -282,12 +304,16 @@ export function PayslipCard({
                 <div
                   className="mono"
                   style={{
-                    fontSize: 64, fontWeight: 300, color: 'var(--carbon)',
-                    lineHeight: 1, letterSpacing: '-.01em',
+                    fontSize: 'clamp(36px, 5vw, 64px)',
+                    fontWeight: 300,
+                    color: 'var(--carbon)',
+                    lineHeight: 1,
+                    letterSpacing: '-.01em',
                     marginBottom: 4,
                   }}
                 >
-                  {fmtUsdc(usdc)} <span style={{ fontSize: 44 }}>USDC</span>
+                  {fmtUsdc(usdc)}{' '}
+                  <span>USDC</span>
                 </div>
               )
             }
@@ -374,36 +400,28 @@ export function PayslipCard({
         {isSettled && payslip && (
           <>
             <div style={{ borderTop: '1px solid var(--rule)', marginTop: 16, paddingTop: 12 }}>
-              <div className="mono" style={{ fontSize: 14, color: 'var(--secondary)' }}>
-                {'settled '}
-                {fmtDateTime(payslip.settledAt)}
-                {' by '}
-                {truncAddr(payslip.settler, 6, 4)}
-                {payslip.settler.toLowerCase() === payroll.employer.toLowerCase()
-                  ? ', the employer'
-                  : ', not the employer'}
-                {settlementTx ? (
+              <div className="mono" style={{ fontSize: 13, color: 'var(--secondary)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2px 8px' }}>
+                <span>settled {fmtDateTime(payslip.settledAt)}</span>
+                <span>by {truncAddr(payslip.settler, 6, 4)}</span>
+                <CopyButton value={payslip.settler} label="settler address" />
+                <span>
+                  {payslip.settler.toLowerCase() === payroll.employer.toLowerCase()
+                    ? '(employer)'
+                    : '(not employer)'}
+                </span>
+                {settlementTx && (
                   <>
-                    {' · tx '}
-                    {truncHash(settlementTx.hash)}
-                    {' · '}
-                    <a
-                      href={`${ARC_EXPLORER}/tx/${settlementTx.hash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: 'var(--petrol)' }}
-                    >
+                    <span>· tx {truncHash(settlementTx.hash)}</span>
+                    <CopyButton value={settlementTx.hash} label="transaction hash" />
+                    <a href={`${ARC_EXPLORER}/tx/${settlementTx.hash}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--petrol)' }}>
                       Verify on Arc ↗
                     </a>
-                    {' · '}
-                    <a
-                      href="#cheat"
-                      style={{ color: 'var(--secondary)' }}
-                    >
+                    <span>·</span>
+                    <a href="#cheat" style={{ color: 'var(--secondary)' }}>
                       Try to cheat it ↓
                     </a>
                   </>
-                ) : null}
+                )}
               </div>
             </div>
             {(latenessLabel || rateNote) && (

@@ -1,11 +1,24 @@
+import { lazy, Suspense } from 'react'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { arc } from 'viem/chains'
 import { useRouter } from './lib/router'
 import { TopBar } from './components/TopBar'
 import { HomePage } from './components/HomePage'
-import { NewPayrollPage } from './components/NewPayrollPage'
-import { LookupPage } from './components/LookupPage'
 import { usePayrollList } from './hooks/useValutaData'
+
+// Lazy-load secondary pages to keep the initial bundle small
+const NewPayrollPage = lazy(() => import('./components/NewPayrollPage').then(m => ({ default: m.NewPayrollPage })))
+const LookupPage     = lazy(() => import('./components/LookupPage').then(m => ({ default: m.LookupPage })))
+
+function PageFallback() {
+  return (
+    <div style={{ padding: '48px 32px', display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 480, margin: '0 auto' }}>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="skeleton" style={{ height: 20, width: `${75 - i * 10}%`, borderRadius: 4 }} />
+      ))}
+    </div>
+  )
+}
 
 export default function App() {
   const { route } = useRouter()
@@ -15,6 +28,8 @@ export default function App() {
 
   const { payrollCount, payrolls, isLoading, isError, refetch } = usePayrollList()
 
+  const isHomePath = route.path === '/' || route.path === '/payroll/:id'
+
   return (
     <div className="min-h-dvh flex flex-col" style={{ background: 'var(--ground)' }}>
       <TopBar currentPath={route.path} />
@@ -22,11 +37,11 @@ export default function App() {
       {/* Wrong network banner */}
       {isWrongChain && (
         <div
+          role="alert"
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
             padding: '8px 16px', fontSize: 14,
-            background: 'var(--ambtint)',
-            borderBottom: '1px solid var(--amber)',
+            background: 'var(--ambtint)', borderBottom: '1px solid var(--amber)',
             color: 'var(--amber)',
           }}
         >
@@ -36,7 +51,7 @@ export default function App() {
             style={{
               background: 'var(--amber)', color: '#fff', border: 'none',
               borderRadius: 4, padding: '4px 12px', cursor: 'pointer',
-              fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 13,
+              fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 13, minHeight: 36,
             }}
           >
             Switch to Arc
@@ -45,7 +60,7 @@ export default function App() {
       )}
 
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {(route.path === '/' || route.path === '/payroll/:id') && (
+        {isHomePath && (
           <HomePage
             payrolls={payrolls}
             payrollCount={payrollCount}
@@ -60,8 +75,16 @@ export default function App() {
             }
           />
         )}
-        {route.path === '/new'    && <NewPayrollPage />}
-        {route.path === '/lookup' && <LookupPage />}
+        {route.path === '/new' && (
+          <Suspense fallback={<PageFallback />}>
+            <NewPayrollPage />
+          </Suspense>
+        )}
+        {route.path === '/lookup' && (
+          <Suspense fallback={<PageFallback />}>
+            <LookupPage />
+          </Suspense>
+        )}
       </main>
     </div>
   )

@@ -1,5 +1,6 @@
-// RATE HELD guilloché seal — generative SVG rosette
-// Parameters are derived from a hash of (roundId, payday) so every payslip's seal is unique.
+// RATE HELD guilloché seal — concentric banknote wave-line rosette
+// Dense circular lines around a clear centre disc.  Every radius is
+// capped at 85 px so nothing spills outside its container.
 
 import { useMemo } from 'react'
 import { aggRoundId } from '../lib/format'
@@ -12,56 +13,63 @@ interface Props {
   size?:   number
 }
 
-/** Simple deterministic hash: produces a number in [0,1) */
 function hashParam(rid: bigint, payday: number, slot: number): number {
   const v = Number((rid ^ BigInt(payday)) % 100_000n) + slot * 137
   return ((v * 48271) % 99991) / 99991
 }
 
-function buildPaths(size: number, roundId: bigint, payday: number) {
-  const cx = size / 2
-  const cy = size / 2
-  const outerR = size * 0.44
-  const innerR = size * 0.24
-  const h = (slot: number) => hashParam(aggRoundId(roundId), payday, slot)
-  const loops1 = 5  + Math.round(h(0) * 4)
-  const loops2 = 11 + Math.round(h(1) * 6)
-  const r1     = 28 + h(2) * 10
-  const r2     = 18 + h(3) * 8
-  const phase  = h(4) * Math.PI * 2
-  const sw     = 0.65 + h(5) * 0.35
+function buildRosette(size: number, roundId: bigint, payday: number) {
+  const cx   = size / 2
+  const cy   = size / 2
+  // hard cap: never exceed 85 px radius regardless of size
+  const maxR = Math.min(size * 0.46, 85)
+  const minR = size * 0.15         // clear centre disc
 
-  const steps = 360
-  const outer: string[] = []
-  const inner: string[] = []
-  for (let i = 0; i <= steps; i++) {
-    const t = (i / steps) * Math.PI * 2
-    const rO = outerR + r1 * Math.sin(loops1 * t + phase) + r2 * Math.cos(loops2 * t)
-    const rI = innerR + (r1 * 0.4) * Math.sin(loops2 * t - phase)
-    const xO = cx + rO * Math.cos(t)
-    const yO = cy + rO * Math.sin(t)
-    const xI = cx + rI * Math.cos(t)
-    const yI = cy + rI * Math.sin(t)
-    outer.push(i === 0 ? `M ${xO.toFixed(2)} ${yO.toFixed(2)}` : `L ${xO.toFixed(2)} ${yO.toFixed(2)}`)
-    inner.push(i === 0 ? `M ${xI.toFixed(2)} ${yI.toFixed(2)}` : `L ${xI.toFixed(2)} ${yI.toFixed(2)}`)
+  const h    = (slot: number) => hashParam(aggRoundId(roundId), payday, slot)
+  const lineCount = Math.round(40 + h(0) * 50)  // 40–90 wave lines
+  const freq1     = 4  + Math.round(h(1) * 6)   // 4–10  primary frequency
+  const freq2     = 9  + Math.round(h(2) * 9)   // 9–18  secondary frequency
+  const phase     = h(3) * Math.PI * 2
+  const amp       = (maxR - minR) * (0.08 + h(4) * 0.10) // 8–18 % of ring
+  const sw        = 0.5 + h(5) * 0.25           // 0.5–0.75 px stroke
+
+  const STEPS = 300
+  const paths: string[] = []
+
+  for (let li = 0; li < lineCount; li++) {
+    const t01    = li / (lineCount - 1)          // 0 → 1 across the ring
+    const baseR  = minR + (maxR - minR) * t01
+    const phOff  = t01 * Math.PI * 2 * 1.5       // slight phase shift per line
+
+    const pts: string[] = []
+    for (let si = 0; si <= STEPS; si++) {
+      const theta = (si / STEPS) * Math.PI * 2
+      const r     = baseR
+        + amp * Math.sin(freq1 * theta + phase + phOff)
+        + amp * 0.4 * Math.cos(freq2 * theta - phase)
+      const rx = cx + r * Math.cos(theta)
+      const ry = cy + r * Math.sin(theta)
+      pts.push(si === 0 ? `M${rx.toFixed(1)},${ry.toFixed(1)}` : `L${rx.toFixed(1)},${ry.toFixed(1)}`)
+    }
+    pts.push('Z')
+    paths.push(pts.join(' '))
   }
-  outer.push('Z')
-  inner.push('Z')
-  return { wavePath: outer.join(' '), innerPath: inner.join(' '), strokeW: sw, cx, cy, outerR, innerR }
+
+  return { paths, strokeW: sw, cx, cy, maxR, minR }
 }
 
 export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
-  // All computation in one memoised call — hooks are always called, never conditional
-  const paths = useMemo(
-    () => buildPaths(size, roundId, payday),
+  const rosette = useMemo(
+    () => buildRosette(size, roundId, payday),
     [size, roundId, payday],
   )
 
   if (state === 'none') return null
 
-  const { wavePath, innerPath, strokeW, cx, cy, outerR, innerR } = paths
-  const stroke = '#0B4F6C'
-  const fillOpacity = state === 'full' ? 0.05 : 0
+  const { paths, strokeW, cx, cy, maxR, minR } = rosette
+  const stroke  = '#0B4F6C'
+  const opacity = state === 'full' ? 0.72 : 0.55
+  const fontSize = Math.round(size * 0.115)
 
   return (
     <svg
@@ -69,36 +77,55 @@ export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
       height={size}
       viewBox={`0 0 ${size} ${size}`}
       aria-hidden="true"
-      style={{ overflow: 'visible', flexShrink: 0 }}
+      style={{ display: 'block', flexShrink: 0, overflow: 'hidden' }}
     >
+      {/* Outer ring fill (settled only) */}
       {state === 'full' && (
-        <circle cx={cx} cy={cy} r={outerR + 4} fill="#E3EEF3" opacity={0.4} />
+        <circle cx={cx} cy={cy} r={maxR + 3} fill="#E3EEF3" opacity={0.45} />
       )}
-      <circle cx={cx} cy={cy} r={outerR + 6} fill="none" stroke={stroke} strokeWidth={1} opacity={0.4} />
-      <path d={wavePath} fill={state === 'full' ? stroke : 'none'}
-        fillOpacity={fillOpacity} stroke={stroke} strokeWidth={strokeW} opacity={0.75} />
-      <circle cx={cx} cy={cy} r={innerR + 4} fill="none" stroke={stroke} strokeWidth={0.8} opacity={0.5} />
-      <path d={innerPath} fill="none" stroke={stroke} strokeWidth={strokeW * 0.7} opacity={0.5} />
-      <circle cx={cx} cy={cy} r={innerR - 4}
-        fill={state === 'full' ? '#E3EEF3' : 'none'}
-        stroke={stroke} strokeWidth={1} opacity={0.6} />
+
+      {/* Wave lines */}
+      {paths.map((d, i) => (
+        <path
+          key={i}
+          d={d}
+          fill="none"
+          stroke={stroke}
+          strokeWidth={strokeW}
+          opacity={opacity}
+        />
+      ))}
+
+      {/* Outer border ring */}
+      <circle cx={cx} cy={cy} r={maxR + 3} fill="none" stroke={stroke} strokeWidth={1} opacity={0.4} />
+
+      {/* Clear centre disc */}
+      <circle
+        cx={cx} cy={cy} r={minR - 2}
+        fill={state === 'full' ? '#E3EEF3' : 'var(--paper)'}
+        stroke={stroke} strokeWidth={0.8} opacity={0.6}
+      />
+
+      {/* "RATE HELD" text */}
       <text
-        x={cx} y={cy - 5}
+        x={cx} y={cy - fontSize * 0.15}
         textAnchor="middle"
+        dominantBaseline="middle"
         fontFamily="'Hanken Grotesk Variable', sans-serif"
         fontWeight={700}
-        fontSize={size * 0.11}
+        fontSize={fontSize}
         fill={stroke}
-        letterSpacing="0.08em"
+        letterSpacing="0.06em"
       >RATE</text>
       <text
-        x={cx} y={cy + size * 0.12}
+        x={cx} y={cy + fontSize * 1.2}
         textAnchor="middle"
+        dominantBaseline="middle"
         fontFamily="'Hanken Grotesk Variable', sans-serif"
         fontWeight={700}
-        fontSize={size * 0.11}
+        fontSize={fontSize}
         fill={stroke}
-        letterSpacing="0.08em"
+        letterSpacing="0.06em"
       >HELD</text>
     </svg>
   )

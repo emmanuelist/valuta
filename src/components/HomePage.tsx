@@ -1,4 +1,4 @@
-// HomePage — payslip-hero layout, full page
+// HomePage — payslip-hero layout, responsive
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import type { Payroll } from '../lib/types'
 import { usePayrollDetail } from '../hooks/useValutaData'
@@ -16,6 +16,7 @@ import { PageFooter } from './PageFooter'
 import { EmployerPanel } from './EmployerPanel'
 import { FEEDS } from '../contracts/abi'
 import { convertUsdc } from '../lib/format'
+import { navigate } from '../lib/router'
 
 const FEATURED_PAYROLL_ID = 1
 
@@ -35,12 +36,11 @@ export function HomePage({
 }: Props) {
   const payrollId = targetId ?? FEATURED_PAYROLL_ID
 
-  const { payroll, payslips, dueQuotes, isLoading: detailLoading, refetch: refetchDetail } =
+  const { payroll, payslips, dueQuotes, isLoading: detailLoading, isError: detailError, refetch: refetchDetail } =
     usePayrollDetail(payrollId)
 
   const totalItems = payroll?.count ?? 0
 
-  // Selected index — default to first payslip (index 0)
   const [selected, setSelected] = useState<number>(
     initialPayday !== undefined ? initialPayday : 0,
   )
@@ -66,13 +66,11 @@ export function HomePage({
     prevDueRef.current = currentDueCount
   }, [currentDueCount, payroll?.settled])
 
-  // The displayed item
   const selectedPayslip  = selected < payslips.length ? payslips[selected] : null
   const selectedDueQuote = !selectedPayslip
     ? dueQuotes.find(q => q.index === selected) ?? null
     : null
 
-  // All due rounds up to and including the selected payday (for multi-settle)
   const allDueRounds: bigint[] = useMemo(() => {
     const selectedIdx = selectedDueQuote?.index ?? -1
     return dueQuotes
@@ -80,12 +78,10 @@ export function HomePage({
       .map(q => q.roundId)
   }, [dueQuotes, selectedDueQuote])
 
-  // Neighbour rounds (for proof facts + timeline)
-  const roundId   = selectedPayslip?.roundId ?? selectedDueQuote?.roundId ?? null
-  const currency  = payroll?.currency ?? ''
+  const roundId  = selectedPayslip?.roundId ?? selectedDueQuote?.roundId ?? null
+  const currency = payroll?.currency ?? ''
   const { prev, next, maxAge } = useNeighbourRoundsForProof(currency, roundId)
 
-  // Settlement tx
   const settledBlock = selectedPayslip?.settledBlock ?? null
   const { tx: settlementTx, fetch: fetchTx } = useSettlementTx(
     payrollId, selected, settledBlock,
@@ -94,15 +90,11 @@ export function HomePage({
     if (settledBlock) void fetchTx()
   }, [settledBlock, fetchTx])
 
-  // Counterfactual — asOf at settledAt
   const settledAtTs = selectedPayslip?.settledAt ?? 0
   const { result: counterfactualResult } = useAsOfRate(
-    currency,
-    settledAtTs,
-    !!selectedPayslip && settledAtTs > 0,
+    currency, settledAtTs, !!selectedPayslip && settledAtTs > 0,
   )
 
-  // Counterfactual USDC (for CheatSection wrong-round amount)
   const feedInfo  = FEEDS[currency]
   const isInverse = feedInfo?.inverse ?? false
   const salaryCopy = payroll?.salary ?? null
@@ -112,13 +104,10 @@ export function HomePage({
     catch { return null }
   }, [counterfactualResult, salaryCopy, isInverse])
 
-  // Latest rate for employer runway estimate — use the selected payslip/due-quote answer
   const currentRate = selectedPayslip?.answer ?? selectedDueQuote?.answer ?? null
 
-  // Countdown chip
   const { next: nextValueDate } = useCountdown(payrolls)
 
-  // Refetch on live data (throttled 10s)
   useEffect(() => {
     const id = setInterval(() => {
       void refetch()
@@ -128,17 +117,21 @@ export function HomePage({
   }, [refetch, refetchDetail])
 
   const isAnyLoading = isLoading || detailLoading
+  const isAnyError   = isError || detailError
 
-  if (isError) {
+  // ── Error state ─────────────────────────────────────────────────────
+  if (isAnyError && !isAnyLoading) {
     return (
       <div style={{ padding: '80px 32px', textAlign: 'center' }}>
-        <div style={{ color: 'var(--secondary)', marginBottom: 16 }}>Could not connect to Arc mainnet.</div>
+        <p style={{ color: 'var(--secondary)', marginBottom: 16, fontFamily: 'var(--font-words)', fontSize: 16 }}>
+          Could not connect to Arc mainnet.
+        </p>
         <button
-          onClick={() => void refetch()}
+          onClick={() => { void refetch(); void refetchDetail() }}
           style={{
             background: 'var(--petrol)', color: '#fff', border: 'none',
-            borderRadius: 4, padding: '8px 18px', cursor: 'pointer',
-            fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 14,
+            borderRadius: 6, padding: '10px 22px', cursor: 'pointer',
+            fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 15, minHeight: 44,
           }}
         >
           Retry
@@ -147,48 +140,71 @@ export function HomePage({
     )
   }
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--ground)' }} aria-live="polite" aria-atomic="false">
-
-      {/* ── First viewport ─────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 1344, margin: '0 auto', padding: '0 27px' }}>
-
-        {/* Main two-column row */}
-        <div
-          className="home-layout"
-          style={{ display: 'flex', gap: 46, paddingTop: 55, alignItems: 'flex-start' }}
+  // ── No payrolls state ────────────────────────────────────────────────
+  if (!isAnyLoading && payrollCount === 0) {
+    return (
+      <div style={{ padding: '80px 32px', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
+        <h2 style={{ fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 24, color: 'var(--ink)', marginBottom: 12 }}>
+          No payrolls yet
+        </h2>
+        <p style={{ color: 'var(--secondary)', fontSize: 16, marginBottom: 24 }}>
+          Create the first payroll to see salary receipts here.
+        </p>
+        <button
+          onClick={() => navigate('/new')}
+          style={{
+            background: 'var(--petrol)', color: '#fff', border: 'none',
+            borderRadius: 6, padding: '10px 24px', cursor: 'pointer',
+            fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 15, minHeight: 44,
+          }}
         >
+          Create a payroll
+        </button>
+      </div>
+    )
+  }
+
+  // ── Payroll not found ────────────────────────────────────────────────
+  if (!isAnyLoading && payrollCount > 0 && !payroll) {
+    return (
+      <div style={{ padding: '80px 32px', textAlign: 'center' }}>
+        <p style={{ color: 'var(--secondary)', fontSize: 16 }}>
+          Payroll {payrollId} not found.{' '}
+          <button
+            onClick={() => navigate('/')}
+            style={{ color: 'var(--petrol)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-words)', textDecoration: 'underline', minHeight: 44, padding: 0 }}
+          >
+            Back to payroll 1
+          </button>
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--ground)' }}>
+
+      {/* ── First viewport ─────────────────────────────────────────── */}
+      <div className="section-outer">
+
+        {/* Two-column / single-column layout row */}
+        <div className="home-layout">
+
           {/* Left: claim + countdown */}
-          <div style={{ width: 400, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <h1
-              style={{
-                fontFamily: 'var(--font-words)',
-                fontWeight: 600,
-                fontSize: 51,
-                lineHeight: 1.08,
-                letterSpacing: '-0.015em',
-                color: 'var(--ink)',
-                margin: 0,
-                marginBottom: 38,
-              }}
-            >
-              Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.
-            </h1>
+          <div className="home-left">
+            {/* Only show claim once we have data */}
+            {(payroll || isAnyLoading) && (
+              <h1 className="home-claim">
+                Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.
+              </h1>
+            )}
             <CountdownChip next={nextValueDate} />
           </div>
 
           {/* Right: payslip hero */}
-          <div style={{ flex: 1, minWidth: 0, maxWidth: 846 }}>
+          <div className="home-right">
             {isAnyLoading && !payroll ? (
-              <div
-                style={{
-                  background: 'var(--paper)', border: '1px solid var(--rule)',
-                  borderRadius: 6, height: 474, boxShadow: 'var(--shadow-paper)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <div className="skeleton" style={{ width: 300, height: 20 }} />
-              </div>
+              <PayslipSkeleton />
             ) : payroll ? (
               <PayslipCard
                 payroll={payroll}
@@ -208,8 +224,8 @@ export function HomePage({
         </div>
 
         {/* Timeline */}
-        <div style={{ marginTop: 24, paddingTop: 8, paddingBottom: 8 }}>
-          {payroll && (
+        <div style={{ marginTop: 20, paddingBottom: 8 }}>
+          {payroll ? (
             <HonestTimeline
               payslip={selectedPayslip}
               dueQuote={selectedDueQuote}
@@ -217,20 +233,20 @@ export function HomePage({
               next={next}
               animKey={animKey}
             />
-          )}
+          ) : isAnyLoading ? (
+            <div style={{ height: 80, display: 'flex', alignItems: 'center' }}>
+              <div className="skeleton" style={{ width: '60%', height: 12 }} />
+            </div>
+          ) : null}
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: '1px solid var(--rule)' }} />
+        <div role="separator" style={{ borderTop: '1px solid var(--rule)' }} />
 
         {/* Coupon row */}
         <div style={{ padding: '16px 0', minHeight: 112 }}>
           {isAnyLoading && !payroll ? (
-            <div style={{ display: 'flex', gap: 8 }}>
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="skeleton" style={{ width: 112, height: 96, borderRadius: 6, flexShrink: 0 }} />
-              ))}
-            </div>
+            <CouponSkeleton />
           ) : payroll && totalItems > 0 ? (
             <CouponRow
               payroll={payroll}
@@ -240,11 +256,13 @@ export function HomePage({
               onSelect={handleSelect}
               newlyDue={newlyDue}
             />
+          ) : payroll && totalItems === 0 ? (
+            <EmptyPayroll />
           ) : null}
         </div>
       </div>
 
-      {/* ── Employer panel (F) — between coupon row and cheat section ── */}
+      {/* ── Employer panel ──────────────────────────────────────────── */}
       {payroll && (
         <EmployerPanel
           payroll={payroll}
@@ -254,7 +272,7 @@ export function HomePage({
         />
       )}
 
-      {/* ── A: Try to cheat it ──────────────────────────────────────────── */}
+      {/* ── Try to cheat it ─────────────────────────────────────────── */}
       {payroll && (
         <CheatSection
           payroll={payroll}
@@ -263,15 +281,13 @@ export function HomePage({
           correctRounds={
             selectedPayslip
               ? (selectedPayslip.roundId ? [selectedPayslip.roundId] : [])
-              : selectedDueQuote
-              ? allDueRounds
-              : []
+              : selectedDueQuote ? allDueRounds : []
           }
           counterfactualUsdc={counterfactualUsdc}
         />
       )}
 
-      {/* ── B: How a payday is priced ──────────────────────────────────── */}
+      {/* ── How a payday is priced ───────────────────────────────────── */}
       {payroll && (
         <PricingClauses
           payroll={payroll}
@@ -282,15 +298,62 @@ export function HomePage({
         />
       )}
 
-      {/* ── C: Every payroll ───────────────────────────────────────────── */}
+      {/* ── Every payroll ────────────────────────────────────────────── */}
       <PayrollRegister
         payrolls={payrolls}
         payrollCount={payrollCount}
         currentId={payrollId}
       />
 
-      {/* ── D: Footer ─────────────────────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────────────────────────── */}
       <PageFooter />
+    </div>
+  )
+}
+
+// ── Sub-components for non-happy states ────────────────────────────────
+
+function PayslipSkeleton() {
+  return (
+    <div
+      aria-label="Loading payslip"
+      aria-busy="true"
+      style={{
+        background: 'var(--paper)', border: '1px solid var(--rule)',
+        borderRadius: 6, padding: '24px 32px', boxShadow: 'var(--shadow-paper)',
+        display: 'flex', flexDirection: 'column', gap: 16, minHeight: 474,
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+        <div className="skeleton" style={{ width: '55%', height: 14 }} />
+        <div className="skeleton" style={{ width: 200, height: 52, borderRadius: 6 }} />
+      </div>
+      <div className="skeleton" style={{ width: '35%', height: 14 }} />
+      <div style={{ borderTop: '1px dashed var(--rule)', paddingTop: 10 }}>
+        <div className="skeleton" style={{ width: '70%', height: 14 }} />
+      </div>
+      <div className="skeleton" style={{ width: 280, height: 64, borderRadius: 4 }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ width: `${60 + i * 8}%`, height: 14 }} />)}
+      </div>
+    </div>
+  )
+}
+
+function CouponSkeleton() {
+  return (
+    <div style={{ display: 'flex', gap: 8 }} aria-label="Loading paydays" aria-busy="true">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <div key={i} className="skeleton" style={{ width: 112, height: 96, borderRadius: 6, flexShrink: 0 }} />
+      ))}
+    </div>
+  )
+}
+
+function EmptyPayroll() {
+  return (
+    <div style={{ padding: '20px 0', color: 'var(--secondary)', fontFamily: 'var(--font-words)', fontSize: 15 }}>
+      No paydays yet. Once the first value date passes, a coupon will appear here for anyone to settle.
     </div>
   )
 }

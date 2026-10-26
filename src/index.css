@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ──────────────────────────────────────────────────── */
 :root {
   --ground:     #F6F8F9;
   --paper:      #FFFFFF;
@@ -17,11 +18,8 @@
   --ambtint:    #F5E7CF;
   --void:       #B42318;
 
-  /* Typography */
   --font-words: 'Hanken Grotesk Variable', system-ui, sans-serif;
   --font-mono:  'Spline Sans Mono Variable', 'Menlo', monospace;
-
-  /* Paper shadow */
   --shadow-paper: 0 1px 2px rgba(14,27,38,.05), 0 18px 40px -18px rgba(14,27,38,.18);
 }
 
@@ -41,6 +39,7 @@ body {
   font-family: var(--font-words);
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 ::selection { background: var(--ptint); color: var(--ink); }
@@ -48,6 +47,7 @@ body {
 :focus-visible {
   outline: 2px solid var(--petrol);
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
 a {
@@ -57,13 +57,16 @@ a {
 }
 a:hover { opacity: .8; }
 
-/* Mono utility: figures, ids, rates */
+/* ── Mono utility ───────────────────────────────────────────────────── */
 .mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-/* Perforated top edge — repeating radial half-circles */
+/* ── Placeholder contrast (≥4.5:1 on white) ──────────────────────── */
+input::placeholder, textarea::placeholder { color: #6B7A84; opacity: 1; }
+
+/* ── Perforated edge ────────────────────────────────────────────────── */
 .perf-top {
   --r: 7px;
   -webkit-mask-image: radial-gradient(circle at 50% 0%, transparent var(--r), black calc(var(--r) + 1px));
@@ -74,7 +77,7 @@ a:hover { opacity: .8; }
   mask-repeat: repeat-x;
 }
 
-/* Form inputs */
+/* ── Form inputs ────────────────────────────────────────────────────── */
 .form-input {
   padding: 8px 12px;
   border: 1px solid var(--rule);
@@ -90,7 +93,15 @@ a:hover { opacity: .8; }
 .form-input:focus { border-color: var(--petrol); }
 select.form-input { cursor: pointer; }
 
-/* Skeleton shimmer */
+/* Form field errors */
+.field-error {
+  font-family: var(--font-words);
+  font-size: 13px;
+  color: var(--void);
+  margin-top: 4px;
+}
+
+/* ── Skeleton shimmer ───────────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -600px 0; }
   100% { background-position:  600px 0; }
@@ -101,17 +112,21 @@ select.form-input { cursor: pointer; }
   animation: shimmer 1.4s infinite linear;
   border-radius: 4px;
 }
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; background: var(--rule); }
+}
 
-/* Pulse dot animation */
+/* ── Pulse dot ──────────────────────────────────────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50%       { opacity: .3; }
 }
-.pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot { animation: none; }
 }
 
-/* Coupon row scroll snap */
+/* ── Coupon row ─────────────────────────────────────────────────────── */
 .coupon-row {
   display: flex;
   gap: 8px;
@@ -125,18 +140,10 @@ select.form-input { cursor: pointer; }
 .coupon-row::-webkit-scrollbar-track { background: transparent; }
 .coupon-row::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
 
-.coupon-item {
-  scroll-snap-align: start;
-  flex-shrink: 0;
-}
+.coupon-item { scroll-snap-align: start; flex-shrink: 0; }
+.coupon-border { border: 1.5px dashed var(--rule); border-radius: 6px; }
 
-/* Dashed border coupon */
-.coupon-border {
-  border: 1.5px dashed var(--rule);
-  border-radius: 6px;
-}
-
-/* Stamp rotation */
+/* ── Stamp ──────────────────────────────────────────────────────────── */
 .stamp {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -152,7 +159,7 @@ select.form-input { cursor: pointer; }
   line-height: 1.2;
 }
 
-/* Timeline dashes rule */
+/* ── Timeline ───────────────────────────────────────────────────────── */
 .timeline-break {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -161,11 +168,142 @@ select.form-input { cursor: pointer; }
   user-select: none;
 }
 
-/* Responsive stack */
-@media (max-width: 1100px) {
-  .home-layout { flex-direction: column !important; }
+/* ── TopBar responsive ──────────────────────────────────────────────── */
+@media (max-width: 699px) {
+  .topbar-links  { display: none !important; }
+  .topbar-block  { display: none !important; }
+  .topbar-connect { display: none !important; }
+  .topbar-menu-btn { display: flex !important; }
 }
 
-@media (max-width: 640px) {
-  .topbar-links { display: none; }
+/* ── Home layout ────────────────────────────────────────────────────── */
+
+/* ≥1100px: two-column side-by-side */
+.home-layout {
+  display: flex;
+  gap: clamp(28px, 3.5vw, 56px);
+  padding-top: clamp(20px, 3vh, 55px);
+  align-items: flex-start;
+}
+
+.home-left {
+  width: clamp(300px, 28vw, 420px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.home-right {
+  flex: 1;
+  min-width: 0;
+  max-width: 860px;
+}
+
+/* 700–1099px: single column */
+@media (max-width: 1099px) {
+  .home-layout { flex-direction: column !important; gap: 24px; }
+  .home-left   { width: 100% !important; }
+  .home-right  { width: 100% !important; max-width: 100%; }
+}
+
+/* ≤699px: phone layout */
+@media (max-width: 699px) {
+  .home-layout { padding-top: 16px; gap: 16px; }
+}
+
+/* ── Payslip card responsive ────────────────────────────────────────── */
+
+/* Phone: stack all rows vertically, stamp above amount */
+@media (max-width: 699px) {
+  .payslip-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  .payslip-amount-seal-row {
+    flex-direction: row !important;
+    gap: 8px !important;
+  }
+  .payslip-seal { float: right; margin-left: 8px; }
+}
+
+/* ── Heading sizes ──────────────────────────────────────────────────── */
+.home-claim {
+  font-family: var(--font-words);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 51px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 28px;
+}
+
+@media (max-width: 699px) {
+  .home-claim { font-size: clamp(26px, 8vw, 34px); margin-bottom: 16px; }
+}
+
+/* ── Section wrappers ───────────────────────────────────────────────── */
+.section-outer {
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 2vw, 27px);
+}
+
+/* ── Cheat section attempt rows ─────────────────────────────────────── */
+@media (max-width: 699px) {
+  .cheat-attempt-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+}
+
+/* ── Register table ─────────────────────────────────────────────────── */
+@media (max-width: 699px) {
+  .register-table-row { flex-wrap: wrap; gap: 4px 12px; }
+  .register-col-hide  { display: none !important; }
+}
+
+/* ── Imprint footer ─────────────────────────────────────────────────── */
+@media (max-width: 699px) {
+  .footer-cols { flex-direction: column !important; gap: 24px !important; }
+}
+
+/* ── /new two-column layout ─────────────────────────────────────────── */
+.new-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) 1fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px clamp(16px, 2vw, 40px);
+}
+@media (max-width: 1023px) {
+  .new-layout { grid-template-columns: 1fr; max-width: 560px; padding: 24px 16px; }
+}
+
+/* ── /lookup ────────────────────────────────────────────────────────── */
+.lookup-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+}
+@media (max-width: 699px) {
+  .lookup-rates-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Reduced motion: all transitions instant ────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Touch targets (min 44 × 44) ───────────────────────────────────── */
+button, [role="button"] { min-height: 36px; }
+@media (max-width: 699px) {
+  button, [role="button"], a { min-height: 44px; }
 }

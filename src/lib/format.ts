@@ -42,14 +42,14 @@ export function fmtRate8(answer: bigint): string {
   return `${answer < 0n ? '-' : ''}${int}.${frac}`
 }
 
-/** oracle answer → inverse "≈ 18.55" for display */
+/** oracle answer → inverse "18.55" (2 dp) for display */
 export function fmtRateInverse(answer: bigint): string {
   if (answer <= 0n) return '?'
-  // answer is X/USD with 8 decimals; inverse = 1e8/answer
-  const inv = (100_000_000n * 10_000n) / answer  // 4 dp precision
-  const s = inv.toString().padStart(5, '0')
-  const int  = s.slice(0, s.length - 4) || '0'
-  const frac = s.slice(-4).replace(/0+$/, '') || '0'
+  // answer is X/USD with 8 decimals; USD per X = 1e8/answer
+  const inv = (100_000_000n * 100n) / answer   // 2 dp precision
+  const s = inv.toString().padStart(3, '0')
+  const int  = s.slice(0, s.length - 2) || '0'
+  const frac = s.slice(-2)
   return `${int}.${frac}`
 }
 

@@ -153,3 +153,15 @@ The superseded drafts moved to `internal/prompts-unsent/`.
 
 After each turn the chain pulls, syncs Studio's deletions in `src/`, `public/` and `scripts/`, and commits as "studio turn NN". It stops on any status other than `completed`.
 **Consequences:** sections and responsive work land before the hero gate is run. The gates run afterwards on the full build, and the next window goes to fixes. If the cap cuts turn 10, its unfinished part carries into that window.
+
+## D-022 · Colour is the payday's state · 2026-10-26 · accepted
+**Context:** the builder asked whether colour would carry meaning. An audit of the turn 08–10 code found the mapping mostly right: coupons, stamp, timeline and cheat stamps agree. It also found three gaps. The register had no state colour, so a payroll with paydays due looked like one with none. Form errors used void red. /lookup never marked a stale rate. Tokens were named for paint (`--petrol`, `--amber`), and two undeclared colours had crept in.
+**Decision:**
+- Semantic tokens alias the palette: `--state-upcoming` (secondary), `--state-due` (amber), `--state-held` (petrol), `--state-paid` (carbon), `--state-void` (red), `--state-late` (secondary).
+- Lateness stays colourless on purpose, because it changes nothing; that is the thesis.
+- Red means only "the chain refused".
+- The register gains a payday strip per payroll, in the coupons' own colours.
+- No new hues.
+
+Sent in Studio turn 11, section D.
+**Consequences:** the documenter records this vocabulary in DESIGN.md. Any surface that invents a synonym or a colour for an existing state is a bug.

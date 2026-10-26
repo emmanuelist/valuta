@@ -76,7 +76,7 @@ The home page features **payroll 1** (`FEATURED_PAYROLL_ID = 1n` in config). Its
     - "Round 293 came at 14:06", from `getRoundData(r+1).updatedAt > payday`. If r is the latest: "No newer round yet". Trap: on these feeds, `getRoundData` past the latest round returns all zeros instead of reverting, so treat `updatedAt == 0` as "No newer round yet", never as a 1970 time.
     - "10 minutes old, inside 25 h", from payday − updatedAt against `maxAge()`. Stale-fallback case: "Live round was 27 h old; priced at the next round".
   - **footer** (512, 520): mono 14px
-    - "settled 25 Oct 13:59 by 0xe5CA…aBC3, not the employer · tx 0x82ff…38b7 · Verify on Arc ↗"
+    - "settled 25 Oct 13:59 by 0xe5CA…CaC3, not the employer · tx 0x82ff…38b7 · Verify on Arc ↗"
     - if the settler is the employer: "by the employer"
     - the tx comes from a single-block `getLogs` on `settledBlock`
   - a quiet line under the footer: "booked 9 d 23 h after the value date · the rate did not move"

@@ -41,7 +41,7 @@ Four numbered clauses in one row, filled from the selected payslip's reads:
 The clauses:
 1. **The value date fixes the rate.** "The Chainlink round live at that second decides: round 292 for 15 Oct 14:00 UTC, MXN/USD 0.05389760."
 2. **The contract proves the round.** "Round 292 was published at 13:50, before payday, and round 293 at 14:06, after it. It was 10 minutes old, inside the 25 h limit. Any other round is refused by name."
-3. **Anyone settles, any time, for the same amount.** "No. 01 was settled 9 d 23 h late by 0xe5CA…aBC3, not the employer: 0.053897 USDC, the payday's amount to the micro-USDC."
+3. **Anyone settles, any time, for the same amount.** "No. 01 was settled 9 d 23 h late by 0xe5CA…CaC3, not the employer: 0.053897 USDC, the payday's amount to the micro-USDC."
    - Due payslip: "Anyone can settle it now, or a year from now, for 0.018412 USDC" (from `duePreview`).
    - Upcoming payslip: "It will be fixed at 26 Oct 14:00 UTC by the round live then."
 4. **Pay is never skipped.** "The reserve can't leave while a payday is due. A shortfall becomes public arrears, which the next funding pays first."

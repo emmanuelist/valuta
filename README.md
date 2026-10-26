@@ -30,6 +30,8 @@ Anyone can settle a payday, a week late or a minute late, and the amount is iden
 
 No demo mode, seeded database or fixtures. There is no backend: the chain is the only store, and every figure in the app is a contract read, a Chainlink answer or a block.
 
+![Valuta: payslip No. 01, settled nine days late by a stranger at the rate live on payday](docs/media/valuta-hero.png)
+
 **The contract.** Valuta v2 at [`0x7d20…252a`](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a) on Arc mainnet: deploy [tx `0xdd69…f666`](https://explorer.arc.io/tx/0xdd694f2e94b9cbbff3ba2727e701519240473adee33d2006704fb6b3b409f666), block 27,804,867, **Sourcify exact match** for creation and runtime bytecode. No owner, no admin key, no pause and no upgrade path. Its source is byte-for-byte the file Arc Studio wrote.
 
 **Ten paydays settled ten days late, by a stranger, each at its own rate.** Payroll 1 pays MXN 1.00 a day, with back pay from 15 Oct. A wallet with no connection to the payroll settled the first ten paydays in [one transaction](https://explorer.arc.io/tx/0x82ff6831bd4464228832d37afac96c968e5fe04fe9e0f2194d71ad1e0dd638b7) on 25 Oct. Same salary, ten different amounts, each priced at the round live at 14:00 UTC that day:
@@ -108,7 +110,7 @@ sequenceDiagram
 
 ## Built with Arc Studio
 
-The contracts, tests, deploy and ops scripts, and the app were written by Arc Studio, driven from Claude Code through the Arc Studio CLI (`arc-studio run --session asof`). Nothing was hand-edited: every change went back through Studio. Every prompt sent is in [`prompts/`](prompts/), in order:
+The contracts, tests, deploy and ops scripts, and the app were written by Arc Studio, driven from Claude Code through the Arc Studio CLI (`arc-studio run --session asof`). Nothing was hand-edited: every change went back through Studio, including every design fix found by rendering the app and measuring it against the approved comp. Every prompt sent is in [`prompts/`](prompts/), in order:
 
 | Turn | What Studio did |
 |---|---|
@@ -116,7 +118,12 @@ The contracts, tests, deploy and ops scripts, and the app were written by Arc St
 | [02](prompts/02-hardening.md) | Capped-gas payouts (a worker contract could have locked the reserve), real mainnet deploy mode, fork test against live feeds |
 | [03](prompts/03-rename-valuta-and-ops.md) | Renamed to Valuta; `Ops.s.sol` (create, fund, settleDue) |
 | [04](prompts/04-onchain-payslips.md) to [06](prompts/06-checked-casts.md) | On-chain payslips, batch views, `duePreview`, packed into 4 slots, casts that revert instead of truncating |
-| [07](prompts/07-app.md) | The app: ledger, proof inspector, data layer over Multicall3, routes |
+| [07](prompts/07-app.md) | The first app: ledger, proof inspector, data layer over Multicall3, routes. It scored 19/40 in design critique, so it was redesigned |
+| [08](prompts/08-redesign-hero.md) | The redesign: the payslip as hero, a security document with a value stamp, generative seal, honest timeline and coupon row ([spec](prompts/08-redesign-spec.md)) |
+| [09](prompts/09-home-sections.md) | "Try to cheat it" (live replays against chain history), the pricing clauses, the payroll register, the settle flow, the employer panel |
+| [10](prompts/10-responsive-states-pages.md) | Phones and tablets, accessibility, loading, error and empty states, /new and /lookup |
+| [11](prompts/11-fixes-from-review.md) to [14](prompts/14-top-offset.md) | Fixes from rendered reviews: the settle-day cheat round, colour bound to payday state, the phone layout, desktop placement measured against the comp |
+| [15](prompts/15-final-polish.md) to [17](prompts/17-green-and-mark.md) | Final polish from a 30/40 critique: contrast floor, no sandbox tracing in production, banknote green for money that moved, the brand mark and social card |
 
 Arc Studio deploys to Arc Testnet only. The mainnet deploy ran Studio's own `Deploy.s.sol` with Arc Foundry, and the source is identical to the Studio workspace (sha256 recorded in [`docs/EVIDENCE.md`](docs/EVIDENCE.md)).
 

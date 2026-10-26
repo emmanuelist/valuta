@@ -463,7 +463,7 @@ button, [role="button"] { min-height: 36px; }
 .countdown-chip-due {
   border-color: var(--state-due) !important;
   background: var(--state-due-tint) !important;
-  color: var(--state-due) !important;
+  color: var(--state-due-ink) !important;
 }
 @media (max-width: 699px) {
   .countdown-chip-due {

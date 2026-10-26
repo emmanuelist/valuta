@@ -6,10 +6,6 @@
 import { http, createConfig } from 'wagmi'
 import { arc } from 'viem/chains'
 import { injected } from 'wagmi/connectors'
-import { registerChain } from './tracing'
-
-registerChain(arc.id, arc.rpcUrls.default.http[0])
-
 export const config = createConfig({
   chains: [arc],
   connectors: [injected()],

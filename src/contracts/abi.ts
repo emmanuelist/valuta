@@ -1,9 +1,10 @@
 // Valuta v2 ABI — imported from Foundry build output
 // Contract: 0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a on Arc mainnet
 
-export const VALUTA_ADDRESS = '0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a' as const
+export const VALUTA_ADDRESS    = '0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a' as const
 export const VALUTA_DEPLOY_BLOCK = 27_804_867n
 export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const
+export const ARC_EXPLORER       = 'https://explorer.arc.io' as const
 
 // Chainlink feed addresses on Arc mainnet (all 8 decimals)
 export const FEEDS: Record<string, { address: `0x${string}`; inverse: boolean }> = {

@@ -1,257 +1,316 @@
+// HomePage — payslip-hero layout
+// First viewport at 1344×760: claim (left) + payslip (right) + timeline + coupon row
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { RefreshCw } from 'lucide-react'
-import { ClaimBand } from './ClaimBand'
-import { LedgerCard } from './LedgerCard'
-import { ProofInspector } from './ProofInspector'
-import { usePayrollDetail, useTotalUsdcPaid } from '../hooks/useValutaData'
 import type { Payroll } from '../lib/types'
-import { navigate } from '../lib/router'
-import { ARC_EXPLORER } from '../config'
-import { VALUTA_ADDRESS } from '../contracts/abi'
+import { usePayrollDetail } from '../hooks/useValutaData'
+import { useNeighbourRoundsForProof, useAsOfRate } from '../hooks/useAsOfRate'
+import { useSettlementTx } from '../hooks/useValutaData'
+import { useCountdown } from '../hooks/useCountdown'
+import { PayslipCard } from './PayslipCard'
+import { HonestTimeline } from './HonestTimeline'
+import { CouponRow } from './CouponRow'
+import { CountdownChip } from './CountdownChip'
+import { FEEDS } from '../contracts/abi'
+
+const FEATURED_PAYROLL_ID = 1
 
 interface Props {
-  payrolls:      Payroll[]
-  payrollCount:  number
-  totalPaydays:  number
-  featuredId:    number | null
-  isLoading:     boolean
-  isError:       boolean
-  refetch:       () => unknown
-  // For a specific payroll page
-  targetId?:     number
+  payrolls:     Payroll[]
+  payrollCount: number
+  totalPaydays: number
+  featuredId:   number | null
+  isLoading:    boolean
+  isError:      boolean
+  refetch:      () => Promise<unknown>
+  targetId?:    number
   initialPayday?: number
 }
 
 export function HomePage({
-  payrolls, payrollCount, totalPaydays,
-  featuredId, isLoading, isError, refetch,
+  payrolls, isLoading, isError, refetch,
   targetId, initialPayday,
 }: Props) {
-  const id = targetId ?? featuredId ?? 1
-  // nowTs is only used for LedgerCard upcoming-days logic; stable initial value is fine
-  const [nowTs] = useState(() => Math.floor(Date.now() / 1000))
-  const { payroll, payslips, dueQuotes, dueCount, isLoading: detailLoading, isError: detailError, refetch: refetchDetail } =
-    usePayrollDetail(id)
+  const payrollId = targetId ?? FEATURED_PAYROLL_ID
 
-  const totalUsdc = useTotalUsdcPaid(payrolls)
+  const { payroll, payslips, dueQuotes, isLoading: detailLoading } =
+    usePayrollDetail(payrollId)
 
-  // Selected payday index — initialise from ?payday= param, or auto-select when payslips load
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(
-    initialPayday !== undefined && initialPayday >= 0 ? initialPayday : null,
+  const totalItems = (payroll?.count ?? 0)
+
+  // Selected index — default to first payslip (index 0)
+  const [selected, setSelected] = useState<number>(
+    initialPayday !== undefined ? initialPayday : 0,
   )
-  // Auto-select first payslip on initial load — use the stable effect path
+  const [animKey, setAnimKey] = useState(0)
+  const [newlyDue, setNewlyDue] = useState<number | null>(null)
+
+  // Auto-select first on load
   useEffect(() => {
-    if (payslips.length > 0 && selectedIdx === null) {
-      setSelectedIdx(0)
+    if (payslips.length > 0 && selected === 0) {
+      // already at 0
     }
-    // Only runs when payslips first become non-empty; selectedIdx starts null
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payslips.length])
+  }, [payslips.length, selected])
 
-  // Sync ?payday= search param
   const handleSelect = useCallback((i: number) => {
-    setSelectedIdx(i)
-    if (targetId) {
-      const url = `/payroll/${targetId}?payday=${i}`
-      window.history.replaceState({}, '', url)
+    setSelected(i)
+    setAnimKey(k => k + 1)
+    // Update URL without full navigation for /payroll/:id
+    const url = new URL(window.location.href)
+    url.searchParams.set('payday', String(i))
+    history.replaceState({}, '', url.toString())
+  }, [])
+
+  // Track newly-due paydays
+  const currentDueCount = dueQuotes.length
+  useEffect(() => {
+    if (currentDueCount > 0) {
+      const firstDueIdx = (payroll?.settled ?? 0)
+      setNewlyDue(firstDueIdx)
     }
-  }, [targetId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDueCount])
 
-  const handleSettled = useCallback(() => {
-    void refetchDetail()
-    void refetch()
-  }, [refetchDetail, refetch])
-
-  // Bottom-sheet state (mobile ≤640px)
-  const [sheetOpen, setSheetOpen] = useState(false)
-  const handleRowSelect = (i: number) => {
-    handleSelect(i)
-    if (window.innerWidth <= 640) setSheetOpen(true)
-  }
-
-  const selectedPs  = selectedIdx !== null && payslips.length > selectedIdx ? payslips[selectedIdx] : null
-  const selectedDq  = selectedIdx !== null && selectedIdx >= payslips.length
-    ? dueQuotes[selectedIdx - payslips.length]
+  // The displayed item
+  const selectedPayslip  = selected < payslips.length ? payslips[selected] : null
+  const selectedDueQuote = !selectedPayslip
+    ? dueQuotes.find(q => q.index === selected) ?? null
     : null
 
-  const combinedLoading = isLoading || detailLoading
+  // Neighbour rounds (for proof facts + timeline)
+  const roundId   = selectedPayslip?.roundId ?? selectedDueQuote?.roundId ?? null
+  const currency  = payroll?.currency ?? ''
+  const { prev, next, maxAge } = useNeighbourRoundsForProof(currency, roundId)
 
-  if (isError || detailError) {
+  // Settlement tx
+  const settledBlock = selectedPayslip?.settledBlock ?? null
+  const { tx: settlementTx, fetch: fetchTx } = useSettlementTx(
+    payrollId, selected, settledBlock,
+  )
+  useEffect(() => {
+    if (settledBlock) void fetchTx()
+  }, [settledBlock, fetchTx])
+
+  // Counterfactual — asOf at settledAt
+  const settledAtTs = selectedPayslip?.settledAt ?? 0
+  const { result: counterfactualResult } = useAsOfRate(
+    currency,
+    settledAtTs,
+    !!selectedPayslip && settledAtTs > 0,
+  )
+
+  // Countdown chip
+  const { next: nextValueDate } = useCountdown(payrolls)
+
+  // Refetch on live data (throttled 10s via polling interval set in wagmi)
+  useEffect(() => {
+    const id = setInterval(() => { void refetch() }, 10_000)
+    return () => clearInterval(id)
+  }, [refetch])
+
+  const isAnyLoading = isLoading || detailLoading
+
+  if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <p style={{ color: 'var(--vermilion)' }}>Failed to load data from Arc mainnet.</p>
+      <div style={{ padding: '80px 32px', textAlign: 'center' }}>
+        <div style={{ color: 'var(--secondary)', marginBottom: 16 }}>Could not connect to Arc mainnet.</div>
         <button
-          onClick={() => { void refetch(); void refetchDetail() }}
-          className="flex items-center gap-2 px-4 py-2 rounded-btn text-[14px]"
-          style={{ background: 'var(--petrol)', color: '#fff', border: 'none', cursor: 'pointer' }}
+          onClick={() => void refetch()}
+          style={{
+            background: 'var(--petrol)', color: '#fff', border: 'none',
+            borderRadius: 4, padding: '8px 18px', cursor: 'pointer',
+            fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 14,
+          }}
         >
-          <RefreshCw size={14} /> Retry
+          Retry
         </button>
       </div>
     )
   }
 
-  if (!combinedLoading && !payroll && !isLoading && payrollCount === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-3 px-4 text-center">
-        <p className="text-[18px]" style={{ color: 'var(--ink)' }}>No payrolls yet.</p>
-        <p className="text-[15px]" style={{ color: 'var(--secondary)' }}>
-          A payroll is an agreement between an employer and a worker: a salary in a local currency,
-          paid in USDC at the Chainlink rate live on each payday.
-        </p>
-        <button
-          onClick={() => navigate('/new')}
-          className="px-5 py-2 rounded-btn text-[15px] font-medium"
-          style={{ background: 'var(--petrol)', color: '#fff', border: 'none', cursor: 'pointer' }}
-        >
-          Create payroll
-        </button>
-      </div>
-    )
-  }
+  const feedInfo  = FEEDS[currency]
+  const isInverse = feedInfo?.inverse ?? false
+  void isInverse  // used in PayslipCard
 
   return (
-    <>
-      {/* Claim band */}
-      <ClaimBand
-        payroll={payroll}
-        payslip={selectedPs}
-        dueQuote={selectedDq ? selectedDq : dueCount > 0 && !selectedPs ? dueQuotes[0] ?? null : null}
-        payrollCount={payrollCount}
-        totalPaydays={totalPaydays}
-        totalUsdc={totalUsdc}
-        isLoading={combinedLoading}
-      />
+    <div style={{ minHeight: '100vh', background: 'var(--ground)' }}>
 
-      {/* Payroll selector tabs (if multiple payrolls) */}
-      {payrolls.length > 1 && !targetId && (
+      {/* First viewport: 1344×760 */}
+      <div
+        style={{
+          maxWidth: 1344,
+          margin: '0 auto',
+          padding: '0 27px',
+        }}
+      >
+        {/* Main two-column row */}
         <div
-          className="flex gap-2 px-5 pt-4 overflow-x-auto"
-          style={{ scrollbarWidth: 'none' }}
+          className="home-layout"
+          style={{
+            display: 'flex',
+            gap: 46,
+            paddingTop: 55,
+            alignItems: 'flex-start',
+          }}
         >
-          {payrolls.map(p => (
-            <button
-              key={p.id}
-              onClick={() => navigate(`/payroll/${p.id}`)}
-              className="shrink-0 px-4 py-1.5 rounded-tag text-[13px] font-medium transition-colors"
+          {/* Left: claim + countdown */}
+          <div
+            style={{
+              width: 400,
+              flexShrink: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 0,
+            }}
+          >
+            {/* Claim text */}
+            <h1
               style={{
-                background: p.id === id ? 'var(--ptint)' : 'var(--surface)',
-                color:      p.id === id ? 'var(--petrol)' : 'var(--secondary)',
-                border:     `1px solid ${p.id === id ? 'var(--petrol)' : 'var(--rules)'}`,
-                cursor: 'pointer',
+                fontFamily: 'var(--font-words)',
+                fontWeight: 600,
+                fontSize: 51,
+                lineHeight: 1.08,
+                letterSpacing: '-0.015em',
+                color: 'var(--ink)',
+                margin: 0,
+                marginBottom: 38,
               }}
             >
-              No. {p.id} · {p.currency}
-            </button>
-          ))}
-        </div>
-      )}
+              Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.
+            </h1>
 
-      {/* Two-column layout */}
-      <div className="flex gap-5 px-5 py-5 items-start" style={{ minHeight: 640 }}>
-        {/* Ledger */}
-        <div className="flex-1 min-w-0">
-          {payroll ? (
-            <LedgerCard
+            {/* Countdown chip */}
+            <CountdownChip next={nextValueDate} />
+          </div>
+
+          {/* Right: payslip hero (846×474) */}
+          <div style={{ flex: 1, minWidth: 0, maxWidth: 846 }}>
+            {isAnyLoading && !payroll ? (
+              <div
+                style={{
+                  background: 'var(--paper)', border: '1px solid var(--rule)',
+                  borderRadius: 6, height: 474,
+                  boxShadow: 'var(--shadow-paper)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <div className="skeleton" style={{ width: 300, height: 20 }} />
+              </div>
+            ) : payroll ? (
+              <PayslipCard
+                payroll={payroll}
+                payslip={selectedPayslip}
+                dueQuote={selectedDueQuote}
+                next={next}
+                maxAge={maxAge}
+                counterfactualAnswer={counterfactualResult?.answer ?? null}
+                counterfactualRoundId={counterfactualResult?.roundId ?? null}
+                settlementTx={settlementTx}
+                index={selected}
+                animKey={animKey}
+              />
+            ) : null}
+          </div>
+        </div>
+
+        {/* Timeline row */}
+        <div
+          style={{
+            marginTop: 24,
+            paddingTop: 8,
+            paddingBottom: 8,
+          }}
+        >
+          {payroll && (
+            <HonestTimeline
+              payslip={selectedPayslip}
+              dueQuote={selectedDueQuote}
+              prev={prev}
+              next={next}
+              animKey={animKey}
+            />
+          )}
+        </div>
+
+        {/* Divider */}
+        <div style={{ borderTop: '1px solid var(--rule)', margin: '0 0 0 0' }} />
+
+        {/* Coupon row */}
+        <div
+          style={{
+            padding: '16px 0',
+            minHeight: 112,
+          }}
+        >
+          {isAnyLoading && !payroll ? (
+            <div style={{ display: 'flex', gap: 8 }}>
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="skeleton" style={{ width: 112, height: 96, borderRadius: 6, flexShrink: 0 }} />
+              ))}
+            </div>
+          ) : payroll && totalItems > 0 ? (
+            <CouponRow
               payroll={payroll}
               payslips={payslips}
               dueQuotes={dueQuotes}
-              selectedIdx={selectedIdx}
-              onSelect={handleRowSelect}
-              onSettled={handleSettled}
-              isLoading={combinedLoading}
-              nowTs={nowTs}
+              selected={selected}
+              onSelect={handleSelect}
+              newlyDue={newlyDue}
             />
           ) : null}
         </div>
-
-        {/* Inspector — desktop/tablet: right column */}
-        {payroll && (
-          <div
-            className="shrink-0 hidden lg:block"
-            style={{ width: 589 }}
-          >
-            <ProofInspector
-              payroll={payroll}
-              payslips={payslips}
-              dueQuotes={dueQuotes}
-              selectedIdx={selectedIdx}
-              onStepTo={handleSelect}
-            />
-          </div>
-        )}
       </div>
 
-      {/* Inspector — tablet (1100px): below ledger */}
-      {payroll && (
-        <div className="lg:hidden xl:hidden px-5 pb-5">
-          <div className="hidden md:block lg:hidden">
-            <ProofInspector
-              payroll={payroll}
-              payslips={payslips}
-              dueQuotes={dueQuotes}
-              selectedIdx={selectedIdx}
-              onStepTo={handleSelect}
-            />
+      {/* Payrolls list (below the fold) */}
+      {payrolls.length > 1 && (
+        <div
+          style={{
+            maxWidth: 1344,
+            margin: '24px auto',
+            padding: '0 27px',
+          }}
+        >
+          <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 24 }}>
+            <h2
+              style={{
+                fontFamily: 'var(--font-words)',
+                fontWeight: 600, fontSize: 18,
+                color: 'var(--ink)', margin: '0 0 16px',
+              }}
+            >
+              All payrolls
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {payrolls.map(p => (
+                <a
+                  key={p.id}
+                  href={`/payroll/${p.id}`}
+                  style={{
+                    display: 'flex', gap: 16, alignItems: 'center',
+                    background: 'var(--paper)',
+                    border: `1px solid ${p.id === payrollId ? 'var(--petrol)' : 'var(--rule)'}`,
+                    borderRadius: 6,
+                    padding: '12px 18px',
+                    textDecoration: 'none',
+                    color: 'var(--ink)',
+                    fontSize: 15,
+                    fontFamily: 'var(--font-words)',
+                  }}
+                >
+                  <span style={{ fontWeight: 600, minWidth: 80 }}>Payroll {p.id}</span>
+                  <span style={{ color: 'var(--secondary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+                    {p.currency} · {p.settled}/{p.count} settled
+                  </span>
+                  {p.arrears > 0n && (
+                    <span style={{ color: 'var(--amber)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+                      arrears
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}
-
-      {/* Bottom sheet — mobile (≤640px) */}
-      <AnimatePresence>
-        {sheetOpen && payroll && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-40"
-              style={{ background: 'rgba(15,23,32,0.4)' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSheetOpen(false)}
-            />
-            <motion.div
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-card overflow-hidden"
-              style={{ height: '85vh', background: 'var(--surface)' }}
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              drag="y"
-              dragConstraints={{ top: 0 }}
-              onDragEnd={(_, info) => { if (info.offset.y > 100) setSheetOpen(false) }}
-            >
-              <ProofInspector
-                payroll={payroll}
-                payslips={payslips}
-                dueQuotes={dueQuotes}
-                selectedIdx={selectedIdx}
-                onStepTo={handleSelect}
-                isBottomSheet
-                onClose={() => setSheetOpen(false)}
-              />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Footer */}
-      <footer
-        className="px-7 py-5 text-[13px] flex flex-wrap gap-x-4 gap-y-1"
-        style={{ color: 'var(--secondary)', borderTop: '1px solid var(--rules)', marginTop: 'auto' }}
-      >
-        <span>Reading <a href="https://arc.io" target="_blank" rel="noopener noreferrer">Arc mainnet</a></span>
-        <span>·</span>
-        <span>
-          Valuta{' '}
-          <a href={`${ARC_EXPLORER}/address/${VALUTA_ADDRESS}`} target="_blank" rel="noopener noreferrer">
-            {VALUTA_ADDRESS.slice(0, 6)}…{VALUTA_ADDRESS.slice(-4)}
-          </a>
-          , verified on Sourcify
-        </span>
-        <span>·</span>
-        <span>Demo payrolls are the builder&apos;s own wallets.</span>
-      </footer>
-    </>
+    </div>
   )
 }

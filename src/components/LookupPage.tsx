@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { useReadContract } from 'wagmi'
 import { arc } from 'viem/chains'
 import { VALUTA_ADDRESS, VALUTA_ABI, FEEDS } from '../contracts/abi'
-import { fmtDateTime, fmtRate, aggRoundId } from '../lib/format'
-import { ValueAxis } from './ValueAxis'
+import { fmtDateTime, fmtRate8, aggRoundId } from '../lib/format'
 import { useNeighbourRounds } from '../hooks/useValutaData'
 
 const CHAIN_ID = arc.id
@@ -32,7 +31,9 @@ export function LookupPage() {
   const answer   = result?.[1] ?? 0n
   const updatedAt= result?.[2] ? Number(result[2]) : 0
 
-  const { prev, next } = useNeighbourRounds(currency, roundId)
+  // Neighbour rounds available if needed for future expansion
+  const { prev: _prev, next: _next } = useNeighbourRounds(currency, roundId)
+  void _prev; void _next
 
   const curRound = roundId ? { roundId, answer, updatedAt } : null
   const [showAxis, setShowAxis] = useState(false)
@@ -97,15 +98,8 @@ export function LookupPage() {
             {fmtDateTime(ts)} UTC · {currency} VALUE TIME AXIS
           </div>
           <p className="text-[13px] mb-4" style={{ color: 'var(--secondary)' }}>
-            Round {aggRoundId(curRound.roundId).toString()} · Rate {fmtRate(curRound.answer)} · Published {fmtDateTime(curRound.updatedAt)} UTC
+            Round {aggRoundId(curRound.roundId).toString()} · Rate {fmtRate8(curRound.answer)} · Published {fmtDateTime(curRound.updatedAt)} UTC
           </p>
-          <ValueAxis
-            paydayTs={ts}
-            cur={curRound}
-            prev={prev}
-            next={next}
-            isSelected={true}
-          />
         </div>
       )}
 

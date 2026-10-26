@@ -7,7 +7,7 @@ import { useReadContract, useSwitchChain } from 'wagmi'
 import { VALUTA_ADDRESS, VALUTA_ABI } from '../contracts/abi'
 import { ARC_EXPLORER } from '../config'
 import { decodeValutaError } from '../lib/errors'
-import { bytes3ToCode, fmtUsdc, fmtRate } from '../lib/format'
+import { bytes3ToCode, fmtUsdc, fmtRate8 } from '../lib/format'
 import { navigate } from '../lib/router'
 
 const CHAIN_ID = arc.id
@@ -152,7 +152,7 @@ export function NewPayrollPage() {
             type="number" step="0.01" min="0" placeholder="0.00" className="form-input w-full" />
           {liveUsdc > 0n && (
             <p className="text-[13px] mt-1 m-0" style={{ color: 'var(--secondary)' }}>
-              ≈ {fmtUsdc(liveUsdc)} USDC per payday at today's rate ({fmtRate(rateAnswer)})
+              ≈ {fmtUsdc(liveUsdc)} USDC per payday at today's rate ({fmtRate8(rateAnswer)})
             </p>
           )}
         </Field>

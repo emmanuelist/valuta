@@ -13,7 +13,7 @@ export default function App() {
   const { switchChain } = useSwitchChain()
   const isWrongChain = !!address && chainId !== arc.id
 
-  const { payrollCount, payrolls, featured, totalPaydays, isLoading, isError, refetch } = usePayrollList()
+  const { payrollCount, payrolls, totalPaydays, isLoading, isError, refetch } = usePayrollList()
 
   return (
     <div className="min-h-dvh flex flex-col" style={{ background: 'var(--ground)' }}>
@@ -22,49 +22,47 @@ export default function App() {
       {/* Wrong network banner */}
       {isWrongChain && (
         <div
-          className="flex items-center justify-center gap-3 px-4 py-2 text-[14px]"
-          style={{ background: '#FEF3E2', borderBottom: '1px solid var(--amber)', color: 'var(--amber)' }}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+            padding: '8px 16px', fontSize: 14,
+            background: 'var(--ambtint)',
+            borderBottom: '1px solid var(--amber)',
+            color: 'var(--amber)',
+          }}
         >
           <span>Your wallet is on the wrong network.</span>
           <button
-            onClick={() => switchChain({ chainId: arc.id })}
-            className="px-3 py-1 rounded-btn text-[13px] font-medium"
-            style={{ background: 'var(--amber)', color: '#fff', border: 'none', cursor: 'pointer' }}
+            onClick={() => { void switchChain({ chainId: arc.id }) }}
+            style={{
+              background: 'var(--amber)', color: '#fff', border: 'none',
+              borderRadius: 4, padding: '4px 12px', cursor: 'pointer',
+              fontFamily: 'var(--font-words)', fontWeight: 600, fontSize: 13,
+            }}
           >
             Switch to Arc
           </button>
         </div>
       )}
 
-      <main className="flex-1 flex flex-col">
-        {route.path === '/' && (
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {(route.path === '/' || route.path === '/payroll/:id') && (
           <HomePage
             payrolls={payrolls}
             payrollCount={payrollCount}
             totalPaydays={totalPaydays}
-            featuredId={featured?.id ?? null}
+            featuredId={1}
             isLoading={isLoading}
             isError={isError}
             refetch={refetch}
+            targetId={route.path === '/payroll/:id' ? parseInt(route.params.id) : undefined}
+            initialPayday={
+              route.path === '/payroll/:id' && route.search.has('payday')
+                ? parseInt(route.search.get('payday')!)
+                : undefined
+            }
           />
         )}
-
-        {route.path === '/payroll/:id' && (
-          <HomePage
-            payrolls={payrolls}
-            payrollCount={payrollCount}
-            totalPaydays={totalPaydays}
-            featuredId={featured?.id ?? null}
-            isLoading={isLoading}
-            isError={isError}
-            refetch={refetch}
-            targetId={parseInt(route.params.id)}
-            initialPayday={route.search.has('payday') ? parseInt(route.search.get('payday')!) : undefined}
-          />
-        )}
-
-        {route.path === '/new' && <NewPayrollPage />}
-
+        {route.path === '/new'    && <NewPayrollPage />}
         {route.path === '/lookup' && <LookupPage />}
       </main>
     </div>

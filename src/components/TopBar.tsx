@@ -1,123 +1,121 @@
-import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+// TopBar — Valuta wordmark, nav links, live block, connect button
 import { ConnectKitButton } from 'connectkit'
-import { navigate } from '../lib/router'
+import { useLiveBlock } from '../hooks/useLiveBlock'
+import { fmtNumber } from '../lib/format'
 
 interface Props {
   currentPath: string
 }
 
-const LINKS = [
-  { label: 'Payrolls',     to: '/'       },
-  { label: 'New payroll',  to: '/new'    },
-  { label: 'Rate lookup',  to: '/lookup' },
+const NAV_LINKS = [
+  { href: '/payroll/1', label: 'Payrolls' },
+  { href: '/new',       label: 'New payroll' },
+  { href: '/lookup',    label: 'Rate lookup' },
 ]
 
 export function TopBar({ currentPath }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const blockNumber = useLiveBlock()
 
-  const handleNav = (to: string) => {
-    navigate(to)
-    setMenuOpen(false)
+  const navigate = (href: string) => {
+    history.pushState({}, '', href)
+    window.dispatchEvent(new PopStateEvent('popstate'))
   }
 
   return (
     <header
-      style={{ background: 'var(--surface)', borderBottom: '1px solid var(--rules)' }}
-      className="sticky top-0 z-50 h-[72px] flex items-center px-7"
+      style={{
+        height: 63,
+        background: 'var(--ground)',
+        borderBottom: '1px solid var(--rule)',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 21px',
+        gap: 0,
+        flexShrink: 0,
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+      }}
     >
       {/* Wordmark */}
       <button
-        onClick={() => handleNav('/')}
-        className="text-[34px] font-medium leading-none mr-8 focus-visible:outline-none"
-        style={{ color: 'var(--ink)', fontFamily: '"Radio Canada Big"' }}
+        onClick={() => navigate('/')}
+        style={{
+          fontFamily: 'var(--font-words)',
+          fontWeight: 600,
+          fontSize: 30,
+          color: 'var(--ink)',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 0,
+          lineHeight: 1,
+          letterSpacing: '-.01em',
+          marginRight: 32,
+        }}
+        aria-label="Valuta home"
       >
         Valuta
       </button>
 
-      {/* Desktop nav */}
-      <nav className="hidden md:flex items-center gap-8 flex-1">
-        {LINKS.map(link => (
+      {/* Nav links */}
+      <nav
+        className="topbar-links"
+        style={{ display: 'flex', gap: 24, fontSize: 17 }}
+        aria-label="Main navigation"
+      >
+        {NAV_LINKS.map(({ href, label }) => (
           <button
-            key={link.to}
-            onClick={() => handleNav(link.to)}
-            className="text-[18px] transition-opacity"
+            key={href}
+            onClick={() => navigate(href)}
             style={{
-              color:   currentPath === link.to ? 'var(--petrol)' : 'var(--ink)',
-              opacity: currentPath === link.to ? 1 : 0.75,
-              fontWeight: currentPath === link.to ? 500 : 400,
+              fontFamily: 'var(--font-words)',
+              fontSize: 17,
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              padding: 0,
+              padding: '4px 0',
+              color: currentPath.startsWith(href.split('/')[1] ? `/${href.split('/')[1]}` : '/')
+                ? 'var(--petrol)' : 'var(--ink)',
+              fontWeight: 400,
+              textDecoration: 'none',
             }}
           >
-            {link.label}
+            {label}
           </button>
         ))}
       </nav>
 
-      {/* Desktop connect button */}
-      <div className="hidden md:block ml-auto">
-        <ConnectKitButton.Custom>
-          {({ isConnected, show, address, chain }) => (
-            <button
-              onClick={show}
-              className="px-5 h-11 text-[16px] font-medium rounded-btn transition-opacity hover:opacity-90"
-              style={{
-                background: 'var(--petrol)',
-                color: '#fff',
-                border: 'none',
-                cursor: 'pointer',
-                minWidth: '157px',
-              }}
-            >
-              {isConnected && address
-                ? `${address.slice(0, 6)}…${address.slice(-4)} · ${chain?.name ?? 'Arc'}`
-                : 'Connect wallet'
-              }
-            </button>
-          )}
-        </ConnectKitButton.Custom>
+      {/* Spacer */}
+      <div style={{ flex: 1 }} />
+
+      {/* Live indicator */}
+      <div
+        style={{
+          display: 'flex', alignItems: 'center', gap: 7,
+          marginRight: 24,
+        }}
+        aria-live="polite"
+        aria-label={`Arc mainnet block ${blockNumber ? fmtNumber(Number(blockNumber)) : '...'}`}
+      >
+        <div
+          className="pulse-dot"
+          style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: 'var(--petrol)', flexShrink: 0,
+          }}
+        />
+        <span
+          className="mono"
+          style={{ fontSize: 14, color: 'var(--ink)' }}
+        >
+          Arc mainnet
+          {blockNumber ? ` · block ${fmtNumber(Number(blockNumber))}` : ''}
+        </span>
       </div>
 
-      {/* Mobile menu button */}
-      <button
-        className="md:hidden ml-auto p-2"
-        onClick={() => setMenuOpen(o => !o)}
-        aria-label="Menu"
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink)' }}
-      >
-        {menuOpen ? <X size={22} /> : <Menu size={22} />}
-      </button>
-
-      {/* Mobile menu drawer */}
-      {menuOpen && (
-        <div
-          className="md:hidden absolute top-[72px] left-0 right-0 z-50 flex flex-col gap-1 px-4 py-4"
-          style={{ background: 'var(--surface)', borderBottom: '1px solid var(--rules)' }}
-        >
-          {LINKS.map(link => (
-            <button
-              key={link.to}
-              onClick={() => handleNav(link.to)}
-              className="text-left px-3 py-3 text-[17px] rounded-btn"
-              style={{
-                background: currentPath === link.to ? 'var(--ptint)' : 'none',
-                color:      currentPath === link.to ? 'var(--petrol)' : 'var(--ink)',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: currentPath === link.to ? 500 : 400,
-              }}
-            >
-              {link.label}
-            </button>
-          ))}
-          <div className="mt-2">
-            <ConnectKitButton />
-          </div>
-        </div>
-      )}
+      {/* Connect wallet */}
+      <ConnectKitButton />
     </header>
   )
 }

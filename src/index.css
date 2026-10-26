@@ -1,20 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@400;500&display=swap');
+/* Self-hosted variable fonts — imported in main.tsx */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --ground:   #F7F8F9;
-  --surface:  #FFFFFF;
-  --claim:    #F9FBFC;
-  --ink:      #0F1720;
-  --secondary:#5B6470;
-  --rules:    #E3E6EA;
-  --petrol:   #0B4F6C;
-  --ptint:    #E6F0F4;
-  --vermilion:#D93F2B;
-  --amber:    #B7791F;
+  --ground:     #F6F8F9;
+  --paper:      #FFFFFF;
+  --ink:        #0E1B26;
+  --secondary:  #4F5B66;
+  --rule:       #DCE2E6;
+  --petrol:     #0B4F6C;
+  --ptint:      #E3EEF3;
+  --carbon:     #1F3886;
+  --amber:      #9A6417;
+  --ambtint:    #F5E7CF;
+  --void:       #B42318;
+
+  /* Typography */
+  --font-words: 'Hanken Grotesk Variable', system-ui, sans-serif;
+  --font-mono:  'Spline Sans Mono Variable', 'Menlo', monospace;
+
+  /* Paper shadow */
+  --shadow-paper: 0 1px 2px rgba(14,27,38,.05), 0 18px 40px -18px rgba(14,27,38,.18);
 }
 
 * { box-sizing: border-box; }
@@ -23,16 +31,16 @@ html {
   color-scheme: light;
   caret-color: var(--petrol);
   scrollbar-width: thin;
-  scrollbar-color: var(--rules) transparent;
+  scrollbar-color: var(--rule) transparent;
 }
 
 body {
   margin: 0;
   background: var(--ground);
   color: var(--ink);
-  font-family: 'Radio Canada Big', system-ui, sans-serif;
-  min-height: 100dvh;
+  font-family: var(--font-words);
   -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
 }
 
 ::selection { background: var(--ptint); color: var(--ink); }
@@ -44,41 +52,42 @@ body {
 
 a {
   color: var(--petrol);
-  text-decoration-line: underline;
+  text-decoration: underline;
   text-underline-offset: 3px;
 }
-a:hover { opacity: 0.8; }
+a:hover { opacity: .8; }
 
-/* Mono data class */
+/* Mono utility: figures, ids, rates */
 .mono {
-  font-family: 'Geist Mono', 'Menlo', monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-/* Small-caps label */
-.label-caps {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--secondary);
-  font-weight: 500;
+/* Perforated top edge — repeating radial half-circles */
+.perf-top {
+  --r: 7px;
+  -webkit-mask-image: radial-gradient(circle at 50% 0%, transparent var(--r), black calc(var(--r) + 1px));
+  -webkit-mask-size: calc(var(--r) * 2 + 4px) 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-image: radial-gradient(circle at 50% 0%, transparent var(--r), black calc(var(--r) + 1px));
+  mask-size: calc(var(--r) * 2 + 4px) 100%;
+  mask-repeat: repeat-x;
 }
 
 /* Form inputs */
 .form-input {
   padding: 8px 12px;
-  border: 1px solid var(--rules);
+  border: 1px solid var(--rule);
   border-radius: 8px;
-  font-family: 'Radio Canada Big', system-ui, sans-serif;
+  font-family: var(--font-words);
   font-size: 15px;
   color: var(--ink);
-  background: var(--surface);
+  background: var(--paper);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color .15s;
+  width: 100%;
 }
-.form-input:focus {
-  border-color: var(--petrol);
-}
+.form-input:focus { border-color: var(--petrol); }
 select.form-input { cursor: pointer; }
 
 /* Skeleton shimmer */
@@ -87,8 +96,76 @@ select.form-input { cursor: pointer; }
   100% { background-position:  600px 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, var(--rules) 25%, #edf0f3 50%, var(--rules) 75%);
+  background: linear-gradient(90deg, var(--rule) 25%, #eceff1 50%, var(--rule) 75%);
   background-size: 600px 100%;
   animation: shimmer 1.4s infinite linear;
   border-radius: 4px;
+}
+
+/* Pulse dot animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Coupon row scroll snap */
+.coupon-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+  padding-bottom: 4px;
+}
+.coupon-row::-webkit-scrollbar { height: 4px; }
+.coupon-row::-webkit-scrollbar-track { background: transparent; }
+.coupon-row::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+
+.coupon-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Dashed border coupon */
+.coupon-border {
+  border: 1.5px dashed var(--rule);
+  border-radius: 6px;
+}
+
+/* Stamp rotation */
+.stamp {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .08em;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(-6deg);
+  display: inline-block;
+  line-height: 1.2;
+}
+
+/* Timeline dashes rule */
+.timeline-break {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--secondary);
+  letter-spacing: .05em;
+  user-select: none;
+}
+
+/* Responsive stack */
+@media (max-width: 1100px) {
+  .home-layout { flex-direction: column !important; }
+}
+
+@media (max-width: 640px) {
+  .topbar-links { display: none; }
 }

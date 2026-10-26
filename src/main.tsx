@@ -13,6 +13,10 @@
 import './tracing'
 import './console-capture'
 
+// Self-hosted variable fonts (no CDN)
+import '@fontsource-variable/hanken-grotesk'
+import '@fontsource-variable/spline-sans-mono'
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { WagmiProvider } from 'wagmi'

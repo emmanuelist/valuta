@@ -1,4 +1,4 @@
-Valuta redesign, part 4 (same workspace): fixes from a rendered review of turns 08–10. Each item below was measured in a browser against `context/redesign-a-specimen-1x.png` and `context/08-redesign-spec.md`. Fix them in this order, so the most important land first if the turn runs short. Keep everything else as it is.
+Valuta redesign, part 4 (same workspace): fixes from a rendered review of turns 08–10. Each item below was measured in a browser against `context/redesign-a-specimen-1x.png` and `context/08-redesign-spec.md`. Fix them in this order (A, B, C, D, E), so the most important land first if the turn runs short. Keep everything else as it is.
 
 ## A. Correctness (false or broken on screen)
 1. **Cheat attempt 1 sends the wrong round.**
@@ -45,7 +45,28 @@ Valuta redesign, part 4 (same workspace): fixes from a rendered review of turns 
    Today it is a cramped table.
 5. **The footer's three columns stack**, each at full width.
 
-## D. Bundle
+## D. Colour is the payday's state (no new hues, no decoration)
+Every colour names one state in a payday's life, and every surface uses the same word and colour for the same state.
+1. **Add semantic tokens to `index.css`** that alias the palette, and use them in components instead of the palette names:
+   - `--state-upcoming: var(--secondary)`: not yet fixed
+   - `--state-due: var(--amber)`, tint `var(--ambtint)`: amount fixed, waiting to be settled
+   - `--state-held: var(--petrol)`, tint `var(--ptint)`: settled at the as-of round, so the rate held
+   - `--state-paid: var(--carbon)`: USDC that moved
+   - `--state-void: var(--void)`: refused by the chain
+   - `--state-late: var(--secondary)`: lateness, which changes nothing, so it stays colourless
+
+   Replace the raw hex in components (`#1B3158`, `#EAF0FC`, and hardcoded `#0B4F6C` / `#E3EEF3`) with tokens. Declare any colour you keep.
+2. **Red means one thing only:** the chain refused an attempt (VOID). Form and transaction errors (the EmployerPanel `fundError`, /new validation) use ink text with a lucide `AlertCircle` and an amber border, never `--state-void`.
+3. **The register speaks the coupon vocabulary.** Each payroll row gets a thin payday strip under its name: one 6px segment per payday, coloured upcoming, due, held or credited, exactly as the coupons are. Then:
+   - "Due" above 0 shows in `--state-due` with the count.
+   - Arrears above 0 show in `--state-due` as "arrears".
+   - "complete" or "ended" shows in secondary.
+
+   This puts each payroll's life on one line in the product's own colours.
+4. **/lookup:** a feed whose round is over 25 h old shows its age in `--state-due`, with the note "stale: a payday now would price at the next round".
+5. **The live moment:** while the countdown runs, the chip is `--state-due`. At zero it reads "Fixing now…", then that payday's coupon stamps DUE in `--state-due`. After a settle, the receipt and the new HELD coupon use `--state-paid` and `--state-held`.
+
+## E. Bundle
 - The initial chunk is 492 kB gzipped; the target is under 250 kB.
 - Load the wallet stack (ConnectKit, WalletConnect and the wagmi connectors) lazily: on the first "Connect wallet" press, or when the browser is idle after first paint.
 - Keep all reads on a plain viem public client, so the payslip renders without any wallet code.

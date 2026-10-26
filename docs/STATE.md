@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-25 23:39 UTC at 3b3000d (branch 6-app)_
+_Last verified: 2026-10-26 07:10 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** send Studio turn 08 (`prompts/08-redesign-hero.md`, with `--file <abs>/prompts/08-redesign-spec.md --file <abs>/.impeccable/mocks/redesign-a-specimen.png --detach`, then attach) once **both** hold: (1) the builder has accepted the component review at http://127.0.0.1:61685/ (Impeccable's plates gate: no page code before it), then `impeccable build-phase advance`; (2) `arc-studio usage --json` is below 100% (polled every 5 min into `internal/studio/usage-poll.log`; earliest 00:00 UTC if the cap is per calendar day, else it frees from about 12:00 UTC as the 10-25 turns age out). After it lands: pull, run, hero gate at 1344×760, then turns 09 (home sections, D-019), 10 (responsive, states) and 11 (pages, bundle), critique (target ≥ 32/40), CI (#5), Vercel, film, submit (#6)
+**Next action:** nothing to send by hand. `internal/studio-chain.sh` (running since 07:07 UTC, log `internal/studio/chain.log`) sends Studio turns 08 → 09 → 10 back to back (D-021). The builder skipped the component review ("skip the review"); Impeccable refused to force its plates gate, so its formal gates stay unrecorded and fidelity is measured with standalone `comp-diff`. Turns start when usage is below 50% (08), 55% (09) and 85% (10). The cap is rolling (CONTEXT), so 08 is expected between about 12:40 and 14:45 UTC. When the chain ends: verify locally, hero comp-diff at 1344×760, critique (target ≥ 32/40), fix turn in the next window, CI (#5), Vercel, film, submit (#6)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -20,7 +20,7 @@ _Last verified: 2026-10-25 23:39 UTC at 3b3000d (branch 6-app)_
 |---|---|---|---|
 | **Valuta v2** | **Arc mainnet** | `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a` | 2026-10-25 14:15 UTC |
 | Payroll #1: MXN 1.00 daily, back pay from 10-15 (20 paydays) | v2 | id 1: 11 settled (10 by STRANGER, late; 1 by keeper, on time), reserve 0.5072 USDC | 2026-10-25 23:10 UTC |
-| Payroll #2: BRL 0.10 every 2 h from 10-25 14:00 (36 paydays) | v2 | id 2: 5 settled, reserve 0.6496 USDC | 2026-10-25 23:10 UTC |
+| Payroll #2: BRL 0.10 every 2 h from 10-25 14:00 (36 paydays) | v2 | id 2: 9 settled; 06–09 in one late tx, each at its own round (E-024) | 2026-10-26 06:50 UTC |
 | Payroll #3: EUR 0.01 daily at 14:00 UTC from 10-26 (40 paydays, to 12-04) | v2 | id 3: 0 settled, reserve 0.47 USDC, first payday 10-26 14:00 UTC (E-023) | 2026-10-25 23:37 UTC |
 | Valuta v1 (retired) | Arc mainnet | `0x2bDF0F489687a57a0E63E609281C3eC86dda76e9` | ended and reclaimed |
 | Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-25 |

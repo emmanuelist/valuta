@@ -8,7 +8,7 @@ import { arc } from 'viem/chains'
 import type { Payroll, Payslip, DueQuote, RoundData } from '../lib/types'
 import {
   fmtUsdc, fmtSalary, fmtRate8, fmtRateInverse, fmtDateTimeStamp,
-  fmtDateTime, fmtTime, fmtDateMixed, fmtAggRound, fmtLatenessVerbose,
+  fmtDateTime, fmtTime, fmtNearPayday, fmtDateMixed, fmtAggRound, fmtLatenessVerbose,
   truncAddr, truncHash, convertUsdc,
 } from '../lib/format'
 import { VALUTA_ADDRESS, VALUTA_ABI, FEEDS, ARC_EXPLORER } from '../contracts/abi'
@@ -107,26 +107,59 @@ export function PayslipCard({
   const factPaydayLive = paydayTs && roundUpdAt
     ? roundUpdAt <= paydayTs
     : null
-  // null while loading, string once resolved
+
+  // Fact 1: "Round N was live at HH:MM[:SS][ (±N s)]"
+  const fact1 = paydayTs && roundUpdAt && roundId
+    ? (() => {
+        const timeStr = fmtNearPayday(roundUpdAt, paydayTs)
+        // For the near-payday case, also show signed gap in the sentence
+        const gap = roundUpdAt - paydayTs
+        if (Math.abs(gap) < 60 && gap < 0) {
+          const absSec = Math.abs(gap)
+          return `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)} (published ${fmtTime(roundUpdAt)}, ${absSec} s before)`
+        }
+        return `Round ${fmtAggRound(roundId)} was live at ${timeStr}`
+      })()
+    : null
+
+  // Fact 2: "Round N came at HH:MM[:SS][, N s after/before payday]"
   const factNextCameAt = !roundId
     ? null
     : nextLoading
       ? null   // still in flight — show skeleton in the facts list
       : next && next.updatedAt > 0
-        ? `Round ${fmtAggRound(next.roundId)} came at ${fmtTime(next.updatedAt)}`
+        ? (() => {
+            const gap    = next.updatedAt - (paydayTs ?? 0)
+            const exact  = fmtTime(next.updatedAt)
+            if (paydayTs && Math.abs(gap) < 60) {
+              const absSec = Math.abs(gap)
+              const side   = gap >= 0 ? `${absSec} s after payday` : `${absSec} s before payday`
+              return `Round ${fmtAggRound(next.roundId)} came at ${exact}, ${side}`
+            }
+            return `Round ${fmtAggRound(next.roundId)} came at ${exact}`
+          })()
         : 'No newer round yet'
+
+  // Fact 3: age of the as-of round at payday, in h + m
   const factAge = paydayTs && roundUpdAt
     ? (() => {
-        const ageMin = Math.round((paydayTs - roundUpdAt) / 60)
-        const maxH   = Math.round(maxAge / 3600)
+        const maxH = Math.round(maxAge / 3600)
         if (roundUpdAt > paydayTs) {
           // stale fallback: the as-of round is the first after payday
-          const staleMin = Math.round((roundUpdAt - paydayTs) / 60)
-          return `Stale fallback: next round came ${staleMin} min after payday`
+          const staleSec = roundUpdAt - paydayTs
+          const staleMin = Math.floor(staleSec / 60)
+          const staleSec2 = staleSec % 60
+          const staleStr  = staleMin > 0
+            ? staleSec2 > 0 ? `${staleMin} m ${staleSec2} s` : `${staleMin} m`
+            : `${staleSec} s`
+          return `Stale fallback: next round came ${staleStr} after payday`
         }
-        if (ageMin < 60) return `${ageMin} minutes old, inside ${maxH} h`
-        const ageH = Math.round(ageMin / 60)
-        return `${ageH} h old, inside ${maxH} h`
+        const ageSec = paydayTs - roundUpdAt
+        const ageH   = Math.floor(ageSec / 3600)
+        const ageM   = Math.floor((ageSec % 3600) / 60)
+        if (ageH === 0)  return `${ageM} m old, inside ${maxH} h`
+        if (ageM === 0)  return `${ageH} h old, inside ${maxH} h`
+        return `${ageH} h ${ageM} m old, inside ${maxH} h`
       })()
     : null
 
@@ -390,13 +423,7 @@ export function PayslipCard({
                   ref={factRef}
                   style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
                 >
-                  {[
-                    paydayTs && roundUpdAt && roundId
-                      ? `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)}`
-                      : null,
-                    factNextCameAt,
-                    factAge,
-                  ].map((fact, fi) =>
+                  {[fact1, factNextCameAt, factAge].map((fact, fi) =>
                     fact ? (
                       <motion.div
                         key={fi}

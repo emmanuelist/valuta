@@ -1,7 +1,7 @@
 // HonestTimeline — log-proportional spacing, scaled to fill available width
 import { useReducedMotion, motion } from 'framer-motion'
 import type { RoundData, Payslip, DueQuote } from '../lib/types'
-import { fmtTime, fmtDate, fmtAggRound } from '../lib/format'
+import { fmtTime, fmtNearPayday, fmtDate, fmtAggRound } from '../lib/format'
 
 interface Props {
   payslip:  Payslip | null
@@ -57,10 +57,10 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
   if (prev) {
     events.push({ id: 'prev', ts: prev.updatedAt, kind: 'round', label: fmtAggRound(prev.roundId) })
   }
-  events.push({ id: 'asof',   ts: roundUpdAt, kind: 'asof',   label: fmtAggRound(roundId), sublabel: fmtTime(roundUpdAt) })
+  events.push({ id: 'asof',   ts: roundUpdAt, kind: 'asof',   label: fmtAggRound(roundId), sublabel: fmtNearPayday(roundUpdAt, paydayTs) })
   events.push({ id: 'payday', ts: paydayTs,   kind: 'payday', label: 'VALUE DATE',          sublabel: fmtTime(paydayTs) })
   if (next && next.updatedAt > 0) {
-    events.push({ id: 'next', ts: next.updatedAt, kind: 'round', label: fmtAggRound(next.roundId), sublabel: fmtTime(next.updatedAt) })
+    events.push({ id: 'next', ts: next.updatedAt, kind: 'round', label: fmtAggRound(next.roundId), sublabel: fmtNearPayday(next.updatedAt, paydayTs) })
   } else {
     events.push({ id: 'next', ts: paydayTs + 3600, kind: 'round', label: '\u2014', sublabel: 'No newer round' })
   }

@@ -34,6 +34,8 @@ No demo mode, seeded database or fixtures. There is no backend: the chain is the
 
 **The contract.** Valuta v2 at [`0x7d20…252a`](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a) on Arc mainnet: deploy [tx `0xdd69…f666`](https://explorer.arc.io/tx/0xdd694f2e94b9cbbff3ba2727e701519240473adee33d2006704fb6b3b409f666), block 27,804,867, **Sourcify exact match** for creation and runtime bytecode. No owner, no admin key, no pause and no upgrade path. Its source is byte-for-byte the file Arc Studio wrote.
 
+**Settled through the app, by a wallet with no role in the payroll.** On 27 Oct, payroll 2's 16:00 payday was settled from the [live app](https://valuta-arc.vercel.app) with **Settle now**: [tx `0x9116…26ca`](https://explorer.arc.io/tx/0x9116c7b4584c5776df01a0172a55a7349a6bb3df311c771b72edce68619326ca) moved 0.018746 USDC from Valuta's reserve to the worker 34 seconds after payday, at BRL/USD round 221, and the explorer shows it confirmed within half a second. The sender is the builder's STRANGER test wallet, which is neither the employer nor the worker ([E-031](docs/EVIDENCE.md), [E-033](docs/EVIDENCE.md)).
+
 **Ten paydays settled ten days late, by a stranger, each at its own rate.** Payroll 1 pays MXN 1.00 a day, with back pay from 15 Oct. A wallet with no connection to the payroll settled the first ten paydays in [one transaction](https://explorer.arc.io/tx/0x82ff6831bd4464228832d37afac96c968e5fe04fe9e0f2194d71ad1e0dd638b7) on 25 Oct. Same salary, ten different amounts, each priced at the round live at 14:00 UTC that day:
 
 | Payday (14:00 UTC) | Chainlink round (published) | MXN/USD | Paid (USDC) | Settled | Late by |
@@ -67,7 +69,17 @@ Round 293 was published at 14:06 on 15 Oct, six minutes after payday 1. Settling
 | A stranger reclaims someone else's reserve | `NotEmployer` |
 | *Control:* settle with round 206 | succeeds |
 
-**Any refusal can be replayed, at any time.** Arc's public RPC serves historical state, so an attempt can be re-run at the block before a payday was settled. At block 27,805,206, one block before the stranger's settlement, `settle(1, [round 293])` reverts `NotAsOfPayday(1792072800, round 293)`, and `settle(1, [round 292])` succeeds ([E-022](docs/EVIDENCE.md)).
+**Any refusal can be replayed, at any time.** Arc's public RPC serves historical state, so an attempt can be re-run at the block before a payday was settled. At block 27,805,206, one block before the stranger's settlement, `settle(1, [round 293])` reverts `NotAsOfPayday(1792072800, round 293)`, and `settle(1, [round 292])` succeeds ([E-022](docs/EVIDENCE.md)). With [Foundry](https://getfoundry.sh) installed, anyone can re-run it:
+
+```bash
+# Round ids carry Chainlink's phase in the top bits: 18446744073709551909 is phase 1, round 293.
+cast call 0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a "settle(uint256,uint80[])" 1 "[18446744073709551909]" \
+  --from 0xe5CAd734abc7d9ADed5Ec0d171FE451d38aBCaC3 --block 27805206 --rpc-url https://rpc.mainnet.arc.io
+# reverts with 0x819994b6…: NotAsOfPayday(1792072800, 18446744073709551909)
+# The same call with round 292, "[18446744073709551908]", returns: that round was live at payday.
+```
+
+No install needed for the same check in the app: **Try to cheat it** runs these calls against the live contract.
 
 **Lateness changes nothing, to the second.** Payroll 2 pays BRL 0.10 every two hours. Overnight on 26 Oct the builder's laptop slept, and its keeper settled four paydays at once at 06:46 UTC, up to 6 h 46 m late, in [one transaction](https://explorer.arc.io/tx/0xdd5ce0466ec0270f1d1e6573763b2dc4fff6b3a4c854925c5d77556fd8e5a190). Each still got its own round. The 00:00 payday paid at round 207, because round 208 was published sixteen seconds later, at 00:00:16. The 02:00, 04:00 and 06:00 paydays paid at round 208 ([E-024](docs/EVIDENCE.md)).
 
@@ -148,6 +160,16 @@ Naming these is cheaper than having a judge find them.
 - **Phase boundaries.** A payday that straddles a Chainlink aggregator phase change can't be proven by `settle` (`UnprovableRound`). All feeds are in phase 1 today.
 - **Someone has to send the transaction.** A local keeper settles payrolls 1–3 while the builder's laptop is on, until 28 Oct. Any payday left unsettled waits as due and can be settled later by anyone, at the same amount.
 - **Amounts are cents, not salaries**, because this is real money on mainnet.
+
+## Where it goes next
+
+Today Valuta prices and settles one worker's salary per payroll. Each next step builds on a part that is already live:
+
+- **Any amount agreed in a local currency.** Retainers, rent, grants and invoices have the same question: who converts, and when. The as-of rule is a read over Chainlink round history, and the app's [Rate lookup](https://valuta-arc.vercel.app/lookup) already answers "which round was live at this second" for any moment.
+- **Settled on time without the builder's laptop.** Settling is permissionless, so a small tip from the reserve would pay any keeper to settle at payday. Lateness already costs the worker nothing; a tip would make it rare.
+- **Team payroll from one reserve.** Several workers, each in their own currency, funded from one employer reserve, with each worker's arrears still public.
+- **Paid in the worker's own currency.** When a peso or real stablecoin is on Arc, the payout can land in it, still at the payday's round.
+- **Real salaries, after an independent audit.** The amounts here are cents because this is real money on mainnet.
 
 ## Run it locally
 

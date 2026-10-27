@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-27 18:10 UTC (branch 6-app, PR #17 open)_
+_Last verified: 2026-10-27 18:20 UTC (branch 7-film-link; PR #17 merged at 18:08 UTC)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M3 · Submit (#8) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** merge PR #17 (`6-app` → `main`, CI green; the builder's approval) so the public repo shows the app, then make the repo public (approved). The builder uploads `~/Desktop/Valuta - Arc Microgrants 2.mp4` to YouTube; add the link to the README and SUBMISSION; preflight; the builder submits (#8)
+**Next action:** the builder makes the repo public (GitHub → Settings → Change visibility; Claude is not permitted to) and merges the film-link PR (Closes #7); then preflight and the DoraHacks form from `internal/SUBMISSION.md` (#8)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -30,7 +30,7 @@ _Last verified: 2026-10-27 18:10 UTC (branch 6-app, PR #17 open)_
 | Repo (private until submission) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-27 |
 
 ## Film (`internal/film`, gitignored tooling)
-- Final master: `internal/film/film/valuta-master.mp4`, copied to the builder's Desktop as `Valuta - Arc Microgrants 2.mp4`. Not uploaded yet.
+- Final master: `internal/film/film/valuta-master.mp4`, published at https://youtu.be/HUbb6BLe1uY (E-035).
 - Rebuild: `scripts/studio.ts` (Studio chapter), `scripts/settle-final.sh` (settle take, sends a real settle), then `film:cut`, render, score, master.
 
 ## Broken or unverified

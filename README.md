@@ -22,7 +22,7 @@ Valuta makes the rate a fact instead of a decision. Each payday is priced at the
 
 Anyone can settle a payday, a week late or a minute late, and the amount is identical, because nobody chooses the rate. The employer can't pull the reserve while pay is due, and a shortfall becomes public arrears, never a silent skip. Every payslip is stored on-chain with its round id, so any payday can be checked with a single contract read.
 
-**[Live app ↗](https://valuta-arc.vercel.app)** · **[The contract, verified ↗](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)** · **[Arc Studio project ↗](https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4)** · **[Every Studio prompt ↗](prompts/)** · **[How it works](#how-it-works)** · **[Run it](#run-it-locally)**
+**[Watch the film (2:10) ↗](https://youtu.be/HUbb6BLe1uY)** · **[Live app ↗](https://valuta-arc.vercel.app)** · **[The contract, verified ↗](https://explorer.arc.io/address/0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a)** · **[Arc Studio project ↗](https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4)** · **[Every Studio prompt ↗](prompts/)** · **[How it works](#how-it-works)** · **[Run it](#run-it-locally)**
 
 ---
 
@@ -58,7 +58,7 @@ Round 293 was published at 14:06 on 15 Oct, six minutes after payday 1. Settling
 
 **The ledger is one read.** `payslips(1, 0, 64)` returns every payslip, with its round, rate, amount, settler and settlement block, in a single `eth_call`. The settlement transaction comes from one single-block log query, never a scan.
 
-**Refusals, by name**, captured from the live contract as read-only calls while payroll 2's 16:00 payday was due ([E-021](docs/EVIDENCE.md)):
+**Refusals, by name**, captured from the live contract as read-only calls while payroll 2's 16:00 payday on 25 Oct was due ([E-021](docs/EVIDENCE.md)):
 
 | Attempt | Refused with |
 |---|---|

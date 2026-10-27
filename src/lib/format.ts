@@ -74,37 +74,25 @@ export function fmtDateTime(ts: number): string {
   return `${day} ${month} ${hh}:${mm}`
 }
 
-/** unix seconds → "14:00" UTC, or "14:00:16" when seconds ≠ 0 */
+/** unix seconds → "14:00" UTC (always HH:MM, no seconds) */
 export function fmtTime(ts: number): string {
   const d = new Date(ts * 1000)
-  const hh = String(d.getUTCHours()).padStart(2, '0')
-  const mm = String(d.getUTCMinutes()).padStart(2, '0')
-  const ss = d.getUTCSeconds()
-  if (ss !== 0) return `${hh}:${mm}:${String(ss).padStart(2, '0')}`
-  return `${hh}:${mm}`
+  return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`
 }
 
 /**
- * Format a round's publish time relative to a payday.
- * Within 60 s either side: always HH:MM:SS with a signed gap.
- * Otherwise: fmtTime (HH:MM or HH:MM:SS per the rule above).
+ * Format a round's publish time for timeline labels.
+ * If the round was published within 60 s AFTER payday, return HH:MM:SS.
+ * All other cases return HH:MM.
  */
 export function fmtNearPayday(roundTs: number, paydayTs: number): string {
-  const gap = roundTs - paydayTs          // positive = after, negative = before
-  const exact = fmtTimeExact(roundTs)
-  if (Math.abs(gap) < 60) {
-    const absSec = Math.abs(gap)
-    const sign   = gap >= 0 ? '+' : '-'
-    return `${exact} (${sign}${absSec} s)`
+  const gap = roundTs - paydayTs   // positive = round came after payday
+  if (gap > 0 && gap < 60) {
+    const d = new Date(roundTs * 1000)
+    return [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()]
+      .map(n => String(n).padStart(2, '0')).join(':')
   }
   return fmtTime(roundTs)
-}
-
-/** Always HH:MM:SS regardless of seconds value */
-function fmtTimeExact(ts: number): string {
-  const d = new Date(ts * 1000)
-  return [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()]
-    .map(n => String(n).padStart(2, '0')).join(':')
 }
 
 /** unix seconds → "25 Oct" (mixed case) */

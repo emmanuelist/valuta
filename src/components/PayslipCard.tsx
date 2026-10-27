@@ -108,18 +108,9 @@ export function PayslipCard({
     ? roundUpdAt <= paydayTs
     : null
 
-  // Fact 1: "Round N was live at HH:MM[:SS][ (±N s)]"
+  // Fact 1: "Round N was live at HH:MM" — always the payday time
   const fact1 = paydayTs && roundUpdAt && roundId
-    ? (() => {
-        const timeStr = fmtNearPayday(roundUpdAt, paydayTs)
-        // For the near-payday case, also show signed gap in the sentence
-        const gap = roundUpdAt - paydayTs
-        if (Math.abs(gap) < 60 && gap < 0) {
-          const absSec = Math.abs(gap)
-          return `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)} (published ${fmtTime(roundUpdAt)}, ${absSec} s before)`
-        }
-        return `Round ${fmtAggRound(roundId)} was live at ${timeStr}`
-      })()
+    ? `Round ${fmtAggRound(roundId)} was live at ${fmtTime(paydayTs)}`
     : null
 
   // Fact 2: "Round N came at HH:MM[:SS][, N s after/before payday]"
@@ -129,14 +120,13 @@ export function PayslipCard({
       ? null   // still in flight — show skeleton in the facts list
       : next && next.updatedAt > 0
         ? (() => {
-            const gap    = next.updatedAt - (paydayTs ?? 0)
-            const exact  = fmtTime(next.updatedAt)
-            if (paydayTs && Math.abs(gap) < 60) {
-              const absSec = Math.abs(gap)
-              const side   = gap >= 0 ? `${absSec} s after payday` : `${absSec} s before payday`
-              return `Round ${fmtAggRound(next.roundId)} came at ${exact}, ${side}`
+            const gap = paydayTs ? next.updatedAt - paydayTs : 999
+            if (paydayTs && gap > 0 && gap < 60) {
+              // Within 60 s after payday: HH:MM:SS + gap
+              const timeStr = fmtNearPayday(next.updatedAt, paydayTs)
+              return `Round ${fmtAggRound(next.roundId)} came at ${timeStr}, ${gap} s after payday`
             }
-            return `Round ${fmtAggRound(next.roundId)} came at ${exact}`
+            return `Round ${fmtAggRound(next.roundId)} came at ${fmtTime(next.updatedAt)}`
           })()
         : 'No newer round yet'
 

@@ -57,7 +57,7 @@ export function HonestTimeline({ payslip, dueQuote, prev, next, animKey, vertica
   if (prev) {
     events.push({ id: 'prev', ts: prev.updatedAt, kind: 'round', label: fmtAggRound(prev.roundId) })
   }
-  events.push({ id: 'asof',   ts: roundUpdAt, kind: 'asof',   label: fmtAggRound(roundId), sublabel: fmtNearPayday(roundUpdAt, paydayTs) })
+  events.push({ id: 'asof',   ts: roundUpdAt, kind: 'asof',   label: fmtAggRound(roundId), sublabel: fmtTime(roundUpdAt) })
   events.push({ id: 'payday', ts: paydayTs,   kind: 'payday', label: 'VALUE DATE',          sublabel: fmtTime(paydayTs) })
   if (next && next.updatedAt > 0) {
     events.push({ id: 'next', ts: next.updatedAt, kind: 'round', label: fmtAggRound(next.roundId), sublabel: fmtNearPayday(next.updatedAt, paydayTs) })

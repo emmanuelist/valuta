@@ -25,3 +25,6 @@ broadcast/**/31337/
 
 # Impeccable decision-page state (local)
 .impeccable/questions/
+console.jsonl
+.vercel
+.env*

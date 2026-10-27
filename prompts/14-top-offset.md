@@ -1,0 +1,5 @@
+Valuta, part 7 (same workspace): one measured offset. At 1344×760, with the scroll at the top, `div.home-layout` has a computed `padding-top` of 55px. It starts under the 63px top bar, so the payslip card starts at y=118, the claim at y=162 and the coupon row ends at y=783. The comp's boxes are card top y=75, claim top y=118 and coupon row bottom ≤ 744. Turn 13 made the card exactly the comp's height (476px), so this padding is the only remaining offset.
+
+Change the base rule `.home-layout { padding-top: 55px }` in `index.css` to `padding-top: 12px`. The ≤1099px and ≤699px overrides (32px and 16px) stay as they are. That puts the card at y=75, the claim at about y=119 and the coupon row end at about y=740.
+
+Before you finish, measure at 1344×760, scrolled to the top, with `getBoundingClientRect`: card top 75 ± 4, claim top 118 ± 6, coupon row bottom ≤ 750. Check 1440×900 too. Then confirm 390×844 is unchanged: no horizontal scroll, the seal overlaps no text. Run `bun run typecheck`, `bun run lint` (zero warnings) and `bun run build`.

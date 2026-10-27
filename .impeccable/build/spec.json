@@ -1,0 +1,1496 @@
+{
+  "tool": "comp-spec",
+  "version": 1,
+  "createdAt": "2026-10-25T22:43:44.798Z",
+  "comp": ".impeccable/mocks/redesign-a-specimen.png",
+  "warnings": [
+    "region topbar: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region topbar: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region brand: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region nav-links: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region live: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region connect: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region claim: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region countdown: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region slip-card: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region slip-card: \"container\": true set in the regions file (the region-size refusal is overridden: one undivided element)",
+    "region slip-header: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region stamp: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region salary: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region rate-line: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region amount: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region counterfactual: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region seal: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region facts: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region slip-footer: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region timeline: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region coupons: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)",
+    "region divider: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+  ],
+  "uncoveredInkCells": [
+    "A1",
+    "B1",
+    "C1",
+    "D3",
+    "A8"
+  ],
+  "compSize": {
+    "width": 2688,
+    "height": 1520
+  },
+  "aspect": 1.7684,
+  "orientation": "landscape",
+  "palette": [
+    {
+      "hex": "#f7f8f8",
+      "coverage": 0.9492
+    },
+    {
+      "hex": "#0a0c12",
+      "coverage": 0.0333
+    },
+    {
+      "hex": "#0c4965",
+      "coverage": 0.011
+    },
+    {
+      "hex": "#9a9a9a",
+      "coverage": 0.0033
+    },
+    {
+      "hex": "#c4c4c4",
+      "coverage": 0.0031
+    }
+  ],
+  "bands": [
+    {
+      "y": 0.0139,
+      "strength": 0.3344
+    },
+    {
+      "y": 0.0556,
+      "strength": 0.3075
+    },
+    {
+      "y": 0.1806,
+      "strength": 0.3937
+    },
+    {
+      "y": 0.2222,
+      "strength": 0.248
+    },
+    {
+      "y": 0.2917,
+      "strength": 0.4595
+    },
+    {
+      "y": 0.3611,
+      "strength": 0.2798
+    },
+    {
+      "y": 0.4028,
+      "strength": 0.3305
+    },
+    {
+      "y": 0.4444,
+      "strength": 0.3079
+    },
+    {
+      "y": 0.5139,
+      "strength": 0.5013
+    },
+    {
+      "y": 0.5556,
+      "strength": 0.2007
+    },
+    {
+      "y": 0.5833,
+      "strength": 0.3264
+    },
+    {
+      "y": 0.6806,
+      "strength": 0.2255
+    },
+    {
+      "y": 0.7778,
+      "strength": 0.2773
+    }
+  ],
+  "regions": [
+    {
+      "id": "topbar",
+      "kind": "chrome",
+      "note": "cool white top bar with a hairline bottom rule",
+      "grid": null,
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0829
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 2688,
+        "h": 126
+      },
+      "aspect": 21.3333,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9051
+        },
+        {
+          "hex": "#094764",
+          "coverage": 0.0716
+        },
+        {
+          "hex": "#0a0d11",
+          "coverage": 0.0188
+        },
+        {
+          "hex": "#919191",
+          "coverage": 0.0024
+        },
+        {
+          "hex": "#595959",
+          "coverage": 0.0021
+        }
+      ],
+      "detail": {
+        "energy": 32.4294
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": true,
+        "rules": true
+      }
+    },
+    {
+      "id": "brand",
+      "kind": "text",
+      "note": "wordmark Valuta, confident grotesk, ink",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.016,
+        "y": 0.0276,
+        "w": 0.061,
+        "h": 0.0289
+      },
+      "px": {
+        "x": 43,
+        "y": 42,
+        "w": 164,
+        "h": 44
+      },
+      "aspect": 3.7273,
+      "palette": [
+        {
+          "hex": "#f6f7f7",
+          "coverage": 0.5246
+        },
+        {
+          "hex": "#0a0e13",
+          "coverage": 0.3719
+        },
+        {
+          "hex": "#66696c",
+          "coverage": 0.069
+        },
+        {
+          "hex": "#c1c6cb",
+          "coverage": 0.0172
+        },
+        {
+          "hex": "#929798",
+          "coverage": 0.0172
+        }
+      ],
+      "detail": {
+        "energy": 45.3269
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 6,
+          "capHeightPx": 42.9,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6529,
+          "advTall": 0.5713,
+          "advX": 0.6529,
+          "gap": 0.07,
+          "xRatio": 0.6852,
+          "stemW": 0.1949,
+          "contrast": 1.4158,
+          "serif": 1.2599,
+          "densTall": 0.5,
+          "densX": 0.6631,
+          "weight": 0.5
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "nav-links",
+      "kind": "text",
+      "note": "links Payrolls, New payroll, Rate lookup",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.1302,
+        "y": 0.0329,
+        "w": 0.2269,
+        "h": 0.0211
+      },
+      "px": {
+        "x": 350,
+        "y": 50,
+        "w": 610,
+        "h": 32
+      },
+      "aspect": 19.0625,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.7934
+        },
+        {
+          "hex": "#0f1013",
+          "coverage": 0.1056
+        },
+        {
+          "hex": "#525557",
+          "coverage": 0.0404
+        },
+        {
+          "hex": "#b0b2b4",
+          "coverage": 0.0391
+        },
+        {
+          "hex": "#81878b",
+          "coverage": 0.0216
+        }
+      ],
+      "detail": {
+        "energy": 99.5406
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 28,
+          "capHeightPx": 24.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5684,
+          "advTall": 0.1421,
+          "advX": 0.5887,
+          "gap": 0.0812,
+          "xRatio": 0.6438,
+          "stemW": 0.1368,
+          "contrast": 1.1587,
+          "serif": 0.9407,
+          "densTall": 0.8507,
+          "densX": 0.5195,
+          "weight": 0.8507
+        },
+        "widthClass": "normal",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "live",
+      "kind": "text",
+      "note": "pulsing petrol dot plus Arc mainnet · block 27,861,402 (live block height)",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.644,
+        "y": 0.0336,
+        "w": 0.1696,
+        "h": 0.0184
+      },
+      "px": {
+        "x": 1731,
+        "y": 51,
+        "w": 456,
+        "h": 28
+      },
+      "aspect": 16.2857,
+      "palette": [
+        {
+          "hex": "#f6f7f7",
+          "coverage": 0.7716
+        },
+        {
+          "hex": "#0c0d11",
+          "coverage": 0.118
+        },
+        {
+          "hex": "#8d9094",
+          "coverage": 0.0455
+        },
+        {
+          "hex": "#2f3135",
+          "coverage": 0.0345
+        },
+        {
+          "hex": "#505458",
+          "coverage": 0.0304
+        }
+      ],
+      "detail": {
+        "energy": 124.7576
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 24,
+          "capHeightPx": 23.1,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6277,
+          "advTall": 0.6386,
+          "advX": 0.5953,
+          "gap": 0.1082,
+          "xRatio": 0.6633,
+          "stemW": 0.1372,
+          "contrast": 1.113,
+          "serif": 0.8927,
+          "densTall": 0.4374,
+          "densX": 0.4989,
+          "weight": 0.4374
+        },
+        "widthClass": "normal",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "connect",
+      "kind": "control",
+      "note": "petrol filled button Connect wallet",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.8631,
+        "y": 0.0132,
+        "w": 0.119,
+        "h": 0.0553
+      },
+      "px": {
+        "x": 2320,
+        "y": 20,
+        "w": 320,
+        "h": 84
+      },
+      "aspect": 3.8095,
+      "palette": [
+        {
+          "hex": "#094866",
+          "coverage": 0.8834
+        },
+        {
+          "hex": "#ebf7f8",
+          "coverage": 0.0489
+        },
+        {
+          "hex": "#8eb0c3",
+          "coverage": 0.0448
+        },
+        {
+          "hex": "#b7d2d8",
+          "coverage": 0.015
+        },
+        {
+          "hex": "#081828",
+          "coverage": 0.0079
+        }
+      ],
+      "detail": {
+        "energy": 24.5556
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 12,
+          "capHeightPx": 23.3,
+          "inkIsDark": false,
+          "allCaps": false,
+          "advance": 0.612,
+          "advTall": 0.4295,
+          "advX": 0.6227,
+          "gap": 0.0859,
+          "xRatio": 0.6808,
+          "stemW": 0.1716,
+          "contrast": 1.136,
+          "serif": 0.9673,
+          "densTall": 0.5129,
+          "densX": 0.611,
+          "weight": 0.5129
+        },
+        "widthClass": "normal",
+        "weightClass": "medium"
+      }
+    },
+    {
+      "id": "claim",
+      "kind": "text",
+      "note": "the claim at display size over six lines: Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles.",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.0238,
+        "y": 0.1553,
+        "w": 0.2976,
+        "h": 0.4421
+      },
+      "px": {
+        "x": 64,
+        "y": 236,
+        "w": 800,
+        "h": 672
+      },
+      "aspect": 1.1905,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.7637
+        },
+        {
+          "hex": "#090b11",
+          "coverage": 0.2087
+        },
+        {
+          "hex": "#4b4f50",
+          "coverage": 0.0113
+        },
+        {
+          "hex": "#b5babb",
+          "coverage": 0.0089
+        },
+        {
+          "hex": "#84878a",
+          "coverage": 0.0074
+        }
+      ],
+      "detail": {
+        "energy": 69.702
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 6,
+          "glyphs": 79,
+          "capHeightPx": 72.2,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6618,
+          "advTall": 0.4837,
+          "advX": 0.6675,
+          "gap": 0.0965,
+          "xRatio": 0.6984,
+          "stemW": 0.1881,
+          "contrast": 1.2516,
+          "serif": 1.0016,
+          "densTall": 0.5359,
+          "densX": 0.6129,
+          "weight": 0.5359
+        },
+        "widthClass": "normal",
+        "weightClass": "medium",
+        "chosen": {
+          "family": "Nunito",
+          "weight": 700,
+          "fontSizePx": 102,
+          "source": "index",
+          "fp": {
+            "lines": 1,
+            "glyphs": 21,
+            "capHeightPx": 72.5,
+            "inkIsDark": true,
+            "allCaps": false,
+            "advance": 0.6344,
+            "advTall": 0.3586,
+            "advX": 0.6344,
+            "gap": 0.0965,
+            "xRatio": 0.6826,
+            "stemW": 0.1856,
+            "contrast": 1.284,
+            "serif": 0.8841,
+            "densTall": 0.5449,
+            "densX": 0.5926,
+            "weight": 0.5449
+          },
+          "stamp": "1f0774b35203"
+        }
+      }
+    },
+    {
+      "id": "countdown",
+      "kind": "control",
+      "note": "amber outlined chip with clock icon: Payroll 2 · next value date in 01:59:41",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.0268,
+        "y": 0.6257,
+        "w": 0.253,
+        "h": 0.0572
+      },
+      "px": {
+        "x": 72,
+        "y": 951,
+        "w": 680,
+        "h": 87
+      },
+      "aspect": 7.8161,
+      "palette": [
+        {
+          "hex": "#f8f8f6",
+          "coverage": 0.8155
+        },
+        {
+          "hex": "#f0e1c2",
+          "coverage": 0.1026
+        },
+        {
+          "hex": "#ba7a1d",
+          "coverage": 0.04
+        },
+        {
+          "hex": "#bc8b45",
+          "coverage": 0.0261
+        },
+        {
+          "hex": "#e4be82",
+          "coverage": 0.0158
+        }
+      ],
+      "detail": {
+        "energy": 30.8262
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 2,
+          "capHeightPx": 2.7,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 242.7219,
+          "advTall": 226.7112,
+          "advX": 242.7219,
+          "gap": 0,
+          "xRatio": 0.8431,
+          "stemW": null,
+          "contrast": null,
+          "serif": null,
+          "densTall": 0.6954,
+          "densX": 0.7533,
+          "weight": 0.6954
+        },
+        "widthClass": "wide",
+        "weightClass": "black"
+      }
+    },
+    {
+      "id": "slip-card",
+      "kind": "chrome",
+      "note": "the payslip: white security paper card, perforated top edge, faint guilloché line ground, soft offset shadow",
+      "grid": null,
+      "codeDrawn": true,
+      "container": true,
+      "box": {
+        "x": 0.356,
+        "y": 0.0987,
+        "w": 0.6298,
+        "h": 0.6237
+      },
+      "px": {
+        "x": 957,
+        "y": 150,
+        "w": 1693,
+        "h": 948
+      },
+      "aspect": 1.7859,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.9676
+        },
+        {
+          "hex": "#134b63",
+          "coverage": 0.0123
+        },
+        {
+          "hex": "#151618",
+          "coverage": 0.0082
+        },
+        {
+          "hex": "#1f3887",
+          "coverage": 0.0069
+        },
+        {
+          "hex": "#babfc1",
+          "coverage": 0.0049
+        }
+      ],
+      "detail": {
+        "energy": 28.7752
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": true,
+        "rules": false
+      }
+    },
+    {
+      "id": "slip-header",
+      "kind": "text",
+      "note": "small-caps mono header VALUTA PAYSLIP · No. 01 of 20 · PAYROLL 1",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.381,
+        "y": 0.1434,
+        "w": 0.2969,
+        "h": 0.0138
+      },
+      "px": {
+        "x": 1024,
+        "y": 218,
+        "w": 798,
+        "h": 21
+      },
+      "aspect": 38,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.7755
+        },
+        {
+          "hex": "#0e0e0e",
+          "coverage": 0.1439
+        },
+        {
+          "hex": "#4f4f4f",
+          "coverage": 0.0371
+        },
+        {
+          "hex": "#929292",
+          "coverage": 0.0258
+        },
+        {
+          "hex": "#c1c1c1",
+          "coverage": 0.0177
+        }
+      ],
+      "detail": {
+        "energy": 75.3554
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 32,
+          "capHeightPx": 20,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.7267,
+          "advTall": 0.6766,
+          "advX": null,
+          "gap": 0.3007,
+          "xRatio": null,
+          "stemW": 0.1287,
+          "contrast": 1.115,
+          "serif": 4.7162,
+          "densTall": 0.4186,
+          "densX": null,
+          "weight": 0.4186
+        },
+        "widthClass": "normal",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "stamp",
+      "kind": "text",
+      "note": "petrol rubber stamp rotated -3 degrees, bordered: VALUE 15 OCT 2026 · 14:00 UTC (code-drawn text in a rotated bordered box)",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.6964,
+        "y": 0.1493,
+        "w": 0.269,
+        "h": 0.1039
+      },
+      "px": {
+        "x": 1872,
+        "y": 227,
+        "w": 723,
+        "h": 158
+      },
+      "aspect": 4.5759,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.8276
+        },
+        {
+          "hex": "#114a64",
+          "coverage": 0.1232
+        },
+        {
+          "hex": "#407287",
+          "coverage": 0.0215
+        },
+        {
+          "hex": "#b3d2dd",
+          "coverage": 0.0164
+        },
+        {
+          "hex": "#739cae",
+          "coverage": 0.0114
+        }
+      ],
+      "detail": {
+        "energy": 59.6815
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": null,
+        "measuredAt": "2026-10-25T22:48:38.114Z",
+        "note": "no separable lettering in the crop; size by the region box"
+      }
+    },
+    {
+      "id": "salary",
+      "kind": "text",
+      "note": "mono line Salary MXN 1.00",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.3817,
+        "y": 0.2421,
+        "w": 0.1198,
+        "h": 0.0204
+      },
+      "px": {
+        "x": 1026,
+        "y": 368,
+        "w": 322,
+        "h": 31
+      },
+      "aspect": 10.3871,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.8148
+        },
+        {
+          "hex": "#0b0c10",
+          "coverage": 0.0858
+        },
+        {
+          "hex": "#c6c8ca",
+          "coverage": 0.0343
+        },
+        {
+          "hex": "#707072",
+          "coverage": 0.0343
+        },
+        {
+          "hex": "#34373b",
+          "coverage": 0.0309
+        }
+      ],
+      "detail": {
+        "energy": 83.2831
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 12,
+          "capHeightPx": 23.2,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.734,
+          "advTall": 0.68,
+          "advX": 0.7771,
+          "gap": 0.1943,
+          "xRatio": 0.6855,
+          "stemW": 0.1208,
+          "contrast": 1.1138,
+          "serif": 4.1169,
+          "densTall": 0.4234,
+          "densX": 0.4605,
+          "weight": 0.4234
+        },
+        "widthClass": "wide",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "rate-line",
+      "kind": "text",
+      "note": "mono line Rate MXN/USD 0.05389760 (≈ 18.55 MXN per USD) · Chainlink round 292, published 13:50, between dashed rules",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.381,
+        "y": 0.3039,
+        "w": 0.5744,
+        "h": 0.0349
+      },
+      "px": {
+        "x": 1024,
+        "y": 462,
+        "w": 1544,
+        "h": 53
+      },
+      "aspect": 29.1321,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.9048
+        },
+        {
+          "hex": "#15171b",
+          "coverage": 0.044
+        },
+        {
+          "hex": "#b9bcc1",
+          "coverage": 0.0201
+        },
+        {
+          "hex": "#404447",
+          "coverage": 0.018
+        },
+        {
+          "hex": "#8e9093",
+          "coverage": 0.0131
+        }
+      ],
+      "detail": {
+        "energy": 44.8841
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 68,
+          "capHeightPx": 21.8,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6657,
+          "advTall": 0.6887,
+          "advX": 0.6198,
+          "gap": 0.1607,
+          "xRatio": 0.6097,
+          "stemW": 0.1175,
+          "contrast": 1.0024,
+          "serif": 2.9943,
+          "densTall": 0.4436,
+          "densX": 0.4604,
+          "weight": 0.4436
+        },
+        "widthClass": "normal",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "amount",
+      "kind": "text",
+      "note": "the paid amount, very large carbon-blue mono: 0.053897 USDC",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.3828,
+        "y": 0.3717,
+        "w": 0.3497,
+        "h": 0.0638
+      },
+      "px": {
+        "x": 1029,
+        "y": 565,
+        "w": 940,
+        "h": 97
+      },
+      "aspect": 9.6907,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.8137
+        },
+        {
+          "hex": "#1f3886",
+          "coverage": 0.1617
+        },
+        {
+          "hex": "#c0ccee",
+          "coverage": 0.0122
+        },
+        {
+          "hex": "#264070",
+          "coverage": 0.007
+        },
+        {
+          "hex": "#8fa2cc",
+          "coverage": 0.0054
+        }
+      ],
+      "detail": {
+        "energy": 80.2528
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 11,
+          "capHeightPx": 91.6,
+          "inkIsDark": true,
+          "allCaps": true,
+          "advance": 0.5347,
+          "advTall": 0.5347,
+          "advX": null,
+          "gap": 0.2946,
+          "xRatio": null,
+          "stemW": 0.0873,
+          "contrast": 0.8609,
+          "serif": null,
+          "densTall": 0.3686,
+          "densX": null,
+          "weight": 0.3686
+        },
+        "widthClass": "condensed",
+        "weightClass": "regular",
+        "chosen": {
+          "family": "Roboto Condensed",
+          "weight": 300,
+          "fontSizePx": 128,
+          "source": "index",
+          "fp": {
+            "lines": 1,
+            "glyphs": 11,
+            "capHeightPx": 91.3,
+            "inkIsDark": true,
+            "allCaps": true,
+            "advance": 0.5258,
+            "advTall": 0.5258,
+            "advX": null,
+            "gap": 0.1753,
+            "xRatio": null,
+            "stemW": 0.0857,
+            "contrast": 0.919,
+            "serif": null,
+            "densTall": 0.3417,
+            "densX": null,
+            "weight": 0.3417
+          },
+          "stamp": "e27c56979b7e"
+        }
+      }
+    },
+    {
+      "id": "counterfactual",
+      "kind": "text",
+      "note": "grey mono struck through: 0.053567 at the 25 Oct rate it settled on",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.3806,
+        "y": 0.4612,
+        "w": 0.343,
+        "h": 0.0164
+      },
+      "px": {
+        "x": 1023,
+        "y": 701,
+        "w": 922,
+        "h": 25
+      },
+      "aspect": 36.88,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.7097
+        },
+        {
+          "hex": "#8d8d8d",
+          "coverage": 0.1255
+        },
+        {
+          "hex": "#313131",
+          "coverage": 0.0904
+        },
+        {
+          "hex": "#c9cac9",
+          "coverage": 0.0513
+        },
+        {
+          "hex": "#606060",
+          "coverage": 0.0231
+        }
+      ],
+      "detail": {
+        "energy": 66.131
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": null,
+        "measuredAt": "2026-10-25T22:48:38.632Z",
+        "note": "no separable lettering in the crop; size by the region box"
+      }
+    },
+    {
+      "id": "seal",
+      "kind": "chrome",
+      "note": "round guilloché seal with RATE HELD, generated at runtime as SVG from the payslip's round id (rosette of petrol line loops)",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.8304,
+        "y": 0.3572,
+        "w": 0.1269,
+        "h": 0.2388
+      },
+      "px": {
+        "x": 2232,
+        "y": 543,
+        "w": 341,
+        "h": 363
+      },
+      "aspect": 0.9394,
+      "palette": [
+        {
+          "hex": "#f5f7f8",
+          "coverage": 0.7882
+        },
+        {
+          "hex": "#1b4a60",
+          "coverage": 0.0762
+        },
+        {
+          "hex": "#617f8a",
+          "coverage": 0.0588
+        },
+        {
+          "hex": "#9cb6c0",
+          "coverage": 0.0434
+        },
+        {
+          "hex": "#c3dae3",
+          "coverage": 0.0334
+        }
+      ],
+      "detail": {
+        "energy": 66.2294
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      }
+    },
+    {
+      "id": "facts",
+      "kind": "text",
+      "note": "three check lines: Round 292 was live at 14:00 · Round 293 came at 14:06 · 10 minutes old, inside 25 h",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.3828,
+        "y": 0.525,
+        "w": 0.2094,
+        "h": 0.1026
+      },
+      "px": {
+        "x": 1029,
+        "y": 798,
+        "w": 563,
+        "h": 156
+      },
+      "aspect": 3.609,
+      "palette": [
+        {
+          "hex": "#f7f8f8",
+          "coverage": 0.9075
+        },
+        {
+          "hex": "#111316",
+          "coverage": 0.0353
+        },
+        {
+          "hex": "#7e8084",
+          "coverage": 0.0205
+        },
+        {
+          "hex": "#bbbfc5",
+          "coverage": 0.0198
+        },
+        {
+          "hex": "#414548",
+          "coverage": 0.0169
+        }
+      ],
+      "detail": {
+        "energy": 51.3252
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 2,
+          "glyphs": 47,
+          "capHeightPx": 25.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.5486,
+          "advTall": null,
+          "advX": 0.6254,
+          "gap": 0.1173,
+          "xRatio": 0.5877,
+          "stemW": 0.1003,
+          "contrast": 1.0412,
+          "serif": null,
+          "densTall": null,
+          "densX": 0.439,
+          "weight": 0.439
+        },
+        "widthClass": "normal",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "slip-footer",
+      "kind": "text",
+      "note": "mono footer: settled 25 Oct 13:59 by 0xe5CA…aBC3, not the employer · tx 0x82ff…38b7 · Verify on Arc (petrol link)",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.3813,
+        "y": 0.6842,
+        "w": 0.5647,
+        "h": 0.0184
+      },
+      "px": {
+        "x": 1025,
+        "y": 1040,
+        "w": 1518,
+        "h": 28
+      },
+      "aspect": 54.2143,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.8608
+        },
+        {
+          "hex": "#b3b6b9",
+          "coverage": 0.0451
+        },
+        {
+          "hex": "#111315",
+          "coverage": 0.0383
+        },
+        {
+          "hex": "#4f5153",
+          "coverage": 0.0336
+        },
+        {
+          "hex": "#7e8087",
+          "coverage": 0.0221
+        }
+      ],
+      "detail": {
+        "energy": 52.5202
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 67,
+          "capHeightPx": 21.6,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6248,
+          "advTall": 0.5901,
+          "advX": 0.6248,
+          "gap": 0.1389,
+          "xRatio": 0.657,
+          "stemW": 0.1156,
+          "contrast": 1.0456,
+          "serif": 2.6637,
+          "densTall": 0.3814,
+          "densX": 0.4934,
+          "weight": 0.3814
+        },
+        "widthClass": "normal",
+        "weightClass": "regular"
+      }
+    },
+    {
+      "id": "timeline",
+      "kind": "chrome",
+      "note": "data timeline drawn at runtime: round markers 291 292(ringed) 293, payday star marker at 14:00, break, settlement dot 25 Oct",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.0461,
+        "y": 0.7171,
+        "w": 0.91,
+        "h": 0.0987
+      },
+      "px": {
+        "x": 124,
+        "y": 1090,
+        "w": 2446,
+        "h": 150
+      },
+      "aspect": 16.3067,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9758
+        },
+        {
+          "hex": "#b7b8b9",
+          "coverage": 0.0175
+        },
+        {
+          "hex": "#283d94",
+          "coverage": 0.0029
+        },
+        {
+          "hex": "#0f4c60",
+          "coverage": 0.0026
+        },
+        {
+          "hex": "#080808",
+          "coverage": 0.0012
+        }
+      ],
+      "detail": {
+        "energy": 15.61
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      }
+    },
+    {
+      "id": "coupons",
+      "kind": "control",
+      "note": "row of eleven payslip coupons 01-11 with perforated edges, each with a small rotated petrol HELD stamp; coupon 01 selected with a petrol outline",
+      "grid": null,
+      "codeDrawn": true,
+      "snap": false,
+      "box": {
+        "x": 0.0205,
+        "y": 0.8526,
+        "w": 0.9572,
+        "h": 0.1263
+      },
+      "px": {
+        "x": 55,
+        "y": 1296,
+        "w": 2573,
+        "h": 192
+      },
+      "aspect": 13.401,
+      "palette": [
+        {
+          "hex": "#f7f7f7",
+          "coverage": 0.9721
+        },
+        {
+          "hex": "#23556b",
+          "coverage": 0.0159
+        },
+        {
+          "hex": "#567f8f",
+          "coverage": 0.005
+        },
+        {
+          "hex": "#0a0a0e",
+          "coverage": 0.0037
+        },
+        {
+          "hex": "#bed2dd",
+          "coverage": 0.0032
+        }
+      ],
+      "detail": {
+        "energy": 18.3449
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": false
+      },
+      "type": {
+        "comp": null,
+        "measuredAt": "2026-10-25T22:48:39.153Z",
+        "note": "no separable lettering in the crop; size by the region box"
+      }
+    },
+    {
+      "id": "divider",
+      "kind": "chrome",
+      "note": "full-width hairline rule between the timeline and the coupon row",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0,
+        "y": 0.8257,
+        "w": 1,
+        "h": 0.0092
+      },
+      "px": {
+        "x": 0,
+        "y": 1255,
+        "w": 2688,
+        "h": 14
+      },
+      "aspect": 192,
+      "palette": [
+        {
+          "hex": "#f3f5f5",
+          "coverage": 1
+        }
+      ],
+      "detail": {
+        "energy": 3.3745
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "surface": {
+        "flat": false,
+        "rules": true
+      }
+    }
+  ],
+  "compSha256": "ed6dff2c859b149053ace0197587bae8355de88670a7ae4504c7726a2a964548",
+  "regionsSource": {
+    "path": ".impeccable/build/regions.json",
+    "sha256": "5b150db9a0e12ec95062a3439291f0e596c166f0c6b46f3326e126ee801fb91e"
+  }
+}

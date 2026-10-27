@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Scaffold reference: redesign-a-specimen.png</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Roboto+Condensed:wght@300&display=swap">
+  <link rel="stylesheet" href="layout.css">
+  <style>html,body{margin:0}body{background:#f7f8f8}.region{box-sizing:border-box}.region.text p{white-space:pre-wrap}</style>
+</head>
+<body>
+<!-- Reference only. Every region sits at its measured box inside a comp-aspect frame. Take the boxes (layout.css), keep your own semantic structure. -->
+<main class="comp-frame" style="max-width:2688px">
+  <div class="r-topbar region chrome" data-region="topbar"><!-- cool white top bar with a hairline bottom rule --></div>
+  <div class="r-brand region text" data-region="brand"><!-- wordmark Valuta, confident grotesk, ink --><p style="font-size:var(--r-brand-font);line-height:1.05;margin:0">brand</p></div>
+  <div class="r-nav-links region text" data-region="nav-links"><!-- links Payrolls, New payroll, Rate lookup --><p style="font-size:var(--r-nav-links-font);line-height:1.05;margin:0">nav-links</p></div>
+  <div class="r-live region text" data-region="live"><!-- pulsing petrol dot plus Arc mainnet · block 27,861,402 (live block height) --><p style="font-size:var(--r-live-font);line-height:1.05;margin:0">live</p></div>
+  <div class="r-connect region control" data-region="connect"><!-- petrol filled button Connect wallet: match the control's lettering and visible shape to the crop (comp-spec.mjs --crop connect); a control need not have button chrome --></div>
+  <div class="r-claim region text" data-region="claim"><!-- the claim at display size over six lines: Salaries agreed in pesos, paid in USDC at the rate that was live on payday, however late it settles. --><p style="font-size:var(--r-claim-font);font-family:var(--r-claim-family),sans-serif;font-weight:var(--r-claim-weight);line-height:1.05;margin:0">claim</p></div>
+  <div class="r-countdown region control" data-region="countdown"><!-- amber outlined chip with clock icon: Payroll 2 · next value date in 01:59:41: match the control's lettering and visible shape to the crop (comp-spec.mjs --crop countdown); a control need not have button chrome --></div>
+  <div class="r-slip-card region chrome" data-region="slip-card"><!-- the payslip: white security paper card, perforated top edge, faint guilloché line ground, soft offset shadow --></div>
+  <div class="r-slip-header region text" data-region="slip-header"><!-- small-caps mono header VALUTA PAYSLIP · No. 01 of 20 · PAYROLL 1 --><p style="font-size:var(--r-slip-header-font);line-height:1.05;margin:0">slip-header</p></div>
+  <div class="r-stamp region text" data-region="stamp"><!-- petrol rubber stamp rotated -3 degrees, bordered: VALUE 15 OCT 2026 · 14:00 UTC (code-drawn text in a rotated bordered box) --><p style="line-height:1.05;margin:0">stamp</p></div>
+  <div class="r-salary region text" data-region="salary"><!-- mono line Salary MXN 1.00 --><p style="font-size:var(--r-salary-font);line-height:1.05;margin:0">salary</p></div>
+  <div class="r-rate-line region text" data-region="rate-line"><!-- mono line Rate MXN/USD 0.05389760 (≈ 18.55 MXN per USD) · Chainlink round 292, published 13:50, between dashed rules --><p style="font-size:var(--r-rate-line-font);line-height:1.05;margin:0">rate-line</p></div>
+  <div class="r-amount region text" data-region="amount"><!-- the paid amount, very large carbon-blue mono: 0.053897 USDC --><p style="font-size:var(--r-amount-font);font-family:var(--r-amount-family),sans-serif;font-weight:var(--r-amount-weight);line-height:1.05;margin:0">amount</p></div>
+  <div class="r-counterfactual region text" data-region="counterfactual"><!-- grey mono struck through: 0.053567 at the 25 Oct rate it settled on --><p style="line-height:1.05;margin:0">counterfactual</p></div>
+  <div class="r-seal region chrome" data-region="seal"><!-- round guilloché seal with RATE HELD, generated at runtime as SVG from the payslip's round id (rosette of petrol line loops) --></div>
+  <div class="r-facts region text" data-region="facts"><!-- three check lines: Round 292 was live at 14:00 · Round 293 came at 14:06 · 10 minutes old, inside 25 h --><p style="font-size:var(--r-facts-font);line-height:1.05;margin:0">facts</p></div>
+  <div class="r-slip-footer region text" data-region="slip-footer"><!-- mono footer: settled 25 Oct 13:59 by 0xe5CA…aBC3, not the employer · tx 0x82ff…38b7 · Verify on Arc (petrol link) --><p style="font-size:var(--r-slip-footer-font);line-height:1.05;margin:0">slip-footer</p></div>
+  <div class="r-timeline region chrome" data-region="timeline"><!-- data timeline drawn at runtime: round markers 291 292(ringed) 293, payday star marker at 14:00, break, settlement dot 25 Oct --></div>
+  <div class="r-coupons region control" data-region="coupons"><!-- row of eleven payslip coupons 01-11 with perforated edges, each with a small rotated petrol HELD stamp; coupon 01 selected with a petrol outline: match the control's lettering and visible shape to the crop (comp-spec.mjs --crop coupons); a control need not have button chrome --></div>
+  <div class="r-divider region chrome" data-region="divider"><!-- full-width hairline rule between the timeline and the coupon row --></div>
+</main>
+</body>
+</html>

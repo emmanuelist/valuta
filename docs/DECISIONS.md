@@ -88,3 +88,95 @@ An app that rebuilds payslips from `PaydaySettled` logs needs about 17 requests 
 - About 110k more gas per payday (~0.002 USDC at 20 gwei).
 - v1 (`0x2bDF…76e9`) stays on mainnet as history (E-011 to E-014). Both its payrolls were ended and their reserves reclaimed to EMPLOYER (E-015).
 - The payrolls and the stranger's back-pay settlement are recreated on v2.
+
+## D-016 · Arc Studio's daily usage cap reached; fixes batched into two turns · 2026-10-25 · accepted
+**Context:** Studio turn 7 (the app) ended `budget_exceeded`: 100% of the user's daily limit, a 24-hour window (`arc-studio usage --json`), after seven turns today. It wrote all 20 app files and got lint and typecheck green inside its sandbox, but its own `vite build` step didn't run (it passes locally).
+**Decision:** no hand edits (D-002). Every fix found in today's inspection (hero fidelity, value-axis label collisions, exact 8-decimal rates, two-unit lateness, mobile overflow, the /new and /lookup pages, bundle size) is batched into two prompts written in advance: `prompts/08-hero-fidelity.md` (priority) and `prompts/09-pages-and-engineering.md`. They run as soon as capacity returns, expected around 2026-10-26 12:00 UTC.
+**Alternatives:** the builder can buy a usage increase with `arc-studio upgrade` (a one-time payment for the org). That's the builder's decision; agents must never run it.
+**Consequences:** M2 (due 2026-10-26 22:00 UTC) depends on Monday's Studio capacity. README, evidence and video work continue in parallel, because they aren't code.
+
+## D-017 · Redesign: the payslip is the hero · 2026-10-25 · supersedes the comp-4 composition (surface brief)
+**Context:** the builder found the UI not exciting or modern enough. The Impeccable critique (dual-agent, 2026-10-25) scored it 19/40 (Poor), with craft 4/10 against Setoff 8 and Warrant 9. Its P0: the proof axis is unreadable on real data, because the comp was approved on the one payday whose rounds were an hour apart, while real Arc FX rounds are 7–24 h apart. Snapshot: `.impeccable/critique/2026-10-25T22-26-13Z__src-app-tsx.md`.
+**Decision (the builder's answers):** "Payslip is the hero", "Full redesign + all fixes", "Wait for the free reset", "I'll add Higgsfield credits".
+- The payslip becomes the signature object: a value-date stamp, one honest timeline, a struck-through counterfactual at the settlement-time rate (from `asOf(currency, settledAt)`), three proof facts, a "RATE HELD" seal, and the settler shown.
+- Raises from the redesign seed (`026e9c61…`): stamped coupon states (HELD / DUE / CREDITED / VOID), a value-date scrubber that drives the whole page, and slips registered on one baseline.
+- Light theme, comp-led again once credits exist.
+**Consequences:** the redesign runs as Studio turns after the daily reset (around 2026-10-26 12:00 UTC). It replaces prompts 08 and 09: their fixes are absorbed into the redesign prompts. The target is a re-run critique of ≥ 32/40 and a clear win over both references.
+
+## D-018 · Redesign faces chosen by visual match, overriding the metric matcher's pick · 2026-10-25 · accepted
+**Context:** Impeccable's font-match ranks faces by advance width and ink density. For the approved comp (`redesign-a-specimen.png`) it picked Nunito 700 for the claim (rounded terminals, where the comp shows a sharp neo-grotesk) and Roboto Condensed 300 for the amount (proportional, where tabular figures need monospace). Re-ranking with in-character candidates didn't change the metric's order.
+**Decision:** a side-by-side specimen against the comp crops (rendered in the browser, 2026-10-25) chose:
+- **Hanken Grotesk** for all words: single-storey g, crisp terminals, matching proportions
+- **Spline Sans Mono** (light) for every figure: the plain zero and carbon-numeral feel of the comp
+
+Setoff's Archivo and Warrant's Mona Sans were excluded on purpose, so each product keeps its own voice. The spec keeps font-match's record; the build uses these faces, and the hero gate's cap-height, weight and width readings will check the fit.
+**Consequences:** if the hero gate flags a family mismatch, address it by the measured readings, not by switching to Nunito.
+
+## D-019 · One home page that is also the landing page; the redesign queue becomes four turns · 2026-10-25 · accepted
+**Context:** the builder asked whether Valuta gets a home page or a landing page. Both reference builds use one page: the live product and the claim in the first viewport, then story sections below. Setoff (round-1 winner) has "Try to break it", "How a debt clears" and "Stated plainly"; Warrant has its lock story and refusals. The queued spec covered only the first viewport. Impeccable's sections phase builds the rest of a surface inside the recorded system, with no new comp.
+**Decision:** `/` stays the product. The approved comp's first viewport, the claim plus a live mainnet payslip, is the proof, before any click. Below the fold the page reads as the reverse of the payslip:
+- "Try to cheat it.": four live read-only attempts on the selected payslip. Settled payslips are replayed at `settledBlock − 1` (E-022).
+- "How a payday is priced": four clauses filled from chain reads.
+- "Every payroll": the register, with Create a payroll.
+- The imprint: built in Arc Studio, stated plainly, the contract.
+
+There's no separate marketing page. It would put a click between the judge and the proof, and it would cost a comp and a Studio turn.
+
+The same pass makes two more changes:
+- Fonts are self-hosted from `@fontsource-variable`, because Impeccable's first-viewport capture refuses font CDNs.
+- One `tryCheat` function serves both due and settled payslips.
+
+**Queue:**
+- 08: the hero (spec + comp)
+- 09: home sections, settle flow, employer panel, document head
+- 10: responsive, accessibility, states
+- 11: /new, /lookup, bundle
+
+The superseded drafts moved to `internal/prompts-unsent/`.
+**Consequences:** one more Studio turn than planned. If capacity runs short, 11 is the turn to trim, since /new and /lookup already work from turn 7.
+
+## D-020 · Payroll 3 (EUR, daily to 4 Dec) keeps the app live through judging · 2026-10-25 · accepted
+**Context:** the keeper runs only on the builder's laptop, which travels on 2026-10-28. Payroll 2's last payday is 2026-10-28 12:00 UTC and payroll 1's is 2026-11-03 14:00 UTC, while judging starts after 2026-11-02 04:59 UTC. Without a new payroll, judges looking after 3 Nov would see nothing upcoming. The claim also names euros, and no payroll paid in them.
+**Decision (the builder's yes):** payroll 3, EUR 0.01 a day at 14:00 UTC from 2026-10-26, 40 paydays to 2026-12-04, reserve 0.47 USDC (40 × 0.011202 at EUR/USD 1.1203, with headroom for a stronger euro), paid to a fresh wallet WORKER_EU (E-023).
+**Consequences:**
+- The countdown always has a value date ahead during judging.
+- After 2026-10-28 no keeper runs, so due paydays wait with their amounts fixed. Judges can settle them, or try to cheat them.
+- The README and footer must say this plainly instead of "settled within minutes".
+- After judging, end payroll 3, reclaim its reserve and sweep WORKER_EU with the other wallets.
+
+
+## D-021 · The redesign turns run back to back the moment Studio opens · 2026-10-25 · supersedes D-019's queue
+**Context:** the builder: "Now that you know the limit of the Studio, build at once all we can in the next session when it is open, so that we have ample time tomorrow." Studio's cap is daily (D-016), so idle capacity in an open window is lost, and every turn re-reads the workspace, which costs quota.
+**Decision:** three turns instead of four. Old 10 and 11 merge into `prompts/10-responsive-states-pages.md`. They are chained by `internal/studio-chain.sh`, with no wait between them. Each turn has a "Before you finish" check at the target viewports.
+- Gate 1: the builder's accepted component review (`component-review verify`), or their explicit word to skip it.
+- Gate 2: Studio capacity. Turn 08 starts below 60% used, so the hero is never cut mid-turn. Turns 09 and 10 start below 95%.
+
+After each turn the chain pulls, syncs Studio's deletions in `src/`, `public/` and `scripts/`, and commits as "studio turn NN". It stops on any status other than `completed`.
+**Consequences:** sections and responsive work land before the hero gate is run. The gates run afterwards on the full build, and the next window goes to fixes. If the cap cuts turn 10, its unfinished part carries into that window.
+
+## D-022 · Colour is the payday's state · 2026-10-26 · accepted
+**Context:** the builder asked whether colour would carry meaning. An audit of the turn 08–10 code found the mapping mostly right: coupons, stamp, timeline and cheat stamps agree. It also found three gaps. The register had no state colour, so a payroll with paydays due looked like one with none. Form errors used void red. /lookup never marked a stale rate. Tokens were named for paint (`--petrol`, `--amber`), and two undeclared colours had crept in.
+**Decision:**
+- Semantic tokens alias the palette: `--state-upcoming` (secondary), `--state-due` (amber), `--state-held` (petrol), `--state-paid` (carbon), `--state-void` (red), `--state-late` (secondary).
+- Lateness stays colourless on purpose, because it changes nothing; that is the thesis.
+- Red means only "the chain refused".
+- The register gains a payday strip per payroll, in the coupons' own colours.
+- No new hues.
+
+Sent in Studio turn 11, section D.
+**Consequences:** the documenter records this vocabulary in DESIGN.md. Any surface that invents a synonym or a colour for an existing state is a bug.
+
+## D-023 · The initial bundle stays at about 494 kB gzipped · 2026-10-26 · accepted
+**Context:** turns 10 and 11 split /new and /lookup out (3–6 kB each), but the initial chunk stayed at about 494 kB gzipped, against a 250 kB target. Studio reported that wagmi, viem, ConnectKit and framer-motion form one import graph: `manualChunks` produced circular chunks and a larger bundle. Getting under 250 kB means replacing the wallet stack with a plain viem client plus an on-demand wallet adapter.
+**Decision:** keep it. The user-facing target is met: a cold production load renders payslip 01 with its proof facts in 2.3 s, using 5 batched RPC calls (`vite preview`, 2026-10-26). A wallet-stack rewrite two days before submission puts the settle flow at risk, and the film's live settlement depends on that flow.
+**Consequences:** revisit after judging, if the product continues.
+
+## D-024 · The film's Studio chapter is the builder's own screen recording · 2026-10-27 · accepted
+**Context:** the submission video must show "the build in Arc Studio". studio.arc.io sits behind Cloudflare, which refused the automated capture browser even with the builder's login, so the Studio chapter could not be filmed the way the app chapters are.
+**Decision:** the builder recorded their Studio workspace in their own Chrome (99 s: turn 20's report beside the Preview of the app, then the Code view on `Valuta.sol`). `internal/film/scripts/studio.ts` cuts it to the narration without restaging anything: two shots from the recording, scaled to 16:9 with Studio's own ground filling the 24 px left over, then the live Sourcify page for the mainnet contract ("Exact Match", runtime and creation bytecode), where the film window's address bar switches to Sourcify.
+**Consequences:** the Studio chapter is fixed footage; re-cutting it needs the recording (kept in `internal/film/film/studio/src.mov`). The settle chapter's narration now says "in about two seconds", the measured click-to-settled time, instead of "about a second".
+
+## D-025 · Submission-day benchmark: five fixes, and what stays as it is · 2026-10-27 · accepted
+**Context:** benchmark of 524e177 (`internal/benchmarks/2026-10-27-524e177.md`): rubric fit 2, evidence 2, differentiation 3, integration 3, resilience 2, advantage 2, demo 2. Top finding: the brief asks for a transaction "through your contract and app", and the README listed only script-sent ones.
+**Decision:** fix only copy, evidence and the film: the app-sent settle in the README and the submission's example tx; the settle chapter ends on that tx's explorer page; a "Where it goes next" section (the 20% criterion); a copy-paste `cast call` replay of the refusal; the repo public at submission. Not doing, with reasons: the app's receipt race (needs a Studio turn on the frozen demo path, and the payslip shows the settlement anyway); the bundle size (D-023); DESIGN.md (no judge sees it today); wallet-rejection runs (no wallet on the judge's path); the stale narration anchors (no visible change).
+**Consequences:** the app itself is unchanged on submission day.

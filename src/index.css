@@ -1,13 +1,478 @@
+/* Self-hosted variable fonts — imported in main.tsx */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
+/* ── Design tokens ──────────────────────────────────────────────────── */
+:root {
+  --ground:     #F6F8F9;
+  --paper:      #FFFFFF;
+  --ink:        #0E1B26;
+  --secondary:  #4F5B66;
+  --rule:       #DCE2E6;
+  --petrol:     #0B4F6C;
+  --ptint:      #E3EEF3;
+  --carbon:     #1F3886;
+  --amber:      #9A6417;
+  --ambtint:    #F5E7CF;
+  --void:       #B42318;
+
+  /* ── Semantic state tokens ──────────────────────────────────────── */
+  --state-upcoming: var(--secondary);
+  --state-due:      var(--amber);
+  --state-due-tint: var(--ambtint);
+  /* --state-due-ink: darker amber for text on tint, ≥4.5:1 on #F5E7CF */
+  --state-due-ink:  #6B3A0C;
+  --green:          #1A6B47;
+  --gtint:          #E4F2EA;
+  --state-held:     var(--green);
+  --state-held-tint: var(--gtint);
+  --state-paid:     var(--green);
+  --state-credited: var(--carbon);
+  --state-void:     var(--void);
+  --state-late:     var(--secondary);
+
+  --font-words: 'Hanken Grotesk Variable', system-ui, sans-serif;
+  --font-mono:  'Spline Sans Mono Variable', 'Menlo', monospace;
+  --shadow-paper: 0 1px 2px rgba(14,27,38,.05), 0 18px 40px -18px rgba(14,27,38,.18);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  color-scheme: light;
+  caret-color: var(--petrol);
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-words);
+  -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--ptint); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--petrol);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+a {
+  color: var(--petrol);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:hover { opacity: .8; }
+
+/* ── Mono utility ───────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Placeholder contrast (≥4.5:1 on white) ──────────────────────── */
+input::placeholder, textarea::placeholder { color: #6B7A84; opacity: 1; }
+
+/* ── Perforated edge ────────────────────────────────────────────────── */
+.perf-top {
+  --r: 7px;
+  -webkit-mask-image: radial-gradient(circle at 50% 0%, transparent var(--r), black calc(var(--r) + 1px));
+  -webkit-mask-size: calc(var(--r) * 2 + 4px) 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-image: radial-gradient(circle at 50% 0%, transparent var(--r), black calc(var(--r) + 1px));
+  mask-size: calc(var(--r) * 2 + 4px) 100%;
+  mask-repeat: repeat-x;
+}
+
+/* ── Form inputs ────────────────────────────────────────────────────── */
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-family: var(--font-words);
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--paper);
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+.form-input:focus { border-color: var(--petrol); }
+select.form-input { cursor: pointer; }
+
+/* Form field errors — amber border + ink text, NOT red */
+.field-error {
+  font-family: var(--font-words);
+  font-size: 13px;
+  color: var(--ink);
+  margin-top: 4px;
+}
+.field-error-border { border-color: var(--amber) !important; }
+
+/* ── Skeleton shimmer ───────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--rule) 25%, #eceff1 50%, var(--rule) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; background: var(--rule); }
+}
+
+/* ── Pulse dot ──────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .3; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot { animation: none; }
+}
+
+/* ── Coupon row ─────────────────────────────────────────────────────── */
+.coupon-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+  padding-bottom: 4px;
+  /* right padding = gap so last coupon has breathing room */
+  padding-right: 8px;
+  /* soft fade over last 32px to signal more coupons off-screen */
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+}
+.coupon-row::-webkit-scrollbar { height: 4px; }
+.coupon-row::-webkit-scrollbar-track { background: transparent; }
+.coupon-row::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+
+.coupon-item { scroll-snap-align: start; flex-shrink: 0; }
+.coupon-border { border: 1.5px dashed var(--rule); border-radius: 6px; }
+
+/* ── Stamp ──────────────────────────────────────────────────────────── */
+.stamp {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .08em;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  transform: rotate(-6deg);
+  display: inline-block;
+  line-height: 1.2;
+}
+
+/* ── Timeline ───────────────────────────────────────────────────────── */
+.timeline-break {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--secondary);
+  letter-spacing: .05em;
+  user-select: none;
+}
+
+/* ── TopBar responsive ──────────────────────────────────────────────── */
+@media (max-width: 699px) {
+  .topbar-mark   { width: 24px !important; height: 24px !important; }
+  .topbar-links  { display: none !important; }
+  .topbar-block  { display: none !important; }
+  .topbar-connect { display: none !important; }
+  .topbar-menu-btn { display: flex !important; }
+}
+
+/* ── Section wrappers ───────────────────────────────────────────────── */
+.section-outer {
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 2vw, 27px);
+}
+
+/* ── Home layout ────────────────────────────────────────────────────── */
+
+/* ≥1100px: two-column side-by-side
+   Topbar=63px + padding-top=12px = 75px → card top y=75
+   Claim is inside home-left which has its own margin-top=44px → y≈119 */
+.home-layout {
+  display: flex;
+  gap: clamp(28px, 3.5vw, 56px);
+  padding-top: 12px;
+  align-items: flex-start;
+}
+
+.home-left {
+  width: clamp(300px, 28vw, 420px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* Claim at y=118, card top at y=75 → left col has extra top margin */
+  margin-top: 44px;
+}
+
+.home-right {
+  flex: 1;
+  min-width: 0;
+  max-width: 860px;
+}
+
+/* 700–1099px: single column */
+@media (max-width: 1099px) {
+  .home-layout { flex-direction: column !important; gap: 24px; padding-top: 32px; }
+  .home-left   { width: 100% !important; margin-top: 0 !important; }
+  .home-right  { width: 100% !important; max-width: 100%; }
+}
+
+/* ≤699px: phone layout */
+@media (max-width: 699px) {
+  .home-layout { padding-top: 16px; gap: 16px; }
+}
+
+/* ── Timeline block tight to 75px + timed coupon row ───────────────── */
+/* Timeline section: height exactly 80px, no extra margin above */
+.timeline-block {
+  height: 80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+/* On phone: auto height to accommodate vertical timeline */
+.timeline-block-phone {
+  overflow: hidden;
+  width: 100%;
+}
+/* Divider directly below timeline */
+.timeline-divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+/* Coupon row: 8px top / 8px bottom on desktop */
+.coupon-block {
+  padding: 8px 0 8px;
+}
+@media (max-width: 699px) {
+  .coupon-block { padding: 12px 0 12px; }
+}
+
+/* ── Payslip card responsive ────────────────────────────────────────── */
+
+/*
+  Desktop (≥700px):
+    payslip-body-row  — flex row, left takes all remaining space, seal on the right
+    payslip-body-left — fills remaining width
+    payslip-body-right — 171px seal column, aligned to top
+    payslip-facts-seal-row — no flex here; the seal lives in body-right
+    payslip-seal-phone-only — hidden: the phone duplicate seal
+*/
+.payslip-body-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.payslip-body-left {
+  flex: 1;
+  min-width: 0;
+}
+.payslip-body-right {
+  flex-shrink: 0;
+  margin-top: -8px; /* aligns seal top with amount cap-height */
+}
+/* Facts-seal sub-row: on desktop, just a plain block (seal is in body-right) */
+.payslip-facts-seal-row {
+  display: block;
+}
+/* Phone duplicate seal hidden on desktop */
+.payslip-seal-phone-only {
+  display: none;
+}
+
+/*
+  Phone (<700px):
+    payslip-body-row collapses to block (no flex row)
+    payslip-body-right (desktop seal) hidden
+    payslip-facts-seal-row becomes a flex row: facts-left + 96px seal-right
+    payslip-seal-phone-only shown
+    header stamp constrained to card width
+*/
+@media (max-width: 699px) {
+  .payslip-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  .payslip-body-row {
+    display: block;
+  }
+  .payslip-body-right {
+    display: none !important;
+  }
+  .payslip-facts-seal-row {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .payslip-seal-phone-only {
+    display: block !important;
+  }
+  /* Stamp: constrain to card width minus its own padding so it stays on one line */
+  .payslip-stamp {
+    max-width: calc(100vw - 96px) !important;
+    overflow: hidden;
+  }
+  .payslip-stamp-text {
+    font-size: clamp(12px, 3.5vw, 16px) !important;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+}
+
+/* ── Heading sizes ──────────────────────────────────────────────────── */
+.home-claim {
+  font-family: var(--font-words);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 51px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 24px;
+}
+
+@media (max-width: 1099px) {
+  .home-claim { font-size: clamp(26px, 5vw, 40px); }
+}
+
+@media (max-width: 699px) {
+  .home-claim { font-size: clamp(26px, 8vw, 32px); margin-bottom: 16px; }
+}
+
+/* ── Cheat section attempt rows ─────────────────────────────────────── */
+@media (max-width: 699px) {
+  .cheat-attempt-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+}
+
+/* ── Register ───────────────────────────────────────────────────────── */
+/* Phone: one ruled entry per payroll — hide wide table, show stacked */
+@media (max-width: 699px) {
+  .register-table-head   { display: none !important; }
+  .register-table-row    { 
+    display: block !important;
+    padding: 14px 16px !important;
+  }
+  .register-row-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: var(--font-words);
+    font-size: 15px;
+  }
+  .register-row-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+  }
+  .register-col-hide { display: none !important; }
+}
+@media (min-width: 700px) {
+  .register-row-title { display: none !important; }
+  .register-row-grid  { display: none !important; }
+}
+
+/* ── Payday strip in register ────────────────────────────────────────── */
+.payday-strip {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+  height: 6px;
+}
+.payday-segment {
+  flex: 1;
+  border-radius: 1px;
+  max-width: 12px;
+}
+
+/* ── Imprint footer ─────────────────────────────────────────────────── */
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+@media (max-width: 699px) {
+  .footer-cols {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ── /new two-column layout ─────────────────────────────────────────── */
+.new-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) 1fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px clamp(16px, 2vw, 40px);
+}
+@media (max-width: 1023px) {
+  .new-layout { grid-template-columns: 1fr; max-width: 560px; padding: 24px 16px; }
+}
+
+/* ── /lookup ────────────────────────────────────────────────────────── */
+.lookup-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+}
+@media (max-width: 699px) {
+  .lookup-rates-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Reduced motion: all transitions instant ────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Touch targets (min 44 × 44) ───────────────────────────────────── */
+button, [role="button"] { min-height: 36px; }
+@media (max-width: 699px) {
+  button, [role="button"], a { min-height: 44px; }
+}
+
+/* ── CountdownChip ── due state while countdown runs ────────────────── */
+.countdown-chip-due {
+  border-color: var(--state-due) !important;
+  background: var(--state-due-tint) !important;
+  color: var(--state-due-ink) !important;
+}
+@media (max-width: 699px) {
+  .countdown-chip-due {
+    width: 100% !important;
+    white-space: normal !important;
+    justify-content: flex-start;
+  }
 }

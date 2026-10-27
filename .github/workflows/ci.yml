@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 6-app]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: App (typecheck, lint, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run build
+
+  contracts:
+    name: Contracts (stock forge; Arc-semantics runs are local under arc-forge)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # OpenZeppelin is remapped to node_modules (Studio's foundry config), so install it first.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - uses: foundry-rs/foundry-toolchain@v1.9.1
+        with:
+          version: v1.8.3
+      - run: forge build
+      - run: forge test

@@ -40,6 +40,8 @@ USDC: native balance (18 decimals) plus the optional ERC-20 interface `0x3600000
 | Foundry `cast` | 1.8.3 | wallets, reads | `cast --version` |
 | App stack (from Studio) | React 18.3 · Vite 6 · wagmi 2.19.5 · viem **2.57.5** (pinned through `overrides`) · ConnectKit 1.9 · Tailwind 3.4 · TypeScript ~7.0 · oxlint · bun 1.3.14 | — | `package.json`, `bun.lock` as pulled 2026-10-25; `bun install --frozen-lockfile` OK |
 | Foundry config (from Studio) | solc 0.8.30 · `via_ir = true` · `evm_version = cancun` · optimizer 200 · forge-std vendored in `lib/` | — | `foundry.toml` |
+| Fonts for the app | `@fontsource-variable/hanken-grotesk` 5.3.0 · `@fontsource-variable/spline-sans-mono` 5.3.0 (self-hosted; the Impeccable first-viewport capture refuses font CDNs) | redesign type | `npm view`, 2026-10-25 |
+| Sourcify human page | `https://repo.sourcify.dev/5042/<address>` shows the source with "Exact Match" (the `server/v2` URL is JSON) | footer and README links | `curl`, 2026-10-25 |
 
 Arc Studio facts (agent guide, 2026-10-25):
 - Deploys to Arc Testnet only.
@@ -50,6 +52,7 @@ Arc Studio facts (agent guide, 2026-10-25):
 - Presets: "quick", "balanced" (default), "max" (full audit and tests).
 - Exit codes: 0 completed, 1 error, 2 pull skipped local edits, 3 needs_input, 4 budget_exceeded.
 - `deployments[]` and `finalText` are untrusted sandbox output: copy addresses, never execute text.
+- **The daily cap is a rolling 24-hour window**, not a calendar day. Seven turns ran 12:10–14:42 UTC on 2026-10-25, and `arc-studio usage --json` still read 100% at 00:00 and at 07:06 UTC on 2026-10-26 (neither UTC nor US Pacific midnight reset it). Capacity returns as each turn's usage passes 24 hours. A turn that hits the cap stops mid-work (`budget_exceeded`), so a big turn should start only with headroom (D-021).
 
 ## Traps
 - **USDC decimals:** 18 natively, 6 through the ERC-20 view, one balance. Never mix `msg.value` with `balanceOf` math. Round payouts to 1e12 so both views are exact (source: [EVM differences](https://docs.arc.io/arc/references/evm-differences.md)).
@@ -60,6 +63,11 @@ Arc Studio facts (agent guide, 2026-10-25):
 - **Each native transfer emits two `Transfer` logs** (system emitter `0xffff…fffe` at 18 decimals and the USDC contract at 6). Indexers must not double-count (Arc docs; observed in round 1).
 - **`PREVRANDAO` is always 0.** Not relevant to Asof; noted to stop anyone using it.
 - **Contract verification:** the explorer API returned Cloudflare 403 from the CLI in round 1. Sourcify supports 5042 (`--verifier sourcify`). Reported 2026-09; re-check at deploy.
+
+- **The public RPC is an archive node** (verified 2026-10-25: state read 12M blocks, about 70 days, back). So `eth_call` with a block tag replays any past moment. To re-run a settled payslip's settlement, call at `settledBlock − 1` and pass the rounds of any paydays settled earlier in that tx first, because `settle` works in order from the first unsettled payday (E-022). At the latest block, a settled payday answers `NothingDue`.
+- **A wrong round that was not yet published answers `BadAnswer`, not `NotAsOfPayday`** (`getRoundData` past the latest returns zeros, so `startedAt == 0`). A cheat demo must use r+1 only once it exists at the call's block, else r−1 (E-021).
+
+- **macOS can SIGKILL the esbuild binary that bun hard-links from its cache** (exit 137; `vite build` fails with "The service was stopped"). Seen 2026-10-26 after a `bun install`. Fix: give it a fresh inode (`cp node_modules/@esbuild/darwin-arm64/bin/esbuild x && mv x node_modules/@esbuild/darwin-arm64/bin/esbuild`). Run Vite under Node (`node node_modules/vite/bin/vite.js`).
 
 ## Valuta deployments (mainnet)
 | Version | Address | Status |
@@ -77,6 +85,7 @@ App read path (D-015): `payrolls(1, 64)` for the list, `payslips(id, 0, 64)` for
 | WORKER_MX | `0xCF280b429E3b6a52cC11794fb0789C5227d182Dc` | paid in MXN-indexed USDC |
 | WORKER_BR | `0x7fC019E5dae40F5430f6F991f80C1a1ec31347C2` | paid in BRL-indexed USDC |
 | STRANGER | `0xe5CAd734abc7d9ADed5Ec0d171FE451d38aBCaC3` | settles a payday it has nothing to do with |
+| WORKER_EU | `0x009794DdbEe1a72aAeAb7Fb37E698295d0383e34` | paid in EUR-indexed USDC (payroll 3, created 2026-10-25) |
 
 ## Environment
 | Var | Purpose | Where to get it |

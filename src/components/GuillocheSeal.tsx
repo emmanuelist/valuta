@@ -1,135 +1,173 @@
-// RATE HELD guilloché seal — concentric banknote wave-line rosette
-// Dense circular lines around a clear centre disc.  Every radius is
-// capped at 85 px so nothing spills outside its container.
+// GuillocheSeal — Seal A: notary seal (builder's choice, 2026-10-26)
+// Double ring, arc ring-text from the payslip's own reads, N-petal
+// hypotrochoid woven band deterministic on roundId+payday, brand centre.
+// viewBox: -90 -90 180 180 — all geometry in that space.
+// Sized to 171px on desktop, 96px on phones.
 
 import { useMemo } from 'react'
-import { aggRoundId } from '../lib/format'
+import { fmtAggRound } from '../lib/format'
 
 interface Props {
   roundId: bigint
   payday:  number
-  /** 'full' = settled (filled), 'outline' = due (strokes only), 'none' = upcoming */
+  /** 'full' = settled, 'outline' = due (no woven band), 'none' = upcoming */
   state:   'full' | 'outline' | 'none'
   size?:   number
 }
 
-function hashParam(rid: bigint, payday: number, slot: number): number {
-  const v = Number((rid ^ BigInt(payday)) % 100_000n) + slot * 137
-  return ((v * 48271) % 99991) / 99991
+const P = '#0B4F6C'
+
+// ── Deterministic hash ──────────────────────────────────────────────────────
+function hashBits(roundId: bigint, payday: number): number[] {
+  // Mix roundId low 32 bits with payday seconds
+  const a = Number(roundId & 0xFFFFFFFFn)
+  const b = payday & 0xFFFFFFFF
+  const bits: number[] = []
+  for (let i = 0; i < 8; i++) {
+    const v = ((a ^ (b << i) ^ (b >> (32 - i))) * 1_664_525 + 1_013_904_223) & 0xFFFFFFFF
+    bits.push(((v >>> 0) % 1000) / 1000)
+  }
+  return bits
 }
 
-function buildRosette(size: number, roundId: bigint, payday: number) {
-  const cx   = size / 2
-  const cy   = size / 2
-  // hard cap: never exceed 85 px radius regardless of size
-  const maxR = Math.min(size * 0.46, 85)
-  // centre disc: ~34px at size=171, proportional but min 20px
-  const minR = Math.max(20, size * 0.20)
-
-  const h    = (slot: number) => hashParam(aggRoundId(roundId), payday, slot)
-  const lineCount = Math.round(40 + h(0) * 50)  // 40–90 wave lines
-  const freq1     = 4  + Math.round(h(1) * 6)   // 4–10  primary frequency
-  const freq2     = 9  + Math.round(h(2) * 9)   // 9–18  secondary frequency
-  const phase     = h(3) * Math.PI * 2
-  const amp       = (maxR - minR) * (0.05 + h(4) * 0.07) // 5–12 % of ring
-  const sw        = 0.5 + h(5) * 0.25           // 0.5–0.75 px stroke
-
-  const STEPS = 300
-  const paths: string[] = []
-
-  for (let li = 0; li < lineCount; li++) {
-    const t01    = li / (lineCount - 1)          // 0 → 1 across the ring
-    const baseR  = minR + (maxR - minR) * t01
-    const phOff  = t01 * Math.PI * 2 * 1.5       // slight phase shift per line
-
-    const pts: string[] = []
-    for (let si = 0; si <= STEPS; si++) {
-      const theta = (si / STEPS) * Math.PI * 2
-      const r     = baseR
-        + amp * Math.sin(freq1 * theta + phase + phOff)
-        + amp * 0.4 * Math.cos(freq2 * theta - phase)
-      const rx = cx + r * Math.cos(theta)
-      const ry = cy + r * Math.sin(theta)
-      pts.push(si === 0 ? `M${rx.toFixed(1)},${ry.toFixed(1)}` : `L${rx.toFixed(1)},${ry.toFixed(1)}`)
-    }
-    pts.push('Z')
-    paths.push(pts.join(' '))
+// ── Hypotrochoid path ───────────────────────────────────────────────────────
+// x = (R-r)cos t + d cos(((R-r)/r) t)
+// y = (R-r)sin t - d sin(((R-r)/r) t)
+// turns = r / gcd(R, r)  (where R, r are integers — we use R=58, r=58/N)
+// Since r = 58/N and N is integer, r is rational; to get integer turns we use
+// turns = N / gcd(N, 1) = N, so we loop for N full turns of t, ~1600 steps.
+function trochPath(R: number, N: number, d: number, steps = 1600): string {
+  const r = R / N
+  const k = (R - r) / r
+  const turns = N
+  let s = ''
+  for (let i = 0; i <= steps; i++) {
+    const t = (i / steps) * 2 * Math.PI * turns
+    const x = (R - r) * Math.cos(t) + d * Math.cos(k * t)
+    const y = (R - r) * Math.sin(t) - d * Math.sin(k * t)
+    s += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2)
   }
+  return s
+}
 
-  return { paths, strokeW: sw, cx, cy, maxR, minR }
+// ── Date formatting for ring text ───────────────────────────────────────────
+const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+function sealDate(ts: number): string {
+  const d = new Date(ts * 1000)
+  const dd  = String(d.getUTCDate()).padStart(2, '0')
+  const mon = MONTHS[d.getUTCMonth()]
+  const yr  = d.getUTCFullYear()
+  return `${dd} ${mon} ${yr}`
+}
+function sealTime(ts: number): string {
+  const d = new Date(ts * 1000)
+  const hh = String(d.getUTCHours()).padStart(2, '0')
+  const mm = String(d.getUTCMinutes()).padStart(2, '0')
+  return `${hh}:${mm}`
 }
 
 export function GuillocheSeal({ roundId, payday, state, size = 171 }: Props) {
-  const rosette = useMemo(
-    () => buildRosette(size, roundId, payday),
-    [size, roundId, payday],
-  )
+  // Hash → N, copies, d
+  const [N, copies, d] = useMemo(() => {
+    const h = hashBits(roundId, payday)
+    const nVal  = 14 + Math.round(h[0] * 6)     // 14–20
+    const cpVal = 4  + Math.round(h[1] * 2)      // 4–6
+    const dVal  = 8  + Math.round(h[2] * 3)      // 8–11
+    return [nVal, cpVal, dVal]
+  }, [roundId, payday])
+
+  // Trochoid paths — only for full state
+  const trochPaths = useMemo(() => {
+    if (state !== 'full') return []
+    const base = trochPath(58, N, d)
+    const paths: string[] = []
+    for (let k = 0; k < copies; k++) {
+      paths.push(base) // each copy is rotated via a <g transform="rotate(...)">
+    }
+    return paths
+  }, [state, N, copies, d])
 
   if (state === 'none') return null
 
-  const { paths, strokeW, cx, cy, maxR, minR } = rosette
-  const stroke  = '#0B4F6C'
-  // Faint watermark: 35–45% opacity per-line; lines overlap so apparent
-  // density is higher — keep individual strokes light to avoid a dark knot.
-  const opacity = state === 'full' ? 0.38 : 0.28
-  const fontSize = Math.round(size * 0.115)
+  const round = fmtAggRound(roundId)
+  const dateStr = sealDate(payday)
+  const timeStr = sealTime(payday)
+  const isDue = state === 'outline'
+  const ringText = isDue
+    ? `RATE FIXED · ROUND ${round} · VALUE ${dateStr} · ${timeStr} UTC · `
+    : `RATE HELD · CHAINLINK ROUND ${round} · VALUE ${dateStr} · ${timeStr} UTC · `
 
+  // Skip ring text on very small seals (< 120px) — too small to read
+  const showRingText = size >= 120
+
+  // Scale: the reference uses a 180×180 viewBox (-90..90).
+  // We render at `size` × `size` with viewBox="-90 -90 180 180".
   return (
     <svg
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox="-90 -90 180 180"
       aria-hidden="true"
-      style={{ display: 'block', flexShrink: 0, overflow: 'hidden' }}
+      style={{ display: 'block', flexShrink: 0, overflow: 'visible' }}
     >
-      {/* Outer ring fill (settled only) */}
-      {state === 'full' && (
-        <circle cx={cx} cy={cy} r={maxR + 3} fill="#E3EEF3" opacity={0.45} />
+      <defs>
+        {/* Arc path for ring text — full circle r=77 */}
+        <path
+          id={`ring-${String(roundId)}-${payday}`}
+          d="M -77 0 A 77 77 0 1 1 77 0 A 77 77 0 1 1 -77 0"
+        />
+      </defs>
+
+      {/* Outer ring */}
+      <circle r={86} fill="none" stroke={P} strokeWidth={1.4} />
+
+      {/* Inner ring */}
+      <circle r={68} fill="none" stroke={P} strokeWidth={0.8} />
+
+      {/* Ring text — settled and due, at full size */}
+      {showRingText && (
+        <text
+          fill={P}
+          fontFamily="'Spline Sans Mono Variable', 'Spline Sans Mono', monospace"
+          fontSize={8.6}
+          letterSpacing="1.6"
+        >
+          <textPath href={`#ring-${String(roundId)}-${payday}`}>
+            {ringText}
+          </textPath>
+        </text>
       )}
 
-      {/* Wave lines */}
-      {paths.map((d, i) => (
-        <path
-          key={i}
-          d={d}
-          fill="none"
-          stroke={stroke}
-          strokeWidth={strokeW}
-          opacity={opacity}
-        />
+      {/* Woven band — settled only */}
+      {state === 'full' && trochPaths.map((path, k) => (
+        <g key={k} transform={`rotate(${((k * 360) / N / copies).toFixed(3)})`}>
+          <path
+            d={path}
+            fill="none"
+            stroke={P}
+            strokeWidth={0.45}
+            opacity={0.55}
+          />
+        </g>
       ))}
 
-      {/* Outer border ring */}
-      <circle cx={cx} cy={cy} r={maxR + 3} fill="none" stroke={stroke} strokeWidth={1} opacity={0.4} />
+      {/* White centre disc */}
+      <circle r={30} fill="var(--paper)" />
 
-      {/* Clear centre disc — always paper-white so text reads clearly */}
-      <circle
-        cx={cx} cy={cy} r={minR - 1}
-        fill="var(--paper)"
-        stroke={stroke} strokeWidth={0.8} opacity={0.5}
+      {/* Brand: track stubs */}
+      <path
+        d="M -24 0 H -16 M 16 0 H 24"
+        stroke={P}
+        strokeWidth={2}
+        strokeLinecap="round"
+        opacity={0.6}
       />
 
-      {/* "RATE HELD" text — two lines centred in the clear disc */}
-      <text
-        x={cx} y={cy - fontSize * 0.6}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="'Hanken Grotesk Variable', sans-serif"
-        fontWeight={700}
-        fontSize={fontSize}
-        fill={stroke}
-        letterSpacing="0.06em"
-      >RATE</text>
-      <text
-        x={cx} y={cy + fontSize * 0.7}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="'Hanken Grotesk Variable', sans-serif"
-        fontWeight={700}
-        fontSize={fontSize}
-        fill={stroke}
-        letterSpacing="0.06em"
-      >HELD</text>
+      {/* Brand: ring */}
+      <circle r={11} fill="none" stroke={P} strokeWidth={3} />
+
+      {/* Brand: dot */}
+      <circle r={4.4} fill={P} />
     </svg>
   )
 }

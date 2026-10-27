@@ -1,7 +1,8 @@
 // CouponRow — one coupon per payday, scroll-snap, keyboard navigation
 import { useEffect, useRef, useCallback } from 'react'
+import { Clock } from 'lucide-react'
 import type { Payroll, Payslip, DueQuote } from '../lib/types'
-import { fmtDate } from '../lib/format'
+import { fmtDate, fmtTime } from '../lib/format'
 
 type CouponState = 'HELD' | 'DUE' | 'CREDITED' | 'upcoming'
 
@@ -42,15 +43,16 @@ const STATE_COLORS: Record<CouponState, { fg: string; border: string; bg: string
 }
 
 interface Props {
-  payroll:   Payroll
-  payslips:  Payslip[]
-  dueQuotes: DueQuote[]
-  selected:  number
-  onSelect:  (i: number) => void
-  newlyDue?: number | null
+  payroll:      Payroll
+  payslips:     Payslip[]
+  dueQuotes:    DueQuote[]
+  selected:     number
+  onSelect:     (i: number) => void
+  newlyDue?:    number | null
+  newlyHeld?:   number | null
 }
 
-export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, newlyDue }: Props) {
+export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, newlyDue, newlyHeld }: Props) {
   const rowRef     = useRef<HTMLDivElement>(null)
   const couponRefs = useRef<(HTMLButtonElement | null)[]>([])
 
@@ -90,9 +92,24 @@ export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, ne
       style={{ outline: 'none', minHeight: 96 }}
     >
       {coupons.map((c) => {
-        const isSelected = c.index === selected
-        const colors     = STATE_COLORS[c.state]
-        const isNewlyDue = c.index === newlyDue
+        const isSelected   = c.index === selected
+        const colors       = STATE_COLORS[c.state]
+        const isNewlyDue   = c.index === newlyDue
+        const isNewlyHeld  = c.index === newlyHeld
+        const isUpcoming   = c.state === 'upcoming'
+
+        // Selected background tint by state
+        const selectedBg = c.state === 'HELD' ? 'var(--state-held-tint)'
+          : c.state === 'DUE'      ? 'var(--state-due-tint)'
+          : c.state === 'CREDITED' ? 'var(--ptint)'
+          : 'var(--ground)'
+
+        // Upcoming: solid border; state coupons: dashed
+        const borderStyle = isUpcoming
+          ? `1px solid var(--rule)`
+          : isSelected
+            ? `2px solid var(--petrol)`
+            : `1.5px dashed ${colors.border}`
 
         return (
           <button
@@ -106,49 +123,76 @@ export function CouponRow({ payroll, payslips, dueQuotes, selected, onSelect, ne
             style={{
               width: 112,
               height: 96,
-              background: isSelected
-                ? (c.state === 'HELD' ? 'var(--state-held-tint)' : c.state === 'DUE' ? 'var(--state-due-tint)' : c.state === 'CREDITED' ? 'var(--ptint)' : 'var(--ground)')
-                : 'var(--paper)',
-              border: isSelected
-                ? `2px solid var(--petrol)`
-                : `1.5px dashed ${colors.border}`,
+              background: isSelected && !isUpcoming ? selectedBg : 'var(--paper)',
+              border: borderStyle,
               borderRadius: 6,
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 6,
+              gap: isUpcoming ? 4 : 6,
               padding: 8,
               position: 'relative',
               transition: 'border-color .15s, background .15s',
               outline: 'none',
               animation: isNewlyDue ? 'shimmer .2s ease-in-out' : undefined,
+              boxShadow: 'none',
             }}
           >
-            {/* Number */}
+            {/* Number — full ink for upcoming, state colour when selected */}
             <div
               style={{
                 fontFamily: 'var(--font-words)',
                 fontWeight: 600,
                 fontSize: 22,
-                color: isSelected ? colors.fg : 'var(--ink)',
+                color: isUpcoming
+                  ? 'var(--ink)'
+                  : isSelected ? colors.fg : 'var(--ink)',
                 lineHeight: 1,
               }}
             >
               {String(c.index + 1).padStart(2, '0')}
             </div>
 
-            {/* State stamp */}
-            <div
-              className="stamp"
-              style={{
-                color: colors.fg,
-                borderColor: colors.fg,
-              }}
-            >
-              {c.label}
-            </div>
+            {isUpcoming ? (
+              /* Upcoming: date + clock icon — real scheduled payday, not a stamp */
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <Clock size={10} style={{ color: 'var(--secondary)', flexShrink: 0 }} />
+                  <span
+                    className="mono"
+                    style={{ fontSize: 10, color: 'var(--secondary)', lineHeight: 1 }}
+                  >
+                    {fmtDate(c.paydayTs)}
+                  </span>
+                </div>
+                <span
+                  className="mono"
+                  style={{ fontSize: 9, color: 'var(--secondary)', lineHeight: 1 }}
+                >
+                  fixes {fmtTime(c.paydayTs)}
+                </span>
+              </div>
+            ) : (
+              /* State coupons: stamp */
+              <div
+                className="stamp"
+                style={{
+                  color: colors.fg,
+                  borderColor: colors.fg,
+                }}
+              >
+                {isNewlyHeld ? 'settled just now' : c.label}
+              </div>
+            )}
           </button>
         )
       })}

@@ -38,6 +38,8 @@ interface Props {
   index: number
   /** Animation key — increment to replay stamps */
   animKey: number
+  /** Called immediately after a settle is confirmed on-chain */
+  onSettled?: (index: number) => void
 }
 
 function GuillocheGround() {
@@ -77,7 +79,7 @@ function Skeleton({ w, h, className = '' }: { w: number | string; h: number; cla
 export function PayslipCard({
   payroll, payslip, dueQuote, allDueRounds, next, nextLoading, maxAge,
   counterfactualAnswer, counterfactualRoundId,
-  settlementTx, index, animKey,
+  settlementTx, index, animKey, onSettled,
 }: Props) {
   const reduced = useReducedMotion()
   const { address: walletAddr } = useAccount()
@@ -159,6 +161,12 @@ export function PayslipCard({
     chainId: arc.id,
   })
   const settleError = simError ? decodeValutaError(simError) : null
+
+  // Fire onSettled immediately when the tx confirms
+  useEffect(() => {
+    if (confirmed && onSettled) onSettled(index)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmed])
 
   const handleSettle = () => {
     if (!walletAddr) { setOpen(true); return }
@@ -267,8 +275,23 @@ export function PayslipCard({
                   whiteSpace: 'nowrap',
                 }}
               >
-                VALUE {fmtDateTimeStamp(paydayTs)}{isDue ? ' · DUE' : ''}
+                VALUE {fmtDateTimeStamp(paydayTs)}
               </div>
+              {isDue && (
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 'clamp(10px, 0.9vw, 13px)',
+                    fontWeight: 700,
+                    letterSpacing: '.1em',
+                    color: 'var(--state-due)',
+                    textAlign: 'center',
+                    marginTop: 4,
+                  }}
+                >
+                  DUE
+                </div>
+              )}
             </motion.div>
           ) : isLoading ? (
             <Skeleton w={280} h={52} />
@@ -322,7 +345,7 @@ export function PayslipCard({
                   style={{
                     fontSize: 'clamp(36px, 5vw, 64px)',
                     fontWeight: 300,
-                    color: 'var(--state-paid)',
+                    color: isSettled ? 'var(--state-paid)' : 'var(--ink)',
                     lineHeight: 1,
                     letterSpacing: '-.01em',
                     marginBottom: 4,

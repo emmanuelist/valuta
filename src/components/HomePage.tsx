@@ -46,7 +46,8 @@ export function HomePage({
     initialPayday !== undefined ? initialPayday : 0,
   )
   const [animKey, setAnimKey] = useState(0)
-  const [newlyDue, setNewlyDue] = useState<number | null>(null)
+  const [newlyDue,  setNewlyDue]  = useState<number | null>(null)
+  const [newlyHeld, setNewlyHeld] = useState<number | null>(null)
 
   const handleSelect = useCallback((i: number) => {
     setSelected(i)
@@ -55,6 +56,13 @@ export function HomePage({
     url.searchParams.set('payday', String(i))
     history.replaceState({}, '', url.toString())
   }, [])
+
+  // Immediately refetch after a settle and mark the coupon
+  const handleSettled = useCallback((settledIndex: number) => {
+    setNewlyHeld(settledIndex)
+    void refetch()
+    void refetchDetail()
+  }, [refetch, refetchDetail])
 
   // Track newly-due paydays
   const currentDueCount = dueQuotes.length
@@ -222,6 +230,7 @@ export function HomePage({
                 settlementTx={settlementTx}
                 index={selected}
                 animKey={animKey}
+                onSettled={handleSettled}
               />
             ) : null}
           </div>
@@ -258,6 +267,7 @@ export function HomePage({
               selected={selected}
               onSelect={handleSelect}
               newlyDue={newlyDue}
+              newlyHeld={newlyHeld}
             />
           ) : payroll && totalItems === 0 ? (
             <EmptyPayroll />

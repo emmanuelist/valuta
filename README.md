@@ -124,6 +124,7 @@ The contracts, tests, deploy and ops scripts, and the app were written by Arc St
 | [10](prompts/10-responsive-states-pages.md) | Phones and tablets, accessibility, loading, error and empty states, /new and /lookup |
 | [11](prompts/11-fixes-from-review.md) to [14](prompts/14-top-offset.md) | Fixes from rendered reviews: the settle-day cheat round, colour bound to payday state, the phone layout, desktop placement measured against the comp |
 | [15](prompts/15-final-polish.md) to [17](prompts/17-green-and-mark.md) | Final polish from a 30/40 critique: contrast floor, no sandbox tracing in production, banknote green for money that moved, the brand mark and social card |
+| [18](prompts/18-seal-and-states.md) to [20](prompts/20-facts-wording.md) | The RATE HELD seal rebuilt as a notary seal from each payslip's own round and value date, upcoming coupons as scheduled paydays, due amounts in ink until they settle, and the to-the-second rule in the proof facts |
 
 Arc Studio deploys to Arc Testnet only. The mainnet deploy ran Studio's own `Deploy.s.sol` with Arc Foundry, and the source is identical to the Studio workspace (sha256 recorded in [`docs/EVIDENCE.md`](docs/EVIDENCE.md)).
 

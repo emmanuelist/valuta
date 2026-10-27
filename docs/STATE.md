@@ -1,46 +1,43 @@
 # State
-_Last verified: 2026-10-26 22:08 UTC (branch 6-app)_
+_Last verified: 2026-10-27 16:20 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
-**Milestone:** M2 · Core claim in the app (due 2026-10-26 22:00 UTC) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** Studio turn 18 (`prompts/18-seal-and-states.md`: seal A, the builder's choice; upcoming coupons; due-state truth; lazy wallet) is armed in `internal/studio-turn18.sh` and fires when usage is below 60%, about 13:50 UTC on 2026-10-27. Tonight: benchmark, film capture of the app chapters. Tomorrow: verify turn 18, redeploy (`vercel deploy --prod`, then alias `valuta-arc`), the Studio film chapter (builder logs in), render, the builder uploads to YouTube, repo public, preflight, the builder submits (#8)
+**Milestone:** M3 · Submit (#8) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
+**Next action:** at 18:00 UTC payroll 2's payday falls due (the keeper is paused for it). Start the STRANGER signer, recapture the settle chapter (`SETTLE_PAYROLL=2 SETTLE_PAYDAY=26 npx tsx scripts/capture.ts 06-settle` in `internal/film`), stop the signer, restart the keeper, then cut, render, score and master. The builder uploads to YouTube; repo public; preflight; the builder submits (#8)
 **Blocked on:** nothing
 
 ## Works (verified this session)
 | Capability | Verified by | Evidence |
 |---|---|---|
-| **Redesigned app (Studio turns 08–10)**: the payslip hero, home sections, settle flow, employer panel, phone layout, /new, /lookup. The local gate is green (typecheck, lint with `--deny-warnings`, build). A cold production load renders the payslip in 2.3 s with 5 RPC calls | browser renders, `bun run typecheck/lint/build`, `vite preview` timing | E-026 |
-| "Try to cheat it" Run all replays at block 27,805,206 and shows the chain's own refusals | in the browser | E-026 |
-| **Valuta v2 live on Arc mainnet, Sourcify exact match** | receipt, code, Sourcify API | E-016 |
-| Whole payslip ledger in one `eth_call`; settlement tx by single-block `getLogs` | timed reads against mainnet | E-019 |
-| Stranger settled 10 overdue paydays on v2, each at its own round | tx and payslip read-back | E-019 |
-| 96 tests pass under Arc semantics (fork tests on live feeds included) | `arc-forge test --network arc` | E-017 |
-| Keeper settles due paydays every 10 min (payrolls 1 and 3 daily, payroll 2 every 2 h); it caught up after the laptop slept; restarted for payroll 3 at 23:38 UTC | `internal/keeper.log`: 14:10 to 22:02 UTC, payroll 2 at 5 of 5 settled | — |
+| **Valuta v2 live on Arc mainnet, Sourcify exact match** (runtime and creation) | Sourcify page rendered for the film, 2026-10-27 | E-016 |
+| **The app in production**, https://valuta-arc.vercel.app; every external README link returns 200 (CI badge 404s only while the repo is private) | `curl` over all README links, 2026-10-27 | E-030 |
+| **Settle through the live app as a stranger**: payroll 3 payday 02 and payroll 2 payday 26, both status 1, read back with `payslip()` | `arc-cast receipt`, `arc-cast call payslip` | E-033 |
+| Studio turns 18–20 in production (seal A, upcoming coupons, due-state truth, boundary seconds) | browser, measured | E-032 |
+| 96 tests pass under Arc semantics; CI green | `arc-forge test --network arc`, CI run | E-017, E-028 |
+| **Film preview** renders end to end: 9 chapters, 23 lines, 2:18 with a stand-in settle take; voice −15.6 LUFS, peak −2.4 dBTP | `internal/film`, render, score and master logs | — |
+| No secrets in tracked files or git history | grep over `git log --all -p` | — |
 
 ## Deployed
 | What | Network | Address / URL | Last checked |
 |---|---|---|---|
-| **Valuta v2** | **Arc mainnet** | `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a` | 2026-10-25 14:15 UTC |
-| Payroll #1: MXN 1.00 daily, back pay from 10-15 (20 paydays) | v2 | id 1: 11 settled (10 by STRANGER, late; 1 by keeper, on time), reserve 0.5072 USDC | 2026-10-25 23:10 UTC |
-| Payroll #2: BRL 0.10 every 2 h from 10-25 14:00 (36 paydays) | v2 | id 2: 9 settled; 06–09 in one late tx, each at its own round (E-024) | 2026-10-26 06:50 UTC |
-| Payroll #3: EUR 0.01 daily at 14:00 UTC from 10-26 (40 paydays, to 12-04) | v2 | id 3: 0 settled, reserve 0.47 USDC, first payday 10-26 14:00 UTC (E-023) | 2026-10-25 23:37 UTC |
-| Valuta v1 (retired) | Arc mainnet | `0x2bDF0F489687a57a0E63E609281C3eC86dda76e9` | ended and reclaimed |
-| **The app (production)** | Vercel | https://valuta-arc.vercel.app (E-030) | 2026-10-26 16:55 UTC |
-| Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-25 |
-| Repo (private until 2026-10-27) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-25 |
+| **Valuta v2** | **Arc mainnet** | `0x7d209Fbd9999C8fe37b4e6B3CCeF41DbbAF3252a` | 2026-10-27 16:00 UTC |
+| Payroll #1: MXN 1.00 daily, 14:00 UTC | v2 | id 1: nothing due until 10-28 14:00 | 2026-10-27 15:50 UTC |
+| Payroll #2: BRL 0.10 every 2 h (36 paydays) | v2 | id 2: 26 settled; payday 27 due at 18:00 UTC | 2026-10-27 16:05 UTC |
+| Payroll #3: EUR 0.01 daily at 14:00 UTC, to 12-04 | v2 | id 3: 2 settled; next due 10-28 14:00 | 2026-10-27 15:52 UTC |
+| **The app (production)** | Vercel | https://valuta-arc.vercel.app | 2026-10-27 16:15 UTC |
+| Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-27 |
+| Repo (private until submission) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-27 |
 
-## Design (Impeccable, comp-led)
-- Critique baseline **19/40** (dual-agent, 2026-10-25), craft 4/10 against Setoff 8 and Warrant 9: `.impeccable/critique/2026-10-25T22-26-13Z__src-app-tsx.md`.
-- **Redesign (D-017):** the payslip is the hero. The approved comp is `.impeccable/mocks/redesign-a-specimen.png` (A, Specimen).
-- The spec has 20 pixel-exact regions and 0 plates. Faces are Hanken Grotesk and Spline Sans Mono (D-018).
-- Build phase: comps ✓ spec ✓ → plates gate waits on the **component review**: the builder accepts at http://127.0.0.1:61685/ (session d75619c3…).
-- Higgsfield: 4 credits left on the builder's new workspace.
+## Film (`internal/film`, gitignored tooling)
+- Chapters 01–04 and 07 captured from the live site; **05-studio** cut from the builder's own Studio recording plus the live Sourcify page (D-024).
+- **06-settle needs its final take** (above). The stand-in is the payroll 3 take, kept at `film/keep-06-settle-payroll3.mp4`.
+- The settle line now says "in about two seconds" (measured 2.0 s, click to receipt).
 
 ## Broken or unverified
-- **Film:** the pipeline is ported from Setoff into `internal/film/` (tooling, gitignored). Every figure comes from `film/facts.json`, read off mainnet with assertions. The narration is voiced (ElevenLabs, the builder's new key, 668 of 10,000 characters used) and aligned word by word. Not done yet: the capture moves and beat measurement for the redesigned UI (after turns 08–09), the Studio shot (needs the builder's login in the recording browser), render, score and master.
-- **Unverified in the live app:** the due-state hero, Settle now with its receipt, the employer panel, and /new create, which all need a browser wallet. The initial chunk is 492 kB gzipped (accepted, D-023).
+- **The keeper is paused** (since 10-27 14:48 UTC) so a payday stays due for the film. Restart it after the 18:00 take: `bash internal/keeper.sh` in the background.
+- The app's "Settled N payday" receipt can be skipped by the post-confirmation refetch (E-033). The payslip still shows the settlement. Not fixed: it would take a Studio turn.
+- The initial chunk is 492 kB gzipped (accepted, D-023).
 - The keeper runs only while this session and laptop are up.
-- Studio streams can drop mid-turn. Always use `--detach` and then `attach`.
 
 ## Open questions
 - Whether the organizers allow external hardening synced back to Studio. Unanswered since 2026-10-22, so D-002 avoids the question.

@@ -37,7 +37,6 @@ _Last verified: 2026-10-27 18:10 UTC (branch 6-app, PR #17 open)_
 - The keeper was restarted at 18:01 UTC after the film's settle; it runs only while this session and laptop are up.
 - The app's "Settled N payday" receipt can be skipped by the post-confirmation refetch (E-033). The payslip still shows the settlement. Not fixed: it would take a Studio turn.
 - The initial chunk is 492 kB gzipped (accepted, D-023).
-- The keeper runs only while this session and laptop are up.
 
 ## Open questions
 - Whether the organizers allow external hardening synced back to Studio. Unanswered since 2026-10-22, so D-002 avoids the question.

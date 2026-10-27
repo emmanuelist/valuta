@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-27 16:20 UTC (branch 6-app)_
+_Last verified: 2026-10-27 16:25 UTC (branch 6-app)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
 **Milestone:** M3 · Submit (#8) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** at 18:00 UTC payroll 2's payday falls due (the keeper is paused for it). Start the STRANGER signer, recapture the settle chapter (`SETTLE_PAYROLL=2 SETTLE_PAYDAY=26 npx tsx scripts/capture.ts 06-settle` in `internal/film`), stop the signer, restart the keeper, then cut, render, score and master. The builder uploads to YouTube; repo public; preflight; the builder submits (#8)
+**Next action:** at 18:00 UTC payroll 2's payday falls due (the keeper is paused for it). In `internal/film`: start the STRANGER signer; `SETTLE_PAYROLL=2 SETTLE_PAYDAY=26 npx tsx scripts/capture.ts 06-settle`; stop the signer; `SETTLE_TX=<hash the signer logged> npx tsx scripts/settle.ts` (adds the tx's explorer page); restart the keeper; then `film:cut`, render, score, master. Then: the tx into README and SUBMISSION, the builder uploads to YouTube, repo public, preflight, the builder submits (#8)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -16,6 +16,7 @@ _Last verified: 2026-10-27 16:20 UTC (branch 6-app)_
 | 96 tests pass under Arc semantics; CI green | `arc-forge test --network arc`, CI run | E-017, E-028 |
 | **Film preview** renders end to end: 9 chapters, 23 lines, 2:18 with a stand-in settle take; voice −15.6 LUFS, peak −2.4 dBTP | `internal/film`, render, score and master logs | — |
 | No secrets in tracked files or git history | grep over `git log --all -p` | — |
+| **Benchmark** (first run): fit 2, evidence 2, differentiation 3, integration 3, resilience 2, advantage 2, demo 2. Top finding (fixed): no app-sent tx was listed for "through your contract and app" | `internal/benchmarks/2026-10-27-524e177.md` | D-025 |
 
 ## Deployed
 | What | Network | Address / URL | Last checked |

@@ -58,7 +58,7 @@ Round 293 was published at 14:06 on 15 Oct, six minutes after payday 1. Settling
 
 **The ledger is one read.** `payslips(1, 0, 64)` returns every payslip, with its round, rate, amount, settler and settlement block, in a single `eth_call`. The settlement transaction comes from one single-block log query, never a scan.
 
-**Refusals, by name**, captured from the live contract as read-only calls while payroll 2's 16:00 payday was due ([E-021](docs/EVIDENCE.md)):
+**Refusals, by name**, captured from the live contract as read-only calls while payroll 2's 16:00 payday on 25 Oct was due ([E-021](docs/EVIDENCE.md)):
 
 | Attempt | Refused with |
 |---|---|

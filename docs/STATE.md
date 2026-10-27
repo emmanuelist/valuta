@@ -1,9 +1,9 @@
 # State
-_Last verified: 2026-10-27 18:20 UTC (branch 7-film-link; PR #17 merged at 18:08 UTC)_
+_Last verified: 2026-10-27 18:45 UTC (branch 7-film-link → main)_
 
 **Thesis:** Salaries agreed in pesos, reais or euros, paid in USDC on Arc at the Chainlink rate that was live on payday, however late it settles and whoever settles it.
-**Milestone:** M3 · Submit (#8) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
-**Next action:** the builder makes the repo public (GitHub → Settings → Change visibility; Claude is not permitted to) and merges the film-link PR (Closes #7); then preflight and the DoraHacks form from `internal/SUBMISSION.md` (#8)
+**Milestone:** M4 · Submitted (#8) · **Effective deadline:** 2026-10-27 22:00 UTC (hard: 2026-11-02 04:59 UTC)
+**Next action:** wait for the review (DoraHacks shows Valuta "Under Review"). After judging: end payrolls 1–3, reclaim the reserves, sweep the six wallets to the builder's exchange address (mainnet writes; confirm first)
 **Blocked on:** nothing
 
 ## Works (verified this session)
@@ -15,6 +15,7 @@ _Last verified: 2026-10-27 18:20 UTC (branch 7-film-link; PR #17 merged at 18:08
 | Studio turns 18–20 in production (seal A, upcoming coupons, due-state truth, boundary seconds) | browser, measured | E-032 |
 | 96 tests pass under Arc semantics; CI green | `arc-forge test --network arc`, CI run | E-017, E-028 |
 | **The film is final**: 2:10.2, 1920×1080, 9 chapters, 23 lines; the Studio chapter from the builder's recording plus Sourcify (D-024); the settle chapter is the live 18:00 settle and its explorer page; voice −15.6 LUFS, peak −2.5 dBTP | `internal/film` render, score and master logs; stills reviewed | E-034 |
+| **Submitted** to Arc Microgrants 2 on DoraHacks (Valuta, "Under Review"); repo public; README hero recaptured from production | DoraHacks builds page; anonymous `curl` of the repo | E-036 |
 | No secrets in tracked files or git history | grep over `git log --all -p` | — |
 | **Benchmark** (first run): fit 2, evidence 2, differentiation 3, integration 3, resilience 2, advantage 2, demo 2. Top finding (fixed): no app-sent tx was listed for "through your contract and app" | `internal/benchmarks/2026-10-27-524e177.md` | D-025 |
 
@@ -27,7 +28,7 @@ _Last verified: 2026-10-27 18:20 UTC (branch 7-film-link; PR #17 merged at 18:08
 | Payroll #3: EUR 0.01 daily at 14:00 UTC, to 12-04 | v2 | id 3: 2 settled; next due 10-28 14:00 | 2026-10-27 15:52 UTC |
 | **The app (production)** | Vercel | https://valuta-arc.vercel.app | 2026-10-27 16:15 UTC |
 | Studio project | studio.arc.io | https://studio.arc.io/app/ad133b3b-d828-4323-88f3-5be7b8f0bad4 | 2026-10-27 |
-| Repo (private until submission) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-27 |
+| Repo (public since 2026-10-27 18:40 UTC) | GitHub | https://github.com/emmanuelist/valuta | 2026-10-27 |
 
 ## Film (`internal/film`, gitignored tooling)
 - Final master: `internal/film/film/valuta-master.mp4`, published at https://youtu.be/HUbb6BLe1uY (E-035).
